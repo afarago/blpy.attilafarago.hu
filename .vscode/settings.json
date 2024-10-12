@@ -1,0 +1,12 @@
+{
+  "files.exclude": {
+    "**/*.js": { "when": "$(basename).ts" },
+    "**/**.js": { "when": "$(basename).tsx" }
+  },
+  "liveServer": {
+    "settings": {
+      "root": "/dist"
+    }
+  },
+  "github-actions.workflows.pinned.workflows": [".github/workflows/webpack.yml"]
+}

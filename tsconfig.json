@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": true,
+    "module": "es2022",
+    "target": "es5",
+    // "allowJs": true,
+    "lib": ["es2021", "es2021.String", "dom"],
+    "moduleResolution": "node",
+    "downlevelIteration": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "strict": true
+  },
+  "files": ["src/index.ts"]
+  // "include": ["src/**/*.ts"]
+}

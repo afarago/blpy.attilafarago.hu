@@ -1,0 +1,65 @@
+{
+    "name": "blocklypy-web",
+    "version": "0.0.1",
+    "description": "Blocklypy: SPIKE to Pybricks - word-block converter to Pybricks python code",
+    "main": "build/src/index.js",
+    "types": "build/src/index.d.ts",
+    "type": "commonjs",
+    "files": [
+        "build/src"
+    ],
+    "license": "Apache-2.0",
+    "keywords": [],
+    "engines": {
+        "node": ">=16.0.0"
+    },
+    "scripts": {
+        "build": "npm run build:prod",
+        "build:dev": "webpack --mode=development",
+        "build:prod": "webpack --mode=production --node-env=production --progress",
+        "watch": "webpack --watch",
+        "serve": "webpack serve"
+    },
+    "devDependencies": {
+        "@types/bootstrap": "^5.2.10",
+        "@types/express": "^4.17.21",
+        "@types/express-fileupload": "^1.5.1",
+        "@types/jest": "^29.5.13",
+        "@types/jquery": "^3.5.30",
+        "@types/jszip": "^3.4.1",
+        "@types/node": "^20.16.5",
+        "@typescript-eslint/eslint-plugin": "^8.7.0",
+        "@webpack-cli/generators": "^3.0.7",
+        "copy-webpack-plugin": "^12.0.2",
+        "css-loader": "^7.1.2",
+        "eslint": "^8.57.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-import": "^2.30.0",
+        "eslint-plugin-prettier": "^5.2.1",
+        "get-current-line": "^7.4.0",
+        "html-webpack-plugin": "^5.5.0",
+        "jest": "^29.7.0",
+        "nodemon": "^3.1.4",
+        "prettier": "^3.3.3",
+        "style-loader": "^4.0.0",
+        "terser-webpack-plugin": "^5.3.10",
+        "ts-jest": "^29.2.5",
+        "ts-loader": "^9.4.2",
+        "ts-node": "^10.9.2",
+        "tslib": "^2.7.0",
+        "tsx": "^4.19.0",
+        "typescript": "^5.6.2",
+        "webpack": "^5.94.0",
+        "webpack-bundle-analyzer": "^4.10.2",
+        "webpack-cli": "^5.1.4",
+        "webpack-dev-server": "^4.11.1"
+    },
+    "dependencies": {
+        "blocklypy": "^0.0.3",
+        "bootstrap": "^5.3.3",
+        "bootstrap-icons": "^1.11.3",
+        "jquery": "^3.7.1",
+        "jszip": "^3.10.1",
+        "panzoom": "^9.4.3"
+    }
+}
