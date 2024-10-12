@@ -22,6 +22,10 @@ jobs:
               with:
                   node-version: ${{ matrix.node-version }}
 
+            - name: Create version file
+              run: |
+                  echo "const GITHUB_VERSION = '${GITHUB_SHA:0:7} ${GITHUB_REF_NAME}'; export { GITHUB_VERSION };" > ./src/github_version.ts
+
             - name: Build
               run: |
                   npm install
@@ -40,7 +44,7 @@ jobs:
             id-token: write
         environment:
             name: github-pages
-            url: 'https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/'
+            url: 'https://blpy.attilafarago.hu/'
         steps:
             - name: Setup Pages
               uses: actions/configure-pages@v5
