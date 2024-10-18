@@ -2,11 +2,13 @@ import { Tab, Tooltip } from 'bootstrap';
 import panzoom from 'panzoom';
 import '../static/css/site.css';
 import { GITHUB_VERSION } from './github_version';
-import { convertFlipperProjectToPython } from 'blocklypy';
+import { convertFlipperProjectToPython, PyConverterOptions } from 'blocklypy';
 
 function handleFileUpload(file: File) {
     file.arrayBuffer().then(async (input) => {
-        const options = {};
+        const options = {
+            debug: { showExplainingComments: true },
+        } as PyConverterOptions;
 
         const retval = await convertFlipperProjectToPython(input, options);
         $('#preview-svg').html(retval?.svg ?? '');
