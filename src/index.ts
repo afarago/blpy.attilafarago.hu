@@ -2,26 +2,31 @@ import { Tab, Tooltip } from 'bootstrap';
 import panzoom from 'panzoom';
 import '../static/css/site.css';
 import { GITHUB_VERSION } from './github_version';
-import { convertFlipperProjectToPython, PyConverterOptions } from 'blocklypy';
+import { convertProjectToPython, PyConverterOptions } from 'blocklypy';
 
 function handleFileUpload(file: File) {
     file.arrayBuffer().then(async (input) => {
         const options = {
+            filename: file.name,
             debug: { showExplainingComments: true },
         } as PyConverterOptions;
 
-        const retval = await convertFlipperProjectToPython(input, options);
-        $('#preview-svg').html(retval?.svg ?? '');
-        $('#preview-svg-map')
-            .html(retval?.svg ?? '')
-            .removeClass('d-none');
-        $('#preview-pycode').html(retval?.pycode ?? '');
+        try {
+            const retval = await convertProjectToPython(input, options);
+            $('#preview-svg').html(retval?.svg ?? '');
+            console.log(retval?.svg);
+            $('#preview-svg-map')
+                .html(retval?.svg ?? '')
+                .removeClass('d-none');
+            $('#preview-pycode').html(retval?.pycode ?? '');
+            $('#preview-pseudocode').html(retval?.plaincode ?? '');
 
-        $('#preview-pseudocode').html(retval?.plaincode ?? '');
-
-        const slotid = retval.projectInfo?.slotIndex;
-        const sloturl = `img/cat${slotid}.svg#dsmIcon`;
-        $('#svg-program-use').attr('href', sloturl).attr('xlink:href', sloturl);
+            const slotid = retval.projectInfo?.slotIndex;
+            const sloturl = `img/cat${slotid}.svg#dsmIcon`;
+            $('#svg-program-use').attr('href', sloturl).attr('xlink:href', sloturl);
+        } catch (error) {
+            $('#preview-pycode').html(error as string);
+        }
 
         $('#tab-dummy').addClass('d-none');
         $('#tabs-main').removeClass('d-none');
@@ -134,10 +139,14 @@ $(() => {
     }
 
     new MutationObserver((_) => {
-        panzoom($('#preview-svg svg')[0], { bounds: true });
-        // instance.on('zoom', function (e) {
-        //   console.log('Fired when `element` is zoomed', e);
-        // });
+        try {
+            panzoom($('#preview-svg svg')[0], { bounds: true });
+            // instance.on('zoom', function (e) {
+            //   console.log('Fired when `element` is zoomed', e);
+            // });
+        } catch (error) {
+            console.error('Error setting up panzoom', error);
+        }
     }).observe(previewSvg[0], {
         childList: true,
     });
