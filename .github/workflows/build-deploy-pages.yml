@@ -1,4 +1,4 @@
-name: NodeJS with Webpack
+name: Build and Deploy to Github-Pages
 
 on:
     workflow_dispatch: # Allows you to run this workflow manually
