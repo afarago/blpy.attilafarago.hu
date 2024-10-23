@@ -14,7 +14,6 @@ function handleFileUpload(file: File) {
         try {
             const retval = await convertProjectToPython(input, options);
             $('#preview-svg').html(retval?.svg ?? '');
-            console.log(retval?.svg);
             $('#preview-svg-map')
                 .html(retval?.svg ?? '')
                 .removeClass('d-none');
