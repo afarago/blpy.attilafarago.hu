@@ -1,15 +1,20 @@
+import { convertProjectToPython, PyConverterOptions } from 'blocklypy';
 import { Tab, Tooltip } from 'bootstrap';
 import panzoom from 'panzoom';
 import '../static/css/site.css';
 import { GITHUB_VERSION } from './github_version';
-import { convertProjectToPython, PyConverterOptions } from 'blocklypy';
 
 function handleFileUpload(file: File) {
     file.arrayBuffer().then(async (input) => {
         const options = {
             filename: file.name,
-            debug: { showExplainingComments: true },
+            debug: {},
         } as PyConverterOptions;
+
+        console.log($('#additionalCommentsCheck'));
+        if (options.debug && $('#additionalCommentsCheck').is(':checked')) {
+            options.debug.showExplainingComments = true;
+        }
 
         try {
             const retval = await convertProjectToPython(input, options);
@@ -38,7 +43,7 @@ function updateMapVisibility() {
     $('#preview-svg-map').toggleClass('d-none', !visible);
 }
 
-$('.example-content-button').on('click', (event) => {
+$('.example-content-button').on('click', (event: JQuery.ClickEvent) => {
     const path = event.target.dataset.file;
     if (!path) {
         return;
@@ -58,6 +63,12 @@ $('.example-content-button').on('click', (event) => {
         .catch((error: unknown) => {
             console.error('::ERROR::', error);
         });
+    return false;
+});
+
+$('#additionalCommentsCheck').on('click', (event: JQuery.ClickEvent) => {
+    const file = ($('#file-selector').get(0) as HTMLInputElement).files?.item(0);
+    if (file) handleFileUpload(file);
 });
 
 $('#maincontainer').on({

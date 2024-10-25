@@ -200,3 +200,15 @@ a {
     border: none;
     white-space: pre;
 }
+
+#divOptions {
+    display: flex;
+    flex-direction: row;
+}
+
+#divOptions > small:first-child {
+    flex: 1 1;
+}
+#divOptions > small:last-child {
+    flex: 0 1;
+}
