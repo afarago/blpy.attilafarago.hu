@@ -67,6 +67,15 @@
             </nav>
         </header>
 
+        <div class="toast position-fixed top-0 end-0 m-2 p-2" role="alert" aria-live="assertive" aria-atomic="true" id="toast1">
+          <div class="toast-header">
+            <strong class="me-auto toast-title"></strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+          <div class="toast-body">
+          </div>
+        </div> 
+
         <div class="container">
             <h3>
                 SPIKE to Pybricks Wizard
@@ -93,8 +102,20 @@
                                 <a
                                     href="#"
                                     class="example-content-button"
-                                    data-file="samples/sample.llsp3"
-                                    >Simple SPIKE block sample</a
+                                    data-file="samples/demo_cityshaper_cranemission.llsp3"
+                                    >SPIKE block sample</a
+                                >
+                                <a
+                                    href="#"
+                                    class="example-content-button"
+                                    data-file="samples/demo_cityshaper_cranemission.lmsp"
+                                    >EV3Classroom sample</a
+                                >
+                                <a
+                                    href="#"
+                                    class="example-content-button"
+                                    data-file="samples/demo_cityshaper_cranemission.ev3"
+                                    >EV3Lab sample</a
                                 >
                             </small>
                             <small class="form-check form-switch">
@@ -107,7 +128,7 @@
                                 <label
                                     class="form-check-label"
                                     for="additionalCommentsCheck"
-                                    >Additional&nbsp;Comments</label
+                                    >Explanatory&nbsp;Comments</label
                                 >
                             </small>
                         </div>
@@ -134,15 +155,6 @@
                     </div>
                     <div id="tabs-main" class="h-100 d-none" style="min-height: 30vh">
                         <ul class="nav nav-tabs border-0" role="tablist">
-                            <li class="nav-item p-2">
-                                <svg width="20" height="20">
-                                    <use
-                                        id="svg-program-use"
-                                        href="img/cat0.svg#icon"
-                                        xlink:href="img/cat0.svg#icon"
-                                    ></use>
-                                </svg>
-                            </li>
                             <li class="nav-item">
                                 <a
                                     class="nav-link active"
@@ -169,6 +181,16 @@
                                     data-bs-toggle="tab"
                                     >Preview</a
                                 >
+                            </li>
+                            <li class="nav-item p-2 ms-auto">
+                                <svg width="20" height="20" id="sb3slot">
+                                    <use
+                                        id="svg-program-use"
+                                        href="img/cat0.svg#icon"
+                                        xlink:href="img/cat0.svg#icon"
+                                    ></use>
+                                </svg>
+                              <img width="20" height="20" id="devtype"></img>
                             </li>
                         </ul>
 

@@ -11,35 +11,57 @@ function handleFileUpload(file: File) {
             debug: {},
         } as PyConverterOptions;
 
-        console.log($('#additionalCommentsCheck'));
         if (options.debug && $('#additionalCommentsCheck').is(':checked')) {
             options.debug.showExplainingComments = true;
         }
 
         try {
             const retval = await convertProjectToPython(input, options);
+            $('#preview-svg').toggleClass('d-none', !retval?.svg);
             $('#preview-svg').html(retval?.svg ?? '');
-            $('#preview-svg-map')
-                .html(retval?.svg ?? '')
-                .removeClass('d-none');
+            $('#preview-svg-map').html(retval?.svg ?? '');
             $('#preview-pycode').html(retval?.pycode ?? '');
             $('#preview-pseudocode').html(retval?.plaincode ?? '');
 
-            const slotid = retval.projectInfo?.slotIndex;
-            const sloturl = `img/cat${slotid}.svg#dsmIcon`;
-            $('#svg-program-use').attr('href', sloturl).attr('xlink:href', sloturl);
+            const devtype = `img/devtype${retval.deviceType}.png`;
+            $('#devtype').removeClass('d-none').attr('src', devtype);
+
+            const isSB3 = retval.deviceType && [1, 2].includes(retval.deviceType);
+            $('#sb3slot').toggleClass('d-none', !isSB3);
+            $('#svg-tab').toggleClass('d-none', !isSB3);
+
+            if (isSB3) {
+                const slotid = retval.projectInfo?.slotIndex;
+                const sloturl = `img/cat${slotid}.svg#dsmIcon`;
+                $('#svg-program-use').attr('href', sloturl).attr('xlink:href', sloturl);
+            }
         } catch (error) {
+            console.error('Error converting project to python', error);
+            $('#devtype').addClass('d-none');
             $('#preview-pycode').html(error as string);
+            $('#svg-tab').addClass('d-none');
+            $('#pseudocode-tab').addClass('d-none');
+            $('#preview-svg').addClass('d-none');
+            $('#preview-svg-map').addClass('d-none');
+            $('#sb3slot').addClass('d-none');
+            $('#preview-svg-map').html('');
+
+            $('#toast1 .toast-title').html('Conversion Error');
+            $('#toast1 .toast-body').html(error as string);
+            $('#toast1').addClass('show');
         }
 
         $('#tab-dummy').addClass('d-none');
         $('#tabs-main').removeClass('d-none');
-        updateMapVisibility();
+
+        updateSmallMapVisibility();
     });
 }
 
-function updateMapVisibility() {
-    const visible = $("a[data-bs-toggle='tab'].active").attr('id') !== 'svg-tab';
+function updateSmallMapVisibility() {
+    const visible =
+        $("a[data-bs-toggle='tab'].active").attr('id') !== 'svg-tab' &&
+        $('#preview-svg-map').html().length > 0;
     $('#preview-svg-map').toggleClass('d-none', !visible);
 }
 
@@ -52,7 +74,7 @@ $('.example-content-button').on('click', (event: JQuery.ClickEvent) => {
     fetch(path)
         .then(async (data) => {
             const data2 = await data.blob();
-            const file = new File([data2], 'sample.llsp3');
+            const file = new File([data2], path.split('/').pop());
 
             const dataTransfer = new DataTransfer();
             dataTransfer.items.add(file);
@@ -134,7 +156,7 @@ $('.copy-button').on('click', function (event) {
 });
 
 $("a[data-bs-toggle='tab']").on('shown.bs.tab', (_) => {
-    updateMapVisibility();
+    updateSmallMapVisibility();
 });
 
 $('#preview-svg-map').on('click', (_) => {

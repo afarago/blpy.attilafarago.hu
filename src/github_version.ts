@@ -1,2 +1,2 @@
-const GITHUB_VERSION = 'aa';
+const GITHUB_VERSION = '';
 export { GITHUB_VERSION };
