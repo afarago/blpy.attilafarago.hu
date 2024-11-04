@@ -17,9 +17,10 @@ function handleFileUpload(file: File) {
 
         try {
             const retval = await convertProjectToPython(input, options);
-            $('#preview-svg').toggleClass('d-none', !retval?.svg);
-            $('#preview-svg').html(retval?.svg ?? '');
-            $('#preview-svg-map').html(retval?.svg ?? '');
+            const svg = retval?.additionalFields?.blockly?.svg;
+            $('#preview-svg').toggleClass('d-none', !svg);
+            $('#preview-svg').html(svg ?? '');
+            $('#preview-svg-map').html(svg ?? '');
             $('#preview-pycode').html(retval?.pycode ?? '');
             $('#preview-pseudocode').html(retval?.plaincode ?? '');
 
@@ -31,7 +32,7 @@ function handleFileUpload(file: File) {
             $('#svg-tab').toggleClass('d-none', !isSB3);
 
             if (isSB3) {
-                const slotid = retval.projectInfo?.slotIndex;
+                const slotid = retval.additionalFields?.blockly?.slot;
                 const sloturl = `img/cat${slotid}.svg#dsmIcon`;
                 $('#svg-program-use').attr('href', sloturl).attr('xlink:href', sloturl);
             }
