@@ -16,10 +16,10 @@ jobs:
         run: gh pr review --approve "$PR_URL"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
-          GH_TOKEN: ${{secrets.PAT_TOKEN}}
+          GH_TOKEN: ${{github.token}}
       - name: Enable auto-merge for Dependabot PRs
       #  if: ${{steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'}}
         run: gh pr merge --auto --merge "$PR_URL"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
-          GH_TOKEN: ${{secrets.PAT_TOKEN}}
+          GH_TOKEN: ${{github.token}}
