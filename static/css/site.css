@@ -60,6 +60,11 @@ a {
     position: relative;
 }
 
+#tab-dummy img {
+    height: 80px;
+    width: 80px;
+}
+
 /* Main page Animated drop area
 -------------------------------------------------- 
     from: https://css-tricks.com/more-control-over-css-borders-with-background-image/
