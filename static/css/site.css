@@ -60,9 +60,14 @@ a {
     position: relative;
 }
 
-#tab-dummy img {
-    height: 80px;
-    width: 80px;
+#tab-dummy {
+    --icon-size: 3.5em;
+    --icon-size-big: 10em;
+}
+
+#tab-dummy img.icon {
+    height: var(--icon-size);
+    width: var(--icon-size);
 }
 
 /* Main page Animated drop area
