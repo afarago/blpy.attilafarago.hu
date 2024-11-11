@@ -27,11 +27,11 @@ function handleFileUpload(file: File) {
             const devtype = `img/devtype${retval.deviceType}.png`;
             $('#devtype').removeClass('d-none').attr('src', devtype);
 
-            const isSB3 = retval.deviceType && [1, 2].includes(retval.deviceType);
-            $('#sb3slot').toggleClass('d-none', !isSB3);
-            $('#svg-tab').toggleClass('d-none', !isSB3);
+            $('#svg-tab').toggleClass('d-none', !svg);
 
-            if (isSB3) {
+            const hasSlot = retval.additionalFields?.blockly?.slot !== undefined;
+            $('#sb3slot').toggleClass('d-none', !hasSlot);
+            if (hasSlot) {
                 const slotid = retval.additionalFields?.blockly?.slot;
                 const sloturl = `img/cat${slotid}.svg#dsmIcon`;
                 $('#svg-program-use').attr('href', sloturl).attr('xlink:href', sloturl);
