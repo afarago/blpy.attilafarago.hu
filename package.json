@@ -14,11 +14,28 @@
         "node": ">=16.0.0"
     },
     "scripts": {
-        "build": "npm run build:prod",
-        "build:dev": "webpack --mode=development",
-        "build:prod": "webpack --mode=production --node-env=production --progress",
-        "watch": "webpack --watch",
-        "serve": "webpack serve"
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
     },
     "devDependencies": {
         "@types/bootstrap": "^5.2.10",
@@ -28,7 +45,7 @@
         "@types/jquery": "^3.5.32",
         "@types/jszip": "^3.4.1",
         "@types/node": "^22.9.0",
-        "@typescript-eslint/eslint-plugin": "^8.13.0",
+        "@types/web": "^0.0.178",
         "@webpack-cli/generators": "^3.0.7",
         "copy-webpack-plugin": "^12.0.2",
         "css-loader": "^7.1.2",
@@ -48,18 +65,25 @@
         "ts-node": "^10.9.2",
         "tslib": "^2.8.1",
         "tsx": "^4.19.2",
-        "typescript": "^5.6.2",
+        "typescript": "^5.6.3",
         "webpack": "^5.96.1",
         "webpack-bundle-analyzer": "^4.10.2",
         "webpack-cli": "^5.1.4",
         "webpack-dev-server": "^5.1.0"
     },
     "dependencies": {
+        "@types/react": "^18.3.12",
+        "@types/react-dom": "^18.3.1",
         "blocklypy": "~0.0.21",
         "bootstrap": "^5.3.3",
         "bootstrap-icons": "^1.11.3",
         "jquery": "^3.7.1",
         "jszip": "^3.10.1",
-        "panzoom": "^9.4.3"
+        "panzoom": "^9.4.3",
+        "react": "^18.3.1",
+        "react-bootstrap": "^2.10.5",
+        "react-dom": "^18.3.1",
+        "react-scripts": "^5.0.1",
+        "web-vitals": "^4.2.4"
     }
 }

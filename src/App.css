@@ -1,4 +1,4 @@
-﻿body {
+body {
     min-height: 100vh;
     position: relative;
 }
@@ -21,7 +21,7 @@ footer {
     background-color: whitesmoke;
 }
 
-header {
+header nav {
     background-color: whitesmoke;
 }
 
@@ -60,14 +60,15 @@ a {
     position: relative;
 }
 
-#tab-dummy {
+.tab-welcome {
     --icon-size: 3.5em;
     --icon-size-big: 10em;
 }
 
-#tab-dummy img.icon {
+.tab-welcome img.icon {
     height: var(--icon-size);
     width: var(--icon-size);
+    margin-inline: 0.2em;
 }
 
 /* Main page Animated drop area
@@ -75,7 +76,7 @@ a {
     from: https://css-tricks.com/more-control-over-css-borders-with-background-image/
 */
 
-#maincontainer.drop-active {
+.main-content.drop-active {
     background-image: repeating-linear-gradient(
             -60deg,
             #f6c407,
@@ -187,7 +188,7 @@ a {
     position: relative;
 }
 
-#preview-svg-map {
+.svg-minimap {
     width: 30%;
     position: absolute;
     right: 0;
@@ -196,35 +197,31 @@ a {
     z-index: 998;
 }
 
-#preview-svg-map:hover {
+.svg-minimap:hover {
     opacity: 1;
 }
 
-#preview-svg {
+.preview-svg {
     overflow: hidden;
 }
 
-#tabs-wrapper {
-    width: 100%;
-}
-
-#preview-pycode,
-#preview-pseudocode {
+.preview-pycode,
+.preview-pseudocode {
     font-family: 'Courier New', monospace;
     width: 100%;
     border: none;
     white-space: pre;
 }
 
-#divOptions {
+.fileptions {
     display: flex;
     flex-direction: row;
 }
 
-#divOptions > small:first-child {
+.fileptions > small:first-child {
     flex: 1 1;
 }
-#divOptions > small:last-child {
+.fileptions > small:last-child {
     flex: 0 1;
 }
 

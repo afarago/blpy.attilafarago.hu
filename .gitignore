@@ -1,7 +1,7 @@
 node_modules/
 build/
 out/
-dist/
+build/
 testdata/
 temp/
 * copy.json
