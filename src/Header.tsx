@@ -5,15 +5,8 @@ const Header: React.FC = () => {
         <header>
             <nav className="navbar navbar-expand-sm border-bottom box-shadow mb-3">
                 <div className="container">
-                    <span
-                        className="navbar-brand"
-                        style={{ fontSize: '200%', paddingBottom: '0px' }}
-                    >
-                        <svg
-                            height="1.5em"
-                            width="4em"
-                            style={{ position: 'relative', top: '-5px' }}
-                        >
+                    <span className="navbar-brand">
+                        <svg height="1.5em" width="4em" className="brandlogo">
                             <use
                                 href="./static/img/logo_full.svg#icon"
                                 xlinkHref="img/logo_full.svg#icon"

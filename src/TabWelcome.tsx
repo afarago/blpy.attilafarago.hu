@@ -1,26 +1,26 @@
+import classNames from 'classnames';
 import React from 'react';
 
 const DummyTab: React.FC<{ isInitial: boolean }> = ({ isInitial }) => {
     return (
         <div
-            className={
-                'tab-welcome ' +
-                (isInitial ? 'd-flex' : 'd-none') +
-                ' flex-row flex-fill active py-5 mb-5'
-            }
-            style={{ alignItems: 'center' }}
+            className={classNames(
+                'tab-welcome',
+                'flex-row',
+                'flex-fill',
+                'active',
+                'py-5',
+                'mb-5',
+                {
+                    'd-flex': !isInitial,
+                    'd-none': isInitial,
+                },
+            )}
         >
             <div className="d-flex flex-column flex-fill ustify-content-center">
                 <div className="text-center mb-5">
                     <div>
-                        <i
-                            className="bi bi-cloud-arrow-up-fill"
-                            style={{
-                                fontSize: 'var(--icon-size-big)',
-                                color: 'cornflowerblue',
-                                lineHeight: '1em',
-                            }}
-                        ></i>
+                        <i className="drop-cloud-icon bi bi-cloud-arrow-up-fill"></i>
                     </div>
                     <div className="mb-4">
                         Imagine a world where magical unicorns transform your
@@ -50,15 +50,7 @@ const DummyTab: React.FC<{ isInitial: boolean }> = ({ isInitial }) => {
                             className="icon"
                             alt="LEGO EV3 Lab"
                         />
-                        <i
-                            className="bi bi-caret-right"
-                            style={{
-                                color: 'cornflowerblue',
-                                fontSize: 'calc(var(--icon-size) * 0.5)',
-                                display: 'inline-block',
-                                verticalAlign: 'middle',
-                            }}
-                        ></i>
+                        <i className="tranform-caret-icon bi bi-caret-right"></i>
                         <img
                             src="./static/img/devtype_pybricks.png"
                             className="icon"

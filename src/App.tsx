@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { convertProjectToPython, PyConverterOptions, PyProjectResult } from 'blocklypy';
-import './App.css';
+import './App.scss';
 import Header from './Header';
 import Footer from './Footer';
 import FileSelector from './FileSelector';
@@ -29,11 +29,7 @@ const App: React.FC = () => {
                 debug: {},
             } as PyConverterOptions;
 
-            if (
-                options.debug &&
-                (document.getElementById('additionalCommentsCheck') as HTMLInputElement) //!!!
-                    .checked
-            ) {
+            if (options.debug && isAdditionalCommentsChecked) {
                 options.debug.showExplainingComments = true;
             }
 

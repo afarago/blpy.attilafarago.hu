@@ -38,8 +38,6 @@ const FileSelector: React.FC<{
                     const dataTransfer = new DataTransfer();
                     dataTransfer.items.add(file);
 
-                    // ($('#file-selector').get(0) as HTMLInputElement).files =
-                    //     dataTransfer.files;
                     setSelectedFile(file);
                 })
                 .catch((error: unknown) => {
@@ -101,7 +99,7 @@ const FileSelector: React.FC<{
                     <small>
                         <Form.Check
                             type="switch"
-                            id="additionalCommentsCheck"
+                            id="additionalCommentsCheck" // needed for the label to be clickable
                             label="Explanatory&nbsp;Comments"
                             checked={isAdditionalCommentsChecked}
                             onChange={handleAdditionalCommentsChange}

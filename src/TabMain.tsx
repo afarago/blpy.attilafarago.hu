@@ -33,11 +33,10 @@ const MainTab: React.FC<{
 
     return (
         <div
-            id="tabs-main"
-            className={
-                (!isInitial ? 'd-flex' : 'd-none') + ' flex-column flex-fill p-2'
-            }
-            style={{ minHeight: '30vh' }}
+            className={classNames('tab-main', 'flex-column', 'flex-fill', 'p-2', {
+                'd-flex': !isInitial,
+                'd-none': isInitial,
+            })}
         >
             <Tab.Container
                 activeKey={key}
@@ -97,7 +96,11 @@ const MainTab: React.FC<{
                             ></div>
 
                             {['pycode', 'pseudocode'].map((key) => (
-                                <Tab.Pane eventKey={key} className="p-4" key={key}>
+                                <Tab.Pane
+                                    eventKey={key}
+                                    className={`p-4 preview-${key}`}
+                                    key={key}
+                                >
                                     <button
                                         className={classNames(
                                             'copy-button',
@@ -109,11 +112,10 @@ const MainTab: React.FC<{
                                         onClick={handleCopyButtonClick}
                                     >
                                         <i
-                                            className={classNames(
-                                                'bi',
-                                                { 'bi-copy': !isCopying },
-                                                { 'bi-clipboard-check': isCopying },
-                                            )}
+                                            className={classNames('bi', {
+                                                'bi-copy': !isCopying,
+                                                'bi-clipboard-check': isCopying,
+                                            })}
                                         ></i>
                                     </button>
                                     <pre className={`preview-${key}`}>
@@ -124,9 +126,8 @@ const MainTab: React.FC<{
                                 </Tab.Pane>
                             ))}
 
-                            <Tab.Pane eventKey="preview" className="p-4">
+                            <Tab.Pane eventKey="preview" className="p-4 preview-svg">
                                 <div
-                                    id="preview-svg"
                                     dangerouslySetInnerHTML={{
                                         __html: svgContent || '',
                                     }}
