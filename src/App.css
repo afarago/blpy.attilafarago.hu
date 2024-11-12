@@ -109,16 +109,9 @@ a {
             transparent 39.3px,
             #f6c407 60px
         );
-    background-size:
-        3px calc(100% + 120px),
-        calc(100% + 120px) 3px,
-        3px calc(100% + 120px),
-        calc(100% + 120px) 3px;
-    background-position:
-        0 0,
-        0 0,
-        100% 0,
-        0 100%;
+    background-size: 3px calc(100% + 120px), calc(100% + 120px) 3px,
+        3px calc(100% + 120px), calc(100% + 120px) 3px;
+    background-position: 0 0, 0 0, 100% 0, 0 100%;
     background-repeat: no-repeat;
     animation: dropActive-borderAnimation 0.8s infinite linear;
     border-radius: 8px;
@@ -126,19 +119,11 @@ a {
 
 @keyframes dropActive-borderAnimation {
     from {
-        background-position:
-            0 0,
-            -120px 0,
-            100% -120px,
-            0 100%;
+        background-position: 0 0, -120px 0, 100% -120px, 0 100%;
     }
 
     to {
-        background-position:
-            0 -120px,
-            0 0,
-            100% 0,
-            -120px 100%;
+        background-position: 0 -120px, 0 0, 100% 0, -120px 100%;
     }
 }
 
@@ -227,4 +212,5 @@ a {
 
 .example-content-button {
     margin-left: 0.4em;
+    font-size: 14px;
 }
