@@ -141,29 +141,32 @@ header nav {
     }
 }
 
-.copy-button {
+.code-top-container {
     position: absolute;
     top: 0;
     right: 0;
-    cursor: pointer;
-    border-radius: 5px;
-    border: 1px lightgray solid;
-    margin: 0.5em;
-    z-index: 999;
+    white-space: nowrap;
 
-    &.success {
-        animation: copysuccess-animation 0.5s 1 ease-in;
-        animation-delay: 0s;
-        animation-fill-mode: forwards;
-        -webkit-animation-fill-mode: forwards;
-        outline: 2px solid lightgreen;
-        background-color: hsl(120, 73%, 80%);
+    .form-switch {
+        display: inline-block;
     }
-}
 
-.nav-tabs {
-    z-index: 1;
-    position: relative;
+    .copy-button {
+        cursor: pointer;
+        border-radius: 5px;
+        border: 1px lightgray solid;
+        margin: 0.5em;
+        z-index: 999;
+
+        &.success {
+            animation: copysuccess-animation 0.5s 1 ease-in;
+            animation-delay: 0s;
+            animation-fill-mode: forwards;
+            -webkit-animation-fill-mode: forwards;
+            outline: 2px solid lightgreen;
+            background-color: hsl(120, 73%, 80%);
+        }
+    }
 }
 
 .svg-minimap {
@@ -183,24 +186,12 @@ header nav {
     overflow: hidden;
 }
 
-.preview-pycode,
-.preview-pseudocode {
+.preview-pycode pre,
+.preview-pseudocode pre {
     font-family: 'Courier New', monospace;
     width: 100%;
     border: none;
     white-space: pre;
-}
-
-.fileptions {
-    display: flex;
-    flex-direction: row;
-
-    > small:first-child {
-        flex: 1 1;
-    }
-    > small:last-child {
-        flex: 0 1;
-    }
 }
 
 .example-content-button {

@@ -5,12 +5,21 @@ import Nav from 'react-bootstrap/Nav';
 import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';
 import classNames from 'classnames';
+import Form from 'react-bootstrap/Form';
 
 const MainTab: React.FC<{
     isInitial: boolean;
     svgContent?: string;
     conversionResult?: PyProjectResult;
-}> = ({ isInitial, svgContent, conversionResult }) => {
+    isAdditionalCommentsChecked: boolean;
+    setIsAdditionalCommentsChecked: (checked: boolean) => void;
+}> = ({
+    isInitial,
+    svgContent,
+    conversionResult,
+    isAdditionalCommentsChecked,
+    setIsAdditionalCommentsChecked,
+}) => {
     const [key, setKey] = useState('pycode');
     const [isCopying, setIsCopying] = useState(false);
 
@@ -80,13 +89,20 @@ const MainTab: React.FC<{
                             </Nav.Item>
                         </Nav>
                     </Row>
-                    <Row sm={9} className="position-relative" style={{ top: -1 }}>
+                    <Row
+                        sm={9}
+                        className="position-relative"
+                        style={{ top: -1, zIndex: -1 }}
+                    >
                         <Tab.Content className="h-75 border p-0 position-relative">
                             <div
-                                className={
-                                    (svgContent && key !== 'preview' ? '' : 'd-none') +
-                                    ' p-3 float-right svg-minimap'
-                                }
+                                className={classNames(
+                                    'svg-minimap',
+                                    'mt-5',
+                                    'px-3',
+                                    'float-right',
+                                    { 'd-none': !svgContent || key === 'preview' },
+                                )}
                                 dangerouslySetInnerHTML={{
                                     __html: svgContent || '',
                                 }}
@@ -101,24 +117,45 @@ const MainTab: React.FC<{
                                     className={`p-4 preview-${key}`}
                                     key={key}
                                 >
-                                    <button
-                                        className={classNames(
-                                            'copy-button',
-                                            `copy-button-${key}`,
-                                            {
-                                                success: isCopying,
-                                            },
-                                        )}
-                                        onClick={handleCopyButtonClick}
-                                    >
-                                        <i
-                                            className={classNames('bi', {
-                                                'bi-copy': !isCopying,
-                                                'bi-clipboard-check': isCopying,
+                                    <div className="code-top-container">
+                                        <small
+                                            className={classNames({
+                                                'd-none': key !== 'pycode',
                                             })}
-                                        ></i>
-                                    </button>
-                                    <pre className={`preview-${key}`}>
+                                        >
+                                            <Form.Check
+                                                type="switch"
+                                                id="additionalCommentsCheck" // needed for the label to be clickable
+                                                label="Explanatory&nbsp;Comments"
+                                                checked={isAdditionalCommentsChecked}
+                                                onChange={(
+                                                    event: React.ChangeEvent<HTMLInputElement>,
+                                                ) =>
+                                                    setIsAdditionalCommentsChecked(
+                                                        event.target.checked,
+                                                    )
+                                                }
+                                            />
+                                        </small>
+                                        <button
+                                            className={classNames(
+                                                'copy-button',
+                                                `copy-button-${key}`,
+                                                {
+                                                    success: isCopying,
+                                                },
+                                            )}
+                                            onClick={handleCopyButtonClick}
+                                        >
+                                            <i
+                                                className={classNames('bi', {
+                                                    'bi-copy': !isCopying,
+                                                    'bi-clipboard-check': isCopying,
+                                                })}
+                                            ></i>
+                                        </button>
+                                    </div>
+                                    <pre>
                                         {key === 'pycode'
                                             ? conversionResult?.pycode
                                             : conversionResult?.plaincode}

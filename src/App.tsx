@@ -36,7 +36,7 @@ const App: React.FC = () => {
             try {
                 const retval = await convertProjectToPython(input, options);
 
-                setIsInitial(false); //TODO: can be calculated
+                setIsInitial(false);
                 setToastMessage(undefined);
                 setConversionResult(retval);
                 setSvgContent(retval?.additionalFields?.blockly?.svg);
@@ -130,16 +130,16 @@ const App: React.FC = () => {
                         <FileSelector
                             selectedFile={selectedFile}
                             setSelectedFile={setSelectedFile}
-                            isAdditionalCommentsChecked={isAdditionalCommentsChecked}
-                            setIsAdditionalCommentsChecked={
-                                setIsAdditionalCommentsChecked
-                            }
                         ></FileSelector>
                         <DummyTab isInitial={isInitial}></DummyTab>
                         <MainTab
                             isInitial={isInitial}
                             svgContent={svgContent}
                             conversionResult={conversionResult}
+                            isAdditionalCommentsChecked={isAdditionalCommentsChecked}
+                            setIsAdditionalCommentsChecked={
+                                setIsAdditionalCommentsChecked
+                            }
                         ></MainTab>
                     </div>
                 </form>

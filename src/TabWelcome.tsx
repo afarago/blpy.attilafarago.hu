@@ -12,8 +12,8 @@ const DummyTab: React.FC<{ isInitial: boolean }> = ({ isInitial }) => {
                 'py-5',
                 'mb-5',
                 {
-                    'd-flex': !isInitial,
-                    'd-none': isInitial,
+                    'd-flex': isInitial,
+                    'd-none': !isInitial,
                 },
             )}
         >
