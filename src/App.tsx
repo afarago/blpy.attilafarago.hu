@@ -79,7 +79,7 @@ const App: React.FC = () => {
         if (selectedFile) {
             handleFileUpload(selectedFile);
         }
-    }, [selectedFile, isAdditionalCommentsChecked]);
+    }, [selectedFile, handleFileUpload, isAdditionalCommentsChecked]);
 
     return (
         <div className="App d-flex flex-column flex-fill">
