@@ -211,6 +211,16 @@ a {
 }
 
 .example-content-button {
-    margin-left: 0.4em;
-    font-size: 14px;
+    font-size: 1em;
+    margin: 0px;
+    padding: 0px;
+    margin-left: 0.5em;
+    border: 0px;
+    outline: 0px;
+    vertical-align: unset;
+    user-select: none;
+}
+
+.example-content-button:focus {
+    box-shadow: none;
 }
