@@ -22,39 +22,42 @@ const App: React.FC = () => {
         React.useState(false);
     const [toastMessage, setToastMessage] = useState<string | undefined>(undefined);
 
-    const handleFileUpload = (file: File) => {
-        file.arrayBuffer().then(async (input) => {
-            const options = {
-                filename: file.name,
-                debug: {},
-            } as PyConverterOptions;
+    const handleFileUpload = React.useCallback(
+        (file: File) => {
+            file.arrayBuffer().then(async (input) => {
+                const options = {
+                    filename: file.name,
+                    debug: {},
+                } as PyConverterOptions;
 
-            if (options.debug && isAdditionalCommentsChecked) {
-                options.debug.showExplainingComments = true;
-            }
-
-            try {
-                const retval = await convertProjectToPython(input, options);
-
-                setIsInitial(false);
-                setToastMessage(undefined);
-                setConversionResult(retval);
-                setSvgContent(retval?.additionalFields?.blockly?.svg);
-            } catch (error) {
-                console.error('Error converting project to Python:', error);
-                if (error instanceof Error) {
-                    setToastMessage(error.message + ' - ' + options.filename);
-                } else {
-                    setToastMessage('An unknown error occurred.');
+                if (options.debug && isAdditionalCommentsChecked) {
+                    options.debug.showExplainingComments = true;
                 }
-                console.log('toastMessage:', error);
 
-                setIsInitial(true);
-                setConversionResult(undefined);
-                setSvgContent(undefined);
-            }
-        });
-    };
+                try {
+                    const retval = await convertProjectToPython(input, options);
+
+                    setIsInitial(false);
+                    setToastMessage(undefined);
+                    setConversionResult(retval);
+                    setSvgContent(retval?.additionalFields?.blockly?.svg);
+                } catch (error) {
+                    console.error('Error converting project to Python:', error);
+                    if (error instanceof Error) {
+                        setToastMessage(error.message + ' - ' + options.filename);
+                    } else {
+                        setToastMessage('An unknown error occurred.');
+                    }
+                    console.log('toastMessage:', error);
+
+                    setIsInitial(true);
+                    setConversionResult(undefined);
+                    setSvgContent(undefined);
+                }
+            });
+        },
+        [isAdditionalCommentsChecked],
+    );
 
     function handleDragOver(event: React.DragEvent<HTMLDivElement>): void {
         event.stopPropagation();
