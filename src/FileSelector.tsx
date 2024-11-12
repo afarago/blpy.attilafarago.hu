@@ -63,6 +63,10 @@ const FileSelector: React.FC<{
                             label: 'SPIKE blocks',
                         },
                         {
+                            file: './static/samples/demo_iconblocks.llsp3',
+                            label: 'SPIKE icon-blocks',
+                        },
+                        {
                             file: './static/samples/demo_cityshaper_cranemission.lms',
                             label: 'RobotInventor blocks',
                         },
