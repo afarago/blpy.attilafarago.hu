@@ -60,15 +60,19 @@ const FileSelector: React.FC<{
                     {[
                         {
                             file: './static/samples/demo_cityshaper_cranemission.llsp3',
-                            label: 'SPIKE block sample',
+                            label: 'SPIKE blocks',
+                        },
+                        {
+                            file: './static/samples/demo_cityshaper_cranemission.lms',
+                            label: 'RobotInventor blocks',
                         },
                         {
                             file: './static/samples/demo_cityshaper_cranemission.lmsp',
-                            label: 'EV3Classroom sample',
+                            label: 'EV3Classroom blocks',
                         },
                         {
                             file: './static/samples/demo_cityshaper_cranemission.ev3',
-                            label: 'EV3Lab sample',
+                            label: 'EV3Lab EV3G',
                         },
                     ].map((example, index) => (
                         <Button
@@ -82,15 +86,6 @@ const FileSelector: React.FC<{
                         </Button>
                     ))}
                 </small>
-                {/* <small>
-                        <Form.Check
-                            type="switch"
-                            id="additionalCommentsCheck" // needed for the label to be clickable
-                            label="Explanatory&nbsp;Comments"
-                            checked={isAdditionalCommentsChecked}
-                            onChange={handleAdditionalCommentsChange}
-                        />
-                    </small> */}
             </div>
         </div>
     );

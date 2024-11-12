@@ -53,7 +53,7 @@ const MainTab: React.FC<{
                 defaultActiveKey="pycode"
             >
                 <Col>
-                    <Row sm={9}>
+                    <Row sm={9} style={{ zIndex: 1, position: 'relative' }}>
                         <Nav variant="tabs" className="flex-rows px-0">
                             <Nav.Item>
                                 <Nav.Link eventKey="pycode">Python</Nav.Link>
@@ -89,11 +89,7 @@ const MainTab: React.FC<{
                             </Nav.Item>
                         </Nav>
                     </Row>
-                    <Row
-                        sm={9}
-                        className="position-relative"
-                        style={{ top: -1, zIndex: -1 }}
-                    >
+                    <Row sm={9} className="position-relative" style={{ top: -1 }}>
                         <Tab.Content className="h-75 border p-0 position-relative">
                             <div
                                 className={classNames(
