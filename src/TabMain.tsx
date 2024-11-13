@@ -71,7 +71,7 @@ const MainTab: React.FC<{
 
             return false;
         },
-        [conversionResult, key, svgRef],
+        [conversionResult, key, svgRef, selectedFile],
     );
 
     function changeExtension(filename: string, newExtension: string): string {
