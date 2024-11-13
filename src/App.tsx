@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { convertProjectToPython, PyConverterOptions, PyProjectResult } from 'blocklypy';
-import './App.scss';
 import Header from './Header';
 import Footer from './Footer';
 import FileSelector from './FileSelector';
@@ -8,7 +7,8 @@ import DummyTab from './TabWelcome';
 import MainTab from './TabMain';
 import classNames from 'classnames';
 import Toast from 'react-bootstrap/Toast';
-// import { GITHUB_VERSION } from './github_version.ts.old';
+
+import './App.scss';
 
 const App: React.FC = () => {
     const [isInitial, setIsInitial] = useState(true);
