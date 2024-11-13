@@ -1,5 +1,5 @@
 import { PyProjectResult } from 'blocklypy';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
 import Row from 'react-bootstrap/Row';
@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import Form from 'react-bootstrap/Form';
 import { useHotkeys } from 'react-hotkeys-hook';
 import domtoimage from 'dom-to-image';
+import Panzoom, { PanzoomObject } from '@panzoom/panzoom';
 
 const MainTab: React.FC<{
     isInitial: boolean;
@@ -27,6 +28,7 @@ const MainTab: React.FC<{
     const [key, setKey] = useState('pycode');
     const [isCopying, setIsCopying] = useState(false);
     const svgRef = useRef(null);
+    const svgParentRef = useRef(null);
 
     const handleSetIsAdditionalCommentsChecked = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -93,6 +95,23 @@ const MainTab: React.FC<{
         conversionResult,
         key,
     ]);
+
+    useEffect(() => {
+        if (key === 'preview') {
+            const element = svgRef.current as unknown as HTMLElement;
+            if (element) {
+                const panzoom = Panzoom(element, {
+                    maxScale: 5,
+                });
+
+                // button.addEventListener('click', panzoom.zoomIn);
+                element.parentElement?.addEventListener('wheel', panzoom.zoomWithWheel);
+
+                // Clean up the panzoom instance on component unmount
+                return () => panzoom?.destroy();
+            }
+        }
+    }, [svgParentRef, key]);
 
     return (
         <div
@@ -218,7 +237,11 @@ const MainTab: React.FC<{
                                 </Tab.Pane>
                             ))}
 
-                            <Tab.Pane eventKey="preview" className="p-4 preview-svg">
+                            <Tab.Pane
+                                eventKey="preview"
+                                className="p-4 preview-svg"
+                                ref={svgParentRef}
+                            >
                                 <div
                                     ref={svgRef}
                                     dangerouslySetInnerHTML={{

@@ -104,7 +104,7 @@ const App: React.FC = () => {
                 <h3>
                     SPIKE to Pybricks Wizard{' '}
                     <small className="text-muted">
-                        word-block converter to Pybricks python code (beta)
+                        word-block converter to Pybricks python code
                     </small>
                 </h3>
 

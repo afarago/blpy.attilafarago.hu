@@ -9,6 +9,12 @@ const FileSelector: React.FC<{
 }> = ({ selectedFile, setSelectedFile }) => {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+    const handleFileOpen = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const target = event.target as HTMLInputElement;
+        if (target.files?.length) setSelectedFile(target.files[0]);
+        else updateFileInput(selectedFile);
+    };
+
     const handleExampleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         const path = (event.target as HTMLAnchorElement).dataset.file;
         if (!path) {
@@ -33,12 +39,16 @@ const FileSelector: React.FC<{
         return false;
     };
 
-    useEffect(() => {
-        if (fileInputRef.current && selectedFile) {
+    const updateFileInput = (file?: File) => {
+        if (fileInputRef.current && file) {
             const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(selectedFile);
+            dataTransfer.items.add(file);
             fileInputRef.current.files = dataTransfer.files;
         }
+    };
+
+    useEffect(() => {
+        updateFileInput(selectedFile);
     }, [selectedFile]);
 
     useHotkeys('mod+o', () => fileInputRef.current?.click(), { preventDefault: true }, [
@@ -52,10 +62,7 @@ const FileSelector: React.FC<{
                     type="file"
                     accept=".llsp,.lms,.lmsp,.llsp3,.ev3,.ev3m"
                     ref={fileInputRef}
-                    onChange={(e) => {
-                        const target = e.target as HTMLInputElement;
-                        if (target.files) setSelectedFile(target.files[0]);
-                    }}
+                    onChange={handleFileOpen}
                 />
             </Form.Group>
 
