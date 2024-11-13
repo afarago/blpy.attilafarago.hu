@@ -143,6 +143,7 @@ const App: React.FC = () => {
                             setIsAdditionalCommentsChecked={
                                 setIsAdditionalCommentsChecked
                             }
+                            selectedFile={selectedFile}
                         ></MainTab>
                     </div>
                 </form>

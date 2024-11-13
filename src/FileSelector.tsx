@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 const FileSelector: React.FC<{
     selectedFile: File | undefined;
@@ -39,6 +40,10 @@ const FileSelector: React.FC<{
             fileInputRef.current.files = dataTransfer.files;
         }
     }, [selectedFile]);
+
+    useHotkeys('mod+o', () => fileInputRef.current?.click(), { preventDefault: true }, [
+        fileInputRef,
+    ]);
 
     return (
         <div>

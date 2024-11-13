@@ -146,6 +146,7 @@ header nav {
     top: 0;
     right: 0;
     white-space: nowrap;
+    z-index: 1;
 
     .form-switch {
         display: inline-block;
@@ -203,8 +204,16 @@ header nav {
     outline: 0px;
     vertical-align: unset;
     user-select: none;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(dodgerblue, 0.5);
+    border-radius: 0px;
+
+    &:hover {
+        border-bottom: 1px solid rgba(dodgerblue, 1);
+    }
 
     &:focus {
         box-shadow: none;
+        border-bottom: 2px solid rgba(dodgerblue, 1);
     }
 }
