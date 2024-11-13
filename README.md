@@ -1,4 +1,4 @@
-[![Build and deploy to public site](https://github.com/afarago/pyllsp4/actions/workflows/webpack.yml/badge.svg)](https://github.com/afarago/pyllsp4/actions/workflows/webpack.yml)
+[![Build and Deploy to Github-Pages](https://github.com/afarago/blpy.attilafarago.hu/actions/workflows/build-deploy-pages.yml/badge.svg)](https://github.com/afarago/blpy.attilafarago.hu/actions/workflows/build-deploy-pages.yml)
 
 # 🚀 Welcome to your new awesome project!
 
