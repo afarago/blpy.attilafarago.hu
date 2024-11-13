@@ -2,6 +2,10 @@ $drop-highlight-color: cornflowerblue;
 $success-color: rgba(144, 238, 144, 1);
 $success-outline: rgba(144, 238, 144, 0.5);
 $headerfooter-background-color: whitesmoke;
+$icon-color: cornflowerblue;
+$border-color: dodgerblue;
+$icon-size: 3.5em;
+$icon-size-big: 10em;
 
 body {
     min-height: 100vh;
@@ -10,8 +14,7 @@ body {
     &::after {
         content: '';
         display: block;
-        height: 4em;
-        /* Set same as footer's height */
+        height: 4em; /* Set same as footer's height */
     }
 }
 
@@ -35,7 +38,8 @@ header nav {
     text-align: center;
     word-break: break-all;
     font-size: 200%;
-    padding-bottom: 0px;
+    padding-bottom: 0;
+
     .brandlogo {
         position: relative;
         top: -5px;
@@ -53,23 +57,23 @@ header nav {
 
 .tab-welcome {
     align-items: center;
-    --icon-size: 3.5em;
-    --icon-size-big: 10em;
 
     img.icon {
-        height: var(--icon-size);
-        width: var(--icon-size);
+        height: $icon-size;
+        width: $icon-size;
         margin-inline: 0.2em;
     }
+
     i.tranform-caret-icon {
-        color: cornflowerblue;
-        font-size: calc(var(--icon-size) * 0.5);
+        color: $icon-color;
+        font-size: calc($icon-size * 0.5);
         display: inline-block;
         vertical-align: middle;
     }
+
     i.drop-cloud-icon {
-        font-size: var(--icon-size-big);
-        color: cornflowerblue;
+        font-size: $icon-size-big;
+        color: $icon-color;
         line-height: 1em;
     }
 }
@@ -193,28 +197,28 @@ header nav {
     width: 100%;
     border: none;
     white-space: pre;
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
 .example-content-button {
     font-size: 1em;
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
     margin-left: 0.5em;
-    border: 0px;
-    outline: 0px;
+    border: 0;
+    outline: 0;
     vertical-align: unset;
     user-select: none;
     text-decoration: none;
-    border-bottom: 1px solid rgba(dodgerblue, 0.5);
-    border-radius: 0px;
+    border-bottom: 1px solid rgba($border-color, 0.5);
+    border-radius: 0;
 
     &:hover {
-        border-bottom: 1px solid rgba(dodgerblue, 1);
+        border-bottom: 1px solid rgba($border-color, 1);
     }
 
     &:focus {
         box-shadow: none;
-        border-bottom: 2px solid rgba(dodgerblue, 1);
+        border-bottom: 2px solid rgba($border-color, 1);
     }
 }

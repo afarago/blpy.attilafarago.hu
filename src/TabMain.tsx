@@ -1,23 +1,26 @@
-import { PyProjectResult } from 'blocklypy';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+
 import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
+import Panzoom from '@panzoom/panzoom';
+import { PyProjectResult } from 'blocklypy';
 import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';
 import classNames from 'classnames';
-import Form from 'react-bootstrap/Form';
-import { useHotkeys } from 'react-hotkeys-hook';
 import domtoimage from 'dom-to-image';
-import Panzoom, { PanzoomObject } from '@panzoom/panzoom';
+import { useHotkeys } from 'react-hotkeys-hook';
 
-const MainTab: React.FC<{
+interface MainTabProps {
     isInitial: boolean;
     svgContent?: string;
     conversionResult?: PyProjectResult;
     isAdditionalCommentsChecked: boolean;
     setIsAdditionalCommentsChecked: (checked: boolean) => void;
     selectedFile?: File;
-}> = ({
+}
+
+const MainTab: React.FC<MainTabProps> = ({
     isInitial,
     svgContent,
     conversionResult,
@@ -27,8 +30,8 @@ const MainTab: React.FC<{
 }) => {
     const [key, setKey] = useState('pycode');
     const [isCopying, setIsCopying] = useState(false);
-    const svgRef = useRef(null);
-    const svgParentRef = useRef(null);
+    const svgRef = useRef<HTMLDivElement>(null);
+    const svgParentRef = useRef<HTMLDivElement>(null);
 
     const handleSetIsAdditionalCommentsChecked = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -76,11 +79,11 @@ const MainTab: React.FC<{
         [conversionResult, key, svgRef, selectedFile],
     );
 
-    function changeExtension(filename: string, newExtension: string): string {
+    const changeExtension = (filename: string, newExtension: string): string => {
         const lastDotIndex = filename.lastIndexOf('.');
         const baseName = filename.substring(0, lastDotIndex);
         return `${baseName}.${newExtension}`;
-    }
+    };
 
     useHotkeys('control+1', () => setKey('pycode'));
     useHotkeys('control+2', () => setKey('pseudocode'));
@@ -184,15 +187,13 @@ const MainTab: React.FC<{
                                 dangerouslySetInnerHTML={{
                                     __html: svgContent || '',
                                 }}
-                                onClick={(e) => {
-                                    setKey('preview');
-                                }}
+                                onClick={() => setKey('preview')}
                             ></div>
 
                             <div className="code-top-container">
                                 <Form.Check
                                     type="switch"
-                                    id="additionalCommentsCheck" // needed for the label to be clickable
+                                    id="additionalCommentsCheck" /* needed for the label to be clickable */
                                     label="Explanatory&nbsp;Comments"
                                     checked={isAdditionalCommentsChecked}
                                     title="Explanatory Comments (ctrl/cmd+e)"
@@ -223,14 +224,14 @@ const MainTab: React.FC<{
                                 </button>
                             </div>
 
-                            {['pycode', 'pseudocode'].map((key) => (
+                            {['pycode', 'pseudocode'].map((tabKey) => (
                                 <Tab.Pane
-                                    eventKey={key}
-                                    className={`p-4 preview-${key}`}
-                                    key={key}
+                                    eventKey={tabKey}
+                                    className={`p-4 preview-${tabKey}`}
+                                    key={tabKey}
                                 >
                                     <pre>
-                                        {key === 'pycode'
+                                        {tabKey === 'pycode'
                                             ? conversionResult?.pycode
                                             : conversionResult?.plaincode}
                                     </pre>

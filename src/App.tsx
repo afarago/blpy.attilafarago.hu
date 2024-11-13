@@ -1,88 +1,97 @@
-import React, { useEffect, useState } from 'react';
-import { convertProjectToPython, PyConverterOptions, PyProjectResult } from 'blocklypy';
-import Header from './Header';
-import Footer from './Footer';
-import FileSelector from './FileSelector';
-import DummyTab from './TabWelcome';
-import MainTab from './TabMain';
-import classNames from 'classnames';
-import Toast from 'react-bootstrap/Toast';
-
 import './App.scss';
 
-const App: React.FC = () => {
-    const [isInitial, setIsInitial] = useState(true);
+import { PyConverterOptions, PyProjectResult, convertProjectToPython } from 'blocklypy';
+import React, { useCallback, useEffect, useState } from 'react';
+
+import DummyTab from './TabWelcome';
+import FileSelector from './FileSelector';
+import Footer from './Footer';
+import Header from './Header';
+import MainTab from './TabMain';
+import Toast from 'react-bootstrap/Toast';
+import classNames from 'classnames';
+
+const useDragAndDrop = (
+    setSelectedFile: React.Dispatch<React.SetStateAction<File | undefined>>,
+) => {
     const [isDragging, setIsDragging] = useState(false);
-    const [conversionResult, setConversionResult] = useState<
-        PyProjectResult | undefined
-    >(undefined);
-    const [svgContent, setSvgContent] = useState<string | undefined>(undefined);
-    const [selectedFile, setSelectedFile] = useState<File | undefined>(undefined);
-    const [isAdditionalCommentsChecked, setIsAdditionalCommentsChecked] =
-        React.useState(false);
-    const [toastMessage, setToastMessage] = useState<string | undefined>(undefined);
 
-    const handleFileUpload = React.useCallback(
-        (file: File) => {
-            file.arrayBuffer().then(async (input) => {
-                const options = {
-                    filename: file.name,
-                    debug: {},
-                } as PyConverterOptions;
-
-                if (options.debug && isAdditionalCommentsChecked) {
-                    options.debug.showExplainingComments = true;
-                }
-
-                try {
-                    const retval = await convertProjectToPython(input, options);
-
-                    setIsInitial(false);
-                    setToastMessage(undefined);
-                    setConversionResult(retval);
-                    setSvgContent(retval?.additionalFields?.blockly?.svg);
-                } catch (error) {
-                    console.error('Error converting project to Python:', error);
-                    if (error instanceof Error) {
-                        setToastMessage(error.message + ' - ' + options.filename);
-                    } else {
-                        setToastMessage('An unknown error occurred.');
-                    }
-                    console.log('toastMessage:', error);
-
-                    setIsInitial(true);
-                    setConversionResult(undefined);
-                    setSvgContent(undefined);
-                }
-            });
-        },
-        [isAdditionalCommentsChecked],
-    );
-
-    function handleDragOver(event: React.DragEvent<HTMLDivElement>): void {
+    const handleDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
         event.stopPropagation();
         event.preventDefault();
         setIsDragging(true);
         if (event.dataTransfer) event.dataTransfer.dropEffect = 'copy';
-    }
-    function handleDragLeave(event: React.DragEvent<HTMLDivElement>): void {
+    }, []);
+
+    const handleDragLeave = useCallback((event: React.DragEvent<HTMLDivElement>) => {
         event.stopPropagation();
         event.preventDefault();
         setIsDragging(false);
         if (event.dataTransfer) event.dataTransfer.dropEffect = 'copy';
-    }
-    function handleDrop(event: React.DragEvent<HTMLDivElement>): void {
-        event.stopPropagation();
-        event.preventDefault();
-        setIsDragging(false);
-        setSelectedFile(event?.dataTransfer?.files[0]);
-    }
+    }, []);
+
+    const handleDrop = useCallback(
+        (event: React.DragEvent<HTMLDivElement>) => {
+            event.stopPropagation();
+            event.preventDefault();
+            setIsDragging(false);
+            setSelectedFile(event.dataTransfer?.files[0]);
+        },
+        [setSelectedFile],
+    );
+
+    return { isDragging, handleDragOver, handleDragLeave, handleDrop };
+};
+
+const App: React.FC = () => {
+    const [isInitial, setIsInitial] = useState(true);
+    const [conversionResult, setConversionResult] = useState<PyProjectResult>();
+    const [svgContent, setSvgContent] = useState<string>();
+    const [selectedFile, setSelectedFile] = useState<File>();
+    const [isAdditionalCommentsChecked, setIsAdditionalCommentsChecked] =
+        useState(false);
+    const [toastMessage, setToastMessage] = useState<string>();
+
+    const { isDragging, handleDragOver, handleDragLeave, handleDrop } =
+        useDragAndDrop(setSelectedFile);
+
+    const handleFileUpload = useCallback(
+        async (file: File) => {
+            try {
+                const input = await file.arrayBuffer();
+                const options: PyConverterOptions = {
+                    filename: file.name,
+                    debug: isAdditionalCommentsChecked
+                        ? { showExplainingComments: true }
+                        : {},
+                };
+
+                const retval = await convertProjectToPython(input, options);
+
+                setIsInitial(false);
+                setToastMessage(undefined);
+                setConversionResult(retval);
+                setSvgContent(retval?.additionalFields?.blockly?.svg);
+            } catch (error) {
+                console.error('Error converting project to Python:', error);
+                setToastMessage(
+                    error instanceof Error
+                        ? `${error.message} - ${file.name}`
+                        : 'An unknown error occurred.',
+                );
+                setIsInitial(true);
+                setConversionResult(undefined);
+                setSvgContent(undefined);
+            }
+        },
+        [isAdditionalCommentsChecked],
+    );
 
     useEffect(() => {
         if (selectedFile) {
             handleFileUpload(selectedFile);
         }
-    }, [selectedFile, handleFileUpload, isAdditionalCommentsChecked]);
+    }, [selectedFile, handleFileUpload]);
 
     return (
         <div className="App d-flex flex-column flex-fill">
@@ -90,7 +99,7 @@ const App: React.FC = () => {
             <Toast
                 onClose={() => setToastMessage(undefined)}
                 show={toastMessage !== undefined}
-                delay={50000}
+                delay={5000}
                 autohide
                 className="position-fixed top-0 end-0"
             >

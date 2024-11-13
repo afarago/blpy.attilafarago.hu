@@ -1,7 +1,16 @@
-import classNames from 'classnames';
 import React from 'react';
+import classNames from 'classnames';
 
 const DummyTab: React.FC<{ isInitial: boolean }> = ({ isInitial }) => {
+    const icons: { src?: string; alt?: string; block?: JSX.Element }[] = [
+        { src: './static/img/devtype1.png', alt: 'LEGO SPIKE' },
+        { src: './static/img/devtype2.png', alt: 'LEGO Robot Inventor' },
+        { src: './static/img/devtype3.png', alt: 'LEGO EV3 Classroom' },
+        { src: './static/img/devtype4.png', alt: 'LEGO EV3 Lab' },
+        { block: <i className="tranform-caret-icon bi bi-caret-right"></i> },
+        { src: './static/img/devtype_pybricks.png', alt: 'Pybricks' },
+    ];
+
     return (
         <div
             className={classNames(
@@ -17,7 +26,7 @@ const DummyTab: React.FC<{ isInitial: boolean }> = ({ isInitial }) => {
                 },
             )}
         >
-            <div className="d-flex flex-column flex-fill ustify-content-center">
+            <div className="d-flex flex-column flex-fill justify-content-center">
                 <div className="text-center mb-5">
                     <div>
                         <i className="drop-cloud-icon bi bi-cloud-arrow-up-fill"></i>
@@ -30,32 +39,20 @@ const DummyTab: React.FC<{ isInitial: boolean }> = ({ isInitial }) => {
                         (.llsp, .llsp3, .lms, .lmsp and .ev3 files are accepted)
                     </div>
                     <div>
-                        <img
-                            src="./static/img/devtype1.png"
-                            className="icon"
-                            alt="LEGO SPIKE"
-                        />
-                        <img
-                            src="./static/img/devtype2.png"
-                            className="icon"
-                            alt="LEGO Robot Inventor"
-                        />
-                        <img
-                            src="./static/img/devtype3.png"
-                            className="icon"
-                            alt="LEGO EV3 Classroom"
-                        />
-                        <img
-                            src="./static/img/devtype4.png"
-                            className="icon"
-                            alt="LEGO EV3 Lab"
-                        />
-                        <i className="tranform-caret-icon bi bi-caret-right"></i>
-                        <img
-                            src="./static/img/devtype_pybricks.png"
-                            className="icon"
-                            alt="Pybricks"
-                        />
+                        {icons.map((icon, index) => {
+                            if (icon.block) {
+                                return icon.block;
+                            } else {
+                                return (
+                                    <img
+                                        key={index}
+                                        src={icon.src}
+                                        className="icon"
+                                        alt={icon.alt}
+                                    />
+                                );
+                            }
+                        })}
                     </div>
                 </div>
             </div>

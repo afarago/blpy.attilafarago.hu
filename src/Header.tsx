@@ -7,10 +7,7 @@ const Header: React.FC = () => {
                 <div className="container">
                     <span className="navbar-brand">
                         <svg height="1.5em" width="4em" className="brandlogo">
-                            <use
-                                href="./static/img/logo_full.svg#icon"
-                                xlinkHref="img/logo_full.svg#icon"
-                            ></use>
+                            <use href="./static/img/logo_full.svg#icon" />
                         </svg>
                         &nbsp;
                         <b>BlocklyPy</b> · LegoAppTools
