@@ -39,6 +39,7 @@ const MainTab: React.FC<MainTabProps> = ({
     const [isCopying, setIsCopying] = useState(false);
     const svgRef = useRef<HTMLDivElement>(null);
     const svgParentRef = useRef<HTMLDivElement>(null);
+    const internalUpdate = useRef(false);
 
     const handleSetIsAdditionalCommentsChecked = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -128,6 +129,12 @@ const MainTab: React.FC<MainTabProps> = ({
     }, [svgParentRef, key]);
 
     useEffect(() => {
+        if (internalUpdate.current) {
+            internalUpdate.current = false;
+            return;
+        }
+        // TODO: This is a workaround, to be removed
+
         if (
             key === 'aisummary' &&
             conversionResult?.code &&
@@ -136,6 +143,7 @@ const MainTab: React.FC<MainTabProps> = ({
         ) {
             generateCodeSummary(conversionResult.code).then((aisummary) => {
                 const result2 = { ...conversionResult, aisummary };
+                internalUpdate.current = true;
                 setConversionResult(result2);
             });
         }
