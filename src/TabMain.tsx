@@ -129,10 +129,7 @@ const MainTab: React.FC<MainTabProps> = ({
     }, [svgParentRef, key]);
 
     useEffect(() => {
-        if (internalUpdate.current) {
-            internalUpdate.current = false;
-            return;
-        }
+        if (internalUpdate.current) return;
         // TODO: This is a workaround, to be removed
 
         if (
@@ -145,6 +142,7 @@ const MainTab: React.FC<MainTabProps> = ({
                 const result2 = { ...conversionResult, aisummary };
                 internalUpdate.current = true;
                 setConversionResult(result2);
+                internalUpdate.current = false;
             });
         }
     }, [conversionResult, setConversionResult, key, generateCodeSummary]);
