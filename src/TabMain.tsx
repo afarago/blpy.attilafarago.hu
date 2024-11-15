@@ -1,6 +1,6 @@
-import { AISummary, ConversionResult } from './App';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
+import { AISummary } from './App';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
@@ -15,31 +15,28 @@ import { useHotkeys } from 'react-hotkeys-hook';
 interface MainTabProps {
     isInitial: boolean;
     svgContent?: string;
-    conversionResult?: ConversionResult;
-    setConversionResult?: React.Dispatch<
-        React.SetStateAction<ConversionResult | undefined>
-    >;
+    pyProjectResult?: PyProjectResult;
+    aiSummary?: AISummary;
     isAdditionalCommentsChecked: boolean;
     setIsAdditionalCommentsChecked: (checked: boolean) => void;
     selectedFile?: File;
-    generateCodeSummary: (result: PyProjectResult) => Promise<AISummary | undefined>;
+    triggerGenerateCodeSummary: () => Promise<void>;
 }
 
 const MainTab: React.FC<MainTabProps> = ({
     isInitial,
     svgContent,
-    conversionResult,
-    setConversionResult,
+    pyProjectResult,
+    aiSummary,
     isAdditionalCommentsChecked,
     setIsAdditionalCommentsChecked,
     selectedFile,
-    generateCodeSummary,
+    triggerGenerateCodeSummary,
 }) => {
     const [key, setKey] = useState('pycode');
     const [isCopying, setIsCopying] = useState(false);
     const svgRef = useRef<HTMLDivElement>(null);
     const svgParentRef = useRef<HTMLDivElement>(null);
-    const internalUpdate = useRef(false);
 
     const handleSetIsAdditionalCommentsChecked = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -59,11 +56,11 @@ const MainTab: React.FC<MainTabProps> = ({
             if (['pycode', 'pseudocode', 'aisummary'].includes(key)) {
                 let content = '';
                 if (key === 'pycode') {
-                    content = conversionResult?.code?.pycode ?? '';
+                    content = pyProjectResult?.pycode ?? '';
                 } else if (key === 'pseudocode') {
-                    content = conversionResult?.code?.plaincode ?? '';
+                    content = pyProjectResult?.plaincode ?? '';
                 } else if (key === 'aisummary') {
-                    content = conversionResult?.aisummary?.longsummary ?? '';
+                    content = aiSummary?.longsummary ?? '';
                 }
                 navigator.clipboard.writeText(content ?? '');
             } else if (key === 'preview') {
@@ -88,7 +85,7 @@ const MainTab: React.FC<MainTabProps> = ({
 
             return false;
         },
-        [conversionResult, key, svgRef, selectedFile],
+        [pyProjectResult, aiSummary, key, svgRef, selectedFile],
     );
 
     const changeExtension = (filename: string, newExtension: string): string => {
@@ -107,7 +104,8 @@ const MainTab: React.FC<MainTabProps> = ({
         [setIsAdditionalCommentsChecked, isAdditionalCommentsChecked],
     );
     useHotkeys('mod+c', () => handleCopyButtonClick(), { preventDefault: true }, [
-        conversionResult,
+        pyProjectResult,
+        aiSummary,
         key,
     ]);
 
@@ -129,23 +127,10 @@ const MainTab: React.FC<MainTabProps> = ({
     }, [svgParentRef, key]);
 
     useEffect(() => {
-        if (internalUpdate.current) return;
-        // TODO: This is a workaround, to be removed
-
-        if (
-            key === 'aisummary' &&
-            conversionResult?.code &&
-            !conversionResult?.aisummary?.longsummary &&
-            setConversionResult
-        ) {
-            generateCodeSummary(conversionResult.code).then((aisummary) => {
-                const result2 = { ...conversionResult, aisummary };
-                internalUpdate.current = true;
-                setConversionResult(result2);
-                internalUpdate.current = false;
-            });
+        if (key === 'aisummary' && pyProjectResult && !aiSummary?.longsummary) {
+            triggerGenerateCodeSummary();
         }
-    }, [conversionResult, setConversionResult, key, generateCodeSummary]);
+    }, [key, pyProjectResult, aiSummary, triggerGenerateCodeSummary]);
 
     return (
         <div
@@ -154,7 +139,7 @@ const MainTab: React.FC<MainTabProps> = ({
                 'd-none': isInitial,
             })}
         >
-            <div>{conversionResult?.aisummary?.shortsummary}</div>
+            <div>{aiSummary?.shortsummary}</div>
 
             <Tab.Container
                 activeKey={key}
@@ -186,7 +171,7 @@ const MainTab: React.FC<MainTabProps> = ({
                                 <Nav.Link
                                     eventKey="aisummary"
                                     title="ai-summary"
-                                    className={!conversionResult ? 'd-none' : ''}
+                                    className={!pyProjectResult ? 'd-none' : ''}
                                 >
                                     <span style={{ whiteSpace: 'nowrap' }}>
                                         AI Summary{' '}
@@ -203,21 +188,21 @@ const MainTab: React.FC<MainTabProps> = ({
                                     width="20"
                                     height="20"
                                     className={
-                                        conversionResult?.code?.additionalFields
-                                            ?.blockly?.slot === undefined
+                                        pyProjectResult?.additionalFields?.blockly
+                                            ?.slot === undefined
                                             ? 'd-none'
                                             : ''
                                     }
                                 >
                                     <use
-                                        href={`./static/img/cat${conversionResult?.code?.additionalFields?.blockly?.slot}.svg#dsmIcon`}
-                                        xlinkHref={`./static/img/cat${conversionResult?.code?.additionalFields?.blockly?.slot}.svg#dsmIcon`}
+                                        href={`./static/img/cat${pyProjectResult?.additionalFields?.blockly?.slot}.svg#dsmIcon`}
+                                        xlinkHref={`./static/img/cat${pyProjectResult?.additionalFields?.blockly?.slot}.svg#dsmIcon`}
                                     ></use>
                                 </svg>
                                 <img
                                     width="20"
                                     height="20"
-                                    src={`./static/img/devtype${conversionResult?.code?.deviceType}.png`}
+                                    src={`./static/img/devtype${pyProjectResult?.deviceType}.png`}
                                     alt="Device type"
                                 ></img>
                             </Nav.Item>
@@ -286,8 +271,8 @@ const MainTab: React.FC<MainTabProps> = ({
                                 >
                                     <pre>
                                         {tabKey === 'pycode'
-                                            ? conversionResult?.code?.pycode
-                                            : conversionResult?.code?.plaincode}
+                                            ? pyProjectResult?.pycode
+                                            : pyProjectResult?.plaincode}
                                     </pre>
                                 </Tab.Pane>
                             ))}
@@ -309,9 +294,7 @@ const MainTab: React.FC<MainTabProps> = ({
                                 <div
                                     className={
                                         'd-flex justify-content-center align-items-center flex-fill ' +
-                                        (conversionResult?.aisummary !== undefined
-                                            ? 'd-none'
-                                            : '')
+                                        (aiSummary !== undefined ? 'd-none' : '')
                                     }
                                 >
                                     <div className="spinner-border" role="status">
@@ -323,9 +306,7 @@ const MainTab: React.FC<MainTabProps> = ({
                                 <pre
                                     style={{ whiteSpace: 'break-spaces' }}
                                     dangerouslySetInnerHTML={{
-                                        __html:
-                                            conversionResult?.aisummary?.longsummary ||
-                                            '',
+                                        __html: aiSummary?.longsummary || '',
                                     }}
                                 ></pre>
                                 <a

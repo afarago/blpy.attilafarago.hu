@@ -52,130 +52,6 @@ const getBrowserLanguage = () => {
     return userLanguage || 'en'; // Default to English if language is not detected
 };
 
-export interface AISummary {
-    shortsummary: string;
-    longsummary: string;
-}
-
-export interface ConversionResult {
-    filename?: string;
-    code?: PyProjectResult;
-    aisummary?: AISummary;
-}
-
-const App: React.FC = () => {
-    const [isInitial, setIsInitial] = useState(true);
-    const [conversionResult, setConversionResult] = useState<ConversionResult>();
-    const [svgContent, setSvgContent] = useState<string>();
-    const [selectedFile, setSelectedFile] = useState<File>();
-    const [isAdditionalCommentsChecked, setIsAdditionalCommentsChecked] =
-        useState(false);
-    const [toastMessage, setToastMessage] = useState<string>();
-
-    const { isDragging, handleDragOver, handleDragLeave, handleDrop } =
-        useDragAndDrop(setSelectedFile);
-
-    const handleFileUpload = useCallback(
-        async (file: File) => {
-            const code = await convertFileToPython(file, isAdditionalCommentsChecked);
-            const filename = file.name;
-            const convresult = code
-                ? {
-                      ...(conversionResult?.filename === filename
-                          ? conversionResult
-                          : {}),
-                      filename,
-                      code,
-                  }
-                : undefined;
-
-            setIsInitial(convresult === undefined);
-            setSvgContent(convresult?.code?.additionalFields?.blockly?.svg);
-            setConversionResult(convresult);
-        },
-        [isAdditionalCommentsChecked, conversionResult],
-    );
-
-    useEffect(() => {
-        if (selectedFile) {
-            handleFileUpload(selectedFile);
-        }
-    }, [selectedFile, handleFileUpload]);
-
-    return (
-        <div className="App d-flex flex-column flex-fill">
-            <Header />
-            <Toast
-                onClose={() => setToastMessage(undefined)}
-                show={toastMessage !== undefined}
-                delay={5000}
-                autohide
-                className="position-fixed top-0 end-0"
-            >
-                <Toast.Header>
-                    <span className="me-auto">Conversion Error</span>
-                </Toast.Header>
-                <Toast.Body>{toastMessage}</Toast.Body>
-            </Toast>
-
-            <div className="container d-flex flex-column flex-fill">
-                <h3>
-                    SPIKE to Pybricks Wizard{' '}
-                    <small className="text-muted">
-                        word-block converter to Pybricks python code
-                    </small>
-                </h3>
-
-                <form
-                    method="post"
-                    encType="multipart/form-data"
-                    className="d-flex flex-column flex-fill"
-                >
-                    <div
-                        onDragOver={handleDragOver}
-                        onDragLeave={handleDragLeave}
-                        onDrop={handleDrop}
-                        className={classNames(
-                            'main-content',
-                            'dropzone',
-                            'container',
-                            'pt-3',
-                            'd-flex',
-                            'flex-column',
-                            'flex-fill',
-                            {
-                                'drop-active': isDragging,
-                            },
-                        )}
-                    >
-                        <FileSelector
-                            selectedFile={selectedFile}
-                            setSelectedFile={setSelectedFile}
-                        ></FileSelector>
-                        <DummyTab isInitial={isInitial}></DummyTab>
-                        <MainTab
-                            isInitial={isInitial}
-                            svgContent={svgContent}
-                            conversionResult={conversionResult}
-                            setConversionResult={setConversionResult}
-                            isAdditionalCommentsChecked={isAdditionalCommentsChecked}
-                            setIsAdditionalCommentsChecked={
-                                setIsAdditionalCommentsChecked
-                            }
-                            selectedFile={selectedFile}
-                            generateCodeSummary={generateCodeSummary}
-                        ></MainTab>
-                    </div>
-                </form>
-            </div>
-
-            <Footer />
-        </div>
-    );
-};
-
-export default App;
-
 async function convertFileToPython(
     file: File,
     isAdditionalCommentsChecked: boolean,
@@ -262,3 +138,121 @@ async function generateCodeSummary(
         console.error('Error summarizing code:', error);
     }
 }
+
+export interface AISummary {
+    shortsummary: string;
+    longsummary: string;
+}
+
+const App: React.FC = () => {
+    const [isInitial, setIsInitial] = useState(true);
+    const [pyProjectResult, setPyProjectResult] = useState<PyProjectResult>();
+    const [filename, setFilename] = useState<string>();
+    const [aiSummary, setAiSummary] = useState<AISummary>();
+    const [svgContent, setSvgContent] = useState<string>();
+    const [selectedFile, setSelectedFile] = useState<File>();
+    const [isAdditionalCommentsChecked, setIsAdditionalCommentsChecked] =
+        useState(false);
+    const [toastMessage, setToastMessage] = useState<string>();
+
+    const { isDragging, handleDragOver, handleDragLeave, handleDrop } =
+        useDragAndDrop(setSelectedFile);
+
+    const handleFileUpload = useCallback(
+        async (file: File) => {
+            const result = await convertFileToPython(file, isAdditionalCommentsChecked);
+
+            setPyProjectResult(result);
+            if (file.name !== filename) setAiSummary(undefined);
+            setIsInitial(result === undefined);
+            setSvgContent(result?.additionalFields?.blockly?.svg);
+            setFilename(file.name);
+        },
+        [isAdditionalCommentsChecked, filename],
+    );
+
+    useEffect(() => {
+        if (selectedFile) {
+            handleFileUpload(selectedFile);
+        }
+    }, [selectedFile, handleFileUpload]);
+
+    const triggerGenerateCodeSummary = useCallback(async () => {
+        generateCodeSummary(pyProjectResult!).then((summary) => {
+            setAiSummary(summary);
+        });
+    }, [pyProjectResult]);
+
+    return (
+        <div className="App d-flex flex-column flex-fill">
+            <Header />
+            <Toast
+                onClose={() => setToastMessage(undefined)}
+                show={toastMessage !== undefined}
+                delay={5000}
+                autohide
+                className="position-fixed top-0 end-0"
+            >
+                <Toast.Header>
+                    <span className="me-auto">Conversion Error</span>
+                </Toast.Header>
+                <Toast.Body>{toastMessage}</Toast.Body>
+            </Toast>
+
+            <div className="container d-flex flex-column flex-fill">
+                <h3>
+                    SPIKE to Pybricks Wizard{' '}
+                    <small className="text-muted">
+                        word-block converter to Pybricks python code
+                    </small>
+                </h3>
+
+                <form
+                    method="post"
+                    encType="multipart/form-data"
+                    className="d-flex flex-column flex-fill"
+                >
+                    <div
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                        className={classNames(
+                            'main-content',
+                            'dropzone',
+                            'container',
+                            'pt-3',
+                            'd-flex',
+                            'flex-column',
+                            'flex-fill',
+                            {
+                                'drop-active': isDragging,
+                            },
+                        )}
+                    >
+                        <FileSelector
+                            selectedFile={selectedFile}
+                            setSelectedFile={setSelectedFile}
+                        ></FileSelector>
+                        <DummyTab isInitial={isInitial}></DummyTab>
+                        <MainTab
+                            isInitial={isInitial}
+                            svgContent={svgContent}
+                            pyProjectResult={pyProjectResult}
+                            aiSummary={aiSummary}
+                            isAdditionalCommentsChecked={isAdditionalCommentsChecked}
+                            setIsAdditionalCommentsChecked={
+                                setIsAdditionalCommentsChecked
+                            }
+                            selectedFile={selectedFile}
+                            triggerGenerateCodeSummary={triggerGenerateCodeSummary}
+                        ></MainTab>
+                    </div>
+                </form>
+            </div>
+
+            <Footer />
+        </div>
+    );
+};
+
+export default App;
