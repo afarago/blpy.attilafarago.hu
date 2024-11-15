@@ -6,6 +6,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import DummyTab from './TabWelcome';
 import FileSelector from './FileSelector';
 import Footer from './Footer';
+// import Groq from 'groq-sdk';
 import Header from './Header';
 import MainTab from './TabMain';
 import Toast from 'react-bootstrap/Toast';
@@ -43,9 +44,28 @@ const useDragAndDrop = (
     return { isDragging, handleDragOver, handleDragLeave, handleDrop };
 };
 
+const getBrowserLanguage = () => {
+    // Access the user's preferred language from the navigator object
+    const userLanguage = navigator.language || navigator.language;
+
+    // Return the language code, handling potential undefined values
+    return userLanguage || 'en'; // Default to English if language is not detected
+};
+
+export interface AISummary {
+    shortsummary: string;
+    longsummary: string;
+}
+
+export interface ConversionResult {
+    filename?: string;
+    code?: PyProjectResult;
+    aisummary?: AISummary;
+}
+
 const App: React.FC = () => {
     const [isInitial, setIsInitial] = useState(true);
-    const [conversionResult, setConversionResult] = useState<PyProjectResult>();
+    const [conversionResult, setConversionResult] = useState<ConversionResult>();
     const [svgContent, setSvgContent] = useState<string>();
     const [selectedFile, setSelectedFile] = useState<File>();
     const [isAdditionalCommentsChecked, setIsAdditionalCommentsChecked] =
@@ -57,34 +77,23 @@ const App: React.FC = () => {
 
     const handleFileUpload = useCallback(
         async (file: File) => {
-            try {
-                const input = await file.arrayBuffer();
-                const options: PyConverterOptions = {
-                    filename: file.name,
-                    debug: isAdditionalCommentsChecked
-                        ? { showExplainingComments: true }
-                        : {},
-                };
+            const code = await convertFileToPython(file, isAdditionalCommentsChecked);
+            const filename = file.name;
+            const convresult = code
+                ? {
+                      ...(conversionResult?.filename === filename
+                          ? conversionResult
+                          : {}),
+                      filename,
+                      code,
+                  }
+                : undefined;
 
-                const retval = await convertProjectToPython(input, options);
-
-                setIsInitial(false);
-                setToastMessage(undefined);
-                setConversionResult(retval);
-                setSvgContent(retval?.additionalFields?.blockly?.svg);
-            } catch (error) {
-                console.error('Error converting project to Python:', error);
-                setToastMessage(
-                    error instanceof Error
-                        ? `${error.message} - ${file.name}`
-                        : 'An unknown error occurred.',
-                );
-                setIsInitial(true);
-                setConversionResult(undefined);
-                setSvgContent(undefined);
-            }
+            setIsInitial(convresult === undefined);
+            setSvgContent(convresult?.code?.additionalFields?.blockly?.svg);
+            setConversionResult(convresult);
         },
-        [isAdditionalCommentsChecked],
+        [isAdditionalCommentsChecked, conversionResult],
     );
 
     useEffect(() => {
@@ -148,11 +157,13 @@ const App: React.FC = () => {
                             isInitial={isInitial}
                             svgContent={svgContent}
                             conversionResult={conversionResult}
+                            setConversionResult={setConversionResult}
                             isAdditionalCommentsChecked={isAdditionalCommentsChecked}
                             setIsAdditionalCommentsChecked={
                                 setIsAdditionalCommentsChecked
                             }
                             selectedFile={selectedFile}
+                            generateCodeSummary={generateCodeSummary}
                         ></MainTab>
                     </div>
                 </form>
@@ -164,3 +175,90 @@ const App: React.FC = () => {
 };
 
 export default App;
+
+async function convertFileToPython(
+    file: File,
+    isAdditionalCommentsChecked: boolean,
+): Promise<PyProjectResult | undefined> {
+    try {
+        const input = await file.arrayBuffer();
+        const options: PyConverterOptions = {
+            filename: file.name,
+            debug: isAdditionalCommentsChecked ? { showExplainingComments: true } : {},
+        };
+        return await convertProjectToPython(input, options);
+    } catch (error) {
+        console.error('Error converting project to Python:', error);
+        // setToastMessage(
+        //     error instanceof Error
+        //         ? `${error.message} - ${file.name}`
+        //         : 'An unknown error occurred.',
+        // );
+        return undefined;
+    }
+}
+
+async function generateCodeSummary(
+    code: PyProjectResult,
+): Promise<AISummary | undefined> {
+    try {
+        const GROQ_API_KEY = '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'; //process.env.GROQ_API_KEY;
+        const prompt =
+            'Summarize the functionality in one extended sentences in first line, then detail it out with 5-20 bullet points using "*" tickmarks.' +
+            `You answer in "${getBrowserLanguage()}".` +
+            'Flipper word means LEGO Robot.' +
+            'Output should be plain unformatted text.\r\n\r\n' +
+            code.plaincode;
+
+        const response = await fetch(
+            'https://api.groq.com/openai/v1/chat/completions',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${GROQ_API_KEY}`,
+                },
+                body: JSON.stringify({
+                    model: 'llama-3.2-90b-text-preview',
+                    messages: [
+                        {
+                            role: 'user',
+                            content: prompt,
+                        },
+                    ],
+                }),
+            },
+        );
+        if (!response.ok) {
+            throw new Error('Failed to fetch summary');
+        }
+        const chat_completion = await response.json();
+        const chatresult = chat_completion?.choices[0]?.message?.content;
+        if (!chatresult) throw new Error('Failed to fetch summary');
+
+        // const groq = new Groq({
+        //     apiKey: GROQ_API_KEY,
+        //     dangerouslyAllowBrowser: true,
+        // });
+        // const chat_completion = await groq.chat.completions.create({
+        //     messages: [
+        //         {
+        //             role: 'user',
+        //             content: prompt,
+        //         },
+        //     ],
+        //     // model: 'llama3-8b-8192',
+        //     model: 'llama-3.2-90b-text-preview',
+        //     // model: 'mixtral-8x7b-32768',
+        //     // response_format: { type: 'json_object' },
+        // });
+        // const chatresult = chat_completion?.choices[0]?.message?.content as string;
+        const shortsummary = chatresult?.split('\n')[0];
+        const longsummary = chatresult;
+
+        const result: AISummary = { shortsummary, longsummary };
+        return result;
+    } catch (error) {
+        console.error('Error summarizing code:', error);
+    }
+}

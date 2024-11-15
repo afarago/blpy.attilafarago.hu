@@ -4,8 +4,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 // const webpack = require('webpack');
-// const BundleAnalyzerPlugin =
-//   require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -13,13 +12,14 @@ const config = {
     entry: './src/index.ts',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        // clean: true,
+        clean: true,
     },
     devServer: {
         open: true,
         host: 'localhost',
     },
     plugins: [
+        // new BundleAnalyzerPlugin(),
         new HtmlWebpackPlugin({
             template: 'static/index.html',
         }),

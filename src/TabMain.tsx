@@ -1,3 +1,4 @@
+import { AISummary, ConversionResult } from './App';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import Col from 'react-bootstrap/Col';
@@ -14,19 +15,25 @@ import { useHotkeys } from 'react-hotkeys-hook';
 interface MainTabProps {
     isInitial: boolean;
     svgContent?: string;
-    conversionResult?: PyProjectResult;
+    conversionResult?: ConversionResult;
+    setConversionResult?: React.Dispatch<
+        React.SetStateAction<ConversionResult | undefined>
+    >;
     isAdditionalCommentsChecked: boolean;
     setIsAdditionalCommentsChecked: (checked: boolean) => void;
     selectedFile?: File;
+    generateCodeSummary: (result: PyProjectResult) => Promise<AISummary | undefined>;
 }
 
 const MainTab: React.FC<MainTabProps> = ({
     isInitial,
     svgContent,
     conversionResult,
+    setConversionResult,
     isAdditionalCommentsChecked,
     setIsAdditionalCommentsChecked,
     selectedFile,
+    generateCodeSummary,
 }) => {
     const [key, setKey] = useState('pycode');
     const [isCopying, setIsCopying] = useState(false);
@@ -48,11 +55,15 @@ const MainTab: React.FC<MainTabProps> = ({
             event?.stopPropagation();
             event?.preventDefault();
 
-            if (key === 'pycode' || key === 'pseudocode') {
-                const content =
-                    key === 'pycode'
-                        ? conversionResult?.pycode
-                        : conversionResult?.plaincode;
+            if (['pycode', 'pseudocode', 'aisummary'].includes(key)) {
+                let content = '';
+                if (key === 'pycode') {
+                    content = conversionResult?.code?.pycode ?? '';
+                } else if (key === 'pseudocode') {
+                    content = conversionResult?.code?.plaincode ?? '';
+                } else if (key === 'aisummary') {
+                    content = conversionResult?.aisummary?.longsummary ?? '';
+                }
                 navigator.clipboard.writeText(content ?? '');
             } else if (key === 'preview') {
                 if (!svgRef.current || !selectedFile) return;
@@ -116,6 +127,20 @@ const MainTab: React.FC<MainTabProps> = ({
         }
     }, [svgParentRef, key]);
 
+    useEffect(() => {
+        if (
+            key === 'aisummary' &&
+            conversionResult?.code &&
+            !conversionResult?.aisummary?.longsummary &&
+            setConversionResult
+        ) {
+            generateCodeSummary(conversionResult.code).then((aisummary) => {
+                const result2 = { ...conversionResult, aisummary };
+                setConversionResult(result2);
+            });
+        }
+    }, [conversionResult, setConversionResult, key, generateCodeSummary]);
+
     return (
         <div
             className={classNames('tab-main', 'flex-column', 'flex-fill', 'p-2', {
@@ -123,6 +148,8 @@ const MainTab: React.FC<MainTabProps> = ({
                 'd-none': isInitial,
             })}
         >
+            <div>{conversionResult?.aisummary?.shortsummary}</div>
+
             <Tab.Container
                 activeKey={key}
                 onSelect={(k) => setKey(k ?? '')}
@@ -149,40 +176,61 @@ const MainTab: React.FC<MainTabProps> = ({
                                     Preview
                                 </Nav.Link>
                             </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link
+                                    eventKey="aisummary"
+                                    title="ai-summary"
+                                    className={!conversionResult ? 'd-none' : ''}
+                                >
+                                    <span style={{ whiteSpace: 'nowrap' }}>
+                                        AI Summary{' '}
+                                        <img
+                                            src="https://groq.com/wp-content/uploads/2024/03/PBG-mark1-color.svg"
+                                            alt="Powered by Groq for fast inference."
+                                            height={'16'}
+                                        />
+                                    </span>
+                                </Nav.Link>
+                            </Nav.Item>
                             <Nav.Item className="p-2 ms-auto">
                                 <svg
                                     width="20"
                                     height="20"
                                     className={
-                                        conversionResult?.additionalFields?.blockly
-                                            ?.slot === undefined
+                                        conversionResult?.code?.additionalFields
+                                            ?.blockly?.slot === undefined
                                             ? 'd-none'
                                             : ''
                                     }
                                 >
                                     <use
-                                        href={`./static/img/cat${conversionResult?.additionalFields?.blockly?.slot}.svg#dsmIcon`}
-                                        xlinkHref={`./static/img/cat${conversionResult?.additionalFields?.blockly?.slot}.svg#dsmIcon`}
+                                        href={`./static/img/cat${conversionResult?.code?.additionalFields?.blockly?.slot}.svg#dsmIcon`}
+                                        xlinkHref={`./static/img/cat${conversionResult?.code?.additionalFields?.blockly?.slot}.svg#dsmIcon`}
                                     ></use>
                                 </svg>
                                 <img
                                     width="20"
                                     height="20"
-                                    src={`./static/img/devtype${conversionResult?.deviceType}.png`}
+                                    src={`./static/img/devtype${conversionResult?.code?.deviceType}.png`}
                                     alt="Device type"
                                 ></img>
                             </Nav.Item>
                         </Nav>
                     </Row>
+
                     <Row sm={9} className="position-relative" style={{ top: -1 }}>
-                        <Tab.Content className="h-75 border p-0 position-relative">
+                        <Tab.Content className="border p-0 position-relative">
                             <div
                                 className={classNames(
                                     'svg-minimap',
                                     'mt-5',
                                     'px-3',
                                     'float-right',
-                                    { 'd-none': !svgContent || key === 'preview' },
+                                    {
+                                        'd-none':
+                                            !svgContent ||
+                                            (key !== 'pycode' && key !== 'pseudocode'),
+                                    },
                                 )}
                                 dangerouslySetInnerHTML={{
                                     __html: svgContent || '',
@@ -232,8 +280,8 @@ const MainTab: React.FC<MainTabProps> = ({
                                 >
                                     <pre>
                                         {tabKey === 'pycode'
-                                            ? conversionResult?.pycode
-                                            : conversionResult?.plaincode}
+                                            ? conversionResult?.code?.pycode
+                                            : conversionResult?.code?.plaincode}
                                     </pre>
                                 </Tab.Pane>
                             ))}
@@ -249,6 +297,48 @@ const MainTab: React.FC<MainTabProps> = ({
                                         __html: svgContent || '',
                                     }}
                                 ></div>
+                            </Tab.Pane>
+
+                            <Tab.Pane eventKey="aisummary" className="p-4 d-flex">
+                                <div
+                                    className={
+                                        'd-flex justify-content-center align-items-center flex-fill ' +
+                                        (conversionResult?.aisummary !== undefined
+                                            ? 'd-none'
+                                            : '')
+                                    }
+                                >
+                                    <div className="spinner-border" role="status">
+                                        <span className="visually-hidden">
+                                            Loading...
+                                        </span>
+                                    </div>
+                                </div>
+                                <pre
+                                    style={{ whiteSpace: 'break-spaces' }}
+                                    dangerouslySetInnerHTML={{
+                                        __html:
+                                            conversionResult?.aisummary?.longsummary ||
+                                            '',
+                                    }}
+                                ></pre>
+                                <a
+                                    href="https://groq.com"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="float-end"
+                                    style={{
+                                        position: 'absolute',
+                                        top: '3em',
+                                        right: '0.5em',
+                                    }}
+                                >
+                                    <img
+                                        src="https://groq.com/wp-content/uploads/2024/03/PBG-mark1-color.svg"
+                                        alt="Powered by Groq for fast inference."
+                                        height={'32'}
+                                    />
+                                </a>
                             </Tab.Pane>
                         </Tab.Content>
                     </Row>

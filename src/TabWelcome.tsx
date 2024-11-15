@@ -7,7 +7,11 @@ const DummyTab: React.FC<{ isInitial: boolean }> = ({ isInitial }) => {
         { src: './static/img/devtype2.png', alt: 'LEGO Robot Inventor' },
         { src: './static/img/devtype3.png', alt: 'LEGO EV3 Classroom' },
         { src: './static/img/devtype4.png', alt: 'LEGO EV3 Lab' },
-        { block: <i className="tranform-caret-icon bi bi-caret-right"></i> },
+        {
+            block: (
+                <i key="arrow" className="tranform-caret-icon bi bi-caret-right"></i>
+            ),
+        },
         { src: './static/img/devtype_pybricks.png', alt: 'Pybricks' },
     ];
 
