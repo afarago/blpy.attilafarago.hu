@@ -2,24 +2,41 @@ name: Dependabot auto-approve
 on: pull_request
 
 permissions:
-  pull-requests: write
+    pull-requests: write
 
 jobs:
-  dependabot:
-    runs-on: ubuntu-latest
-    if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'afarago/blpy.attilafarago.hu'
-    steps:
-      - name: Dependabot metadata
-        id: metadata
-        uses: dependabot/fetch-metadata@v2
-      - name: Approve a PR
-        run: gh pr review --approve "$PR_URL"
-        env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GH_TOKEN: ${{github.token}}
-      - name: Enable auto-merge for Dependabot PRs
-      #  if: ${{steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'}}
-        run: gh pr merge --auto --merge "$PR_URL"
-        env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GH_TOKEN: ${{github.token}}
+    dependabot:
+        runs-on: ubuntu-latest
+        if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'afarago/blpy.attilafarago.hu'
+        steps:
+            - name: Dependabot metadata
+              id: metadata
+              uses: dependabot/fetch-metadata@v2
+            - name: Approve a PR
+              run: gh pr review --approve "$PR_URL"
+              env:
+                  PR_URL: ${{github.event.pull_request.html_url}}
+                  GH_TOKEN: ${{github.token}}
+            # - name: Enable auto-merge for Dependabot PRs
+            # #  if: ${{steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'}}
+            #   run: gh pr merge --auto --merge "$PR_URL"
+            #   env:
+            #     PR_URL: ${{github.event.pull_request.html_url}}
+            #     GH_TOKEN: ${{github.token}}
+            # https://stackoverflow.com/questions/64116781/how-do-i-automerge-dependabot-updates-config-version-2
+            - name: automerge
+              uses: actions/github-script@0.2.0
+              with:
+                  script: |
+                      github.pullRequests.createReview({
+                        owner: context.payload.repository.owner.login,
+                        repo: context.payload.repository.name,
+                        pull_number: context.payload.pull_request.number,
+                        event: 'APPROVE'
+                      })
+                      github.pullRequests.merge({
+                        owner: context.payload.repository.owner.login,
+                        repo: context.payload.repository.name,
+                        pull_number: context.payload.pull_request.number
+                      })
+                  github-token: ${{github.token}}
