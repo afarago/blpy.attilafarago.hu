@@ -149,7 +149,7 @@ const MainTab: React.FC<MainTabProps> = ({
                                     Preview
                                 </Nav.Link>
                             </Nav.Item>
-                            <Nav.Item className="p-2 ms-auto">
+                            <Nav.Item className="py-2 ms-auto">
                                 <svg
                                     width="20"
                                     height="20"
@@ -157,7 +157,7 @@ const MainTab: React.FC<MainTabProps> = ({
                                         conversionResult?.additionalFields?.blockly
                                             ?.slot === undefined
                                             ? 'd-none'
-                                            : ''
+                                            : 'mx-2'
                                     }
                                 >
                                     <use
@@ -196,7 +196,7 @@ const MainTab: React.FC<MainTabProps> = ({
                                     id="additionalCommentsCheck" /* needed for the label to be clickable */
                                     label="Explanatory&nbsp;Comments"
                                     checked={isAdditionalCommentsChecked}
-                                    title="Explanatory Comments (ctrl/cmd+e)"
+                                    title="Add explanatory comments to the source code (ctrl/cmd+e)"
                                     className={classNames({
                                         'd-none': key !== 'pycode',
                                     })}

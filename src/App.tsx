@@ -3,12 +3,12 @@ import './App.scss';
 import { PyConverterOptions, PyProjectResult, convertProjectToPython } from 'blocklypy';
 import React, { useCallback, useEffect, useState } from 'react';
 
-import DummyTab from './TabWelcome';
 import FileSelector from './FileSelector';
 import Footer from './Footer';
 import Header from './Header';
 import MainTab from './TabMain';
 import Toast from 'react-bootstrap/Toast';
+import WelcomeTab from './TabWelcome';
 import classNames from 'classnames';
 
 const useDragAndDrop = (
@@ -112,7 +112,7 @@ const App: React.FC = () => {
             <div className="container d-flex flex-column flex-fill">
                 <h3>
                     SPIKE to Pybricks Wizard{' '}
-                    <small className="text-muted">
+                    <small className="text-muted d-block d-lg-inline">
                         word-block converter to Pybricks python code
                     </small>
                 </h3>
@@ -143,7 +143,7 @@ const App: React.FC = () => {
                             selectedFile={selectedFile}
                             setSelectedFile={setSelectedFile}
                         ></FileSelector>
-                        <DummyTab isInitial={isInitial}></DummyTab>
+                        <WelcomeTab isInitial={isInitial}></WelcomeTab>
                         <MainTab
                             isInitial={isInitial}
                             svgContent={svgContent}

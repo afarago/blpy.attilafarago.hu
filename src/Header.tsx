@@ -10,7 +10,8 @@ const Header: React.FC = () => {
                             <use href="./static/img/logo_full.svg#icon" />
                         </svg>
                         &nbsp;
-                        <b>BlocklyPy</b> · LegoAppTools
+                        <b>BlocklyPy</b>
+                        <span className="d-none d-sm-inline"> · LegoAppTools</span>
                     </span>
                 </div>
             </nav>
