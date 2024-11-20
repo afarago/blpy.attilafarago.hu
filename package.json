@@ -12,7 +12,7 @@
         "@types/node": "^22.9.1",
         "@types/react": "^18.3.12",
         "@types/react-dom": "^18.3.1",
-        "blocklypy": "~0.0.23",
+        "blocklypy": "~0.0.27",
         "bootstrap-icons": "^1.11.3",
         "classnames": "^2.5.1",
         "dom-to-image": "^2.6.0",
