@@ -49,7 +49,7 @@ const WelcomeTab: React.FC<{ isInitial: boolean }> = ({ isInitial }) => {
                             } else {
                                 return (
                                     <img
-                                        key={index}
+                                        key={icon.src}
                                         src={icon.src}
                                         className="icon"
                                         alt={icon.alt}

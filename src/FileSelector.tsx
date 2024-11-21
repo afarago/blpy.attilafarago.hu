@@ -99,7 +99,7 @@ const FileSelector: React.FC<FileSelectorProps> = ({
                     {examples.map((example, index) => (
                         <Button
                             variant="link"
-                            key={index}
+                            key={example.file}
                             className="example-content-button"
                             data-file={example.file}
                             onClick={handleExampleButtonClick}

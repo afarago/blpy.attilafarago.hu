@@ -188,6 +188,7 @@ const MainTab: React.FC<MainTabProps> = ({
                                     __html: svgContent || '',
                                 }}
                                 onClick={() => setKey('preview')}
+                                role="presentation"
                             ></div>
 
                             <div className="code-top-container">

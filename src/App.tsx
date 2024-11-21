@@ -138,6 +138,7 @@ const App: React.FC = () => {
                                 'drop-active': isDragging,
                             },
                         )}
+                        role="presentation"
                     >
                         <FileSelector
                             selectedFile={selectedFile}
