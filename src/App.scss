@@ -201,24 +201,10 @@ header nav {
 }
 
 .example-content-button {
-    font-size: 1em;
-    margin: 0;
-    padding: 0;
-    margin-left: 0.5em;
-    border: 0;
-    outline: 0;
-    vertical-align: unset;
-    user-select: none;
-    text-decoration: none;
-    border-bottom: 1px solid rgba($border-color, 0.5);
-    border-radius: 0;
-
+    background-color: #6495ed !important;
     &:hover {
-        border-bottom: 1px solid rgba($border-color, 1);
-    }
-
-    &:focus {
-        box-shadow: none;
-        border-bottom: 2px solid rgba($border-color, 1);
+        left: 2px;
+        bottom: 1px;
+        position: relative;
     }
 }

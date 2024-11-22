@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 
-import Button from 'react-bootstrap/Button';
+import Badge from 'react-bootstrap/Badge';
 import Form from 'react-bootstrap/Form';
+import Stack from 'react-bootstrap/Stack';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 interface FileSelectorProps {
@@ -95,18 +96,23 @@ const FileSelector: React.FC<FileSelectorProps> = ({
 
             <div className="file-examples col-sm-12 m-0 p-0 pt-1">
                 <small>
-                    <b>Examples:</b>
-                    {examples.map((example, index) => (
-                        <Button
-                            variant="link"
-                            key={example.file}
-                            className="example-content-button"
-                            data-file={example.file}
-                            onClick={handleExampleButtonClick}
-                        >
-                            {example.label}
-                        </Button>
-                    ))}
+                    <Stack direction="horizontal" gap={2}>
+                        <b>Examples:</b>
+                        {examples.map((example, index) => (
+                            <Badge
+                                pill
+                                key={example.file}
+                                data-file={example.file}
+                                // bg="primary"
+                                onClick={handleExampleButtonClick}
+                                as="a"
+                                href="#"
+                                className="example-content-button"
+                            >
+                                {example.label}
+                            </Badge>
+                        ))}
+                    </Stack>
                 </small>
             </div>
         </div>
