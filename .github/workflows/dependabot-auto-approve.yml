@@ -17,6 +17,7 @@ jobs:
               env:
                   PR_URL: ${{github.event.pull_request.html_url}}
                   GH_TOKEN: ${{github.token}}
+
             # - name: Enable auto-merge for Dependabot PRs
             # #  if: ${{steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'}}
             #   run: gh pr merge --auto --merge "$PR_URL"
@@ -24,19 +25,20 @@ jobs:
             #     PR_URL: ${{github.event.pull_request.html_url}}
             #     GH_TOKEN: ${{github.token}}
             # https://stackoverflow.com/questions/64116781/how-do-i-automerge-dependabot-updates-config-version-2
-            - name: automerge
-              uses: actions/github-script@0.2.0
-              with:
-                  script: |
-                      github.pullRequests.createReview({
-                        owner: context.payload.repository.owner.login,
-                        repo: context.payload.repository.name,
-                        pull_number: context.payload.pull_request.number,
-                        event: 'APPROVE'
-                      })
-                      github.pullRequests.merge({
-                        owner: context.payload.repository.owner.login,
-                        repo: context.payload.repository.name,
-                        pull_number: context.payload.pull_request.number
-                      })
-                  github-token: ${{github.token}}
+
+            # - name: automerge
+            #   uses: actions/github-script@0.2.0
+            #   with:
+            #       script: |
+            #           github.pullRequests.createReview({
+            #             owner: context.payload.repository.owner.login,
+            #             repo: context.payload.repository.name,
+            #             pull_number: context.payload.pull_request.number,
+            #             event: 'APPROVE'
+            #           })
+            #           github.pullRequests.merge({
+            #             owner: context.payload.repository.owner.login,
+            #             repo: context.payload.repository.name,
+            #             pull_number: context.payload.pull_request.number
+            #           })
+            #       github-token: ${{github.token}}
