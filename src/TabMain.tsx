@@ -120,7 +120,7 @@ const MainTab: React.FC<MainTabProps> = ({
         if (!svgContent && key === 'preview') {
             setKey('pycode');
         }
-    }, [svgContent]);
+    }, [svgContent, key]);
 
     return (
         <div
