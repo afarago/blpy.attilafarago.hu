@@ -3,10 +3,11 @@ import classNames from 'classnames';
 
 const WelcomeTab: React.FC<{ isInitial: boolean }> = ({ isInitial }) => {
     const icons: { src?: string; alt?: string; block?: JSX.Element }[] = [
-        { src: './static/img/devtype1.png', alt: 'LEGO SPIKE' },
-        { src: './static/img/devtype2.png', alt: 'LEGO Robot Inventor' },
-        { src: './static/img/devtype3.png', alt: 'LEGO EV3 Classroom' },
-        { src: './static/img/devtype4.png', alt: 'LEGO EV3 Lab' },
+        { src: './static/img/devtype_spike.png', alt: 'LEGO SPIKE' },
+        { src: './static/img/devtype_robotinventor.png', alt: 'LEGO Robot Inventor' },
+        { src: './static/img/devtype_ev3classroom.png', alt: 'LEGO EV3 Classroom' },
+        { src: './static/img/devtype_ev3g.png', alt: 'LEGO EV3 Lab' },
+        { src: './static/img/devtype_ev3b.png', alt: 'LEGO EV3 Lab Binary' },
         {
             block: (
                 <i key="caret" className="tranform-caret-icon bi bi-caret-right"></i>
@@ -40,7 +41,7 @@ const WelcomeTab: React.FC<{ isInitial: boolean }> = ({ isInitial }) => {
                         <br />
                         LEGO blockly programs into Python code!
                         <br />
-                        (.llsp, .llsp3, .lms, .lmsp and .ev3 files are accepted)
+                        (.llsp, .llsp3, .lms, .lmsp and .ev3, .rbf files are accepted)
                     </div>
                     <div>
                         {icons.map((icon, index) => {
@@ -53,6 +54,7 @@ const WelcomeTab: React.FC<{ isInitial: boolean }> = ({ isInitial }) => {
                                         src={icon.src}
                                         className="icon"
                                         alt={icon.alt}
+                                        title={icon.alt}
                                     />
                                 );
                             }

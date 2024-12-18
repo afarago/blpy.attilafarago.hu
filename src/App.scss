@@ -6,6 +6,7 @@ $icon-color: cornflowerblue;
 $border-color: dodgerblue;
 $icon-size: 3.5em;
 $icon-size-big: 10em;
+$mini-icon-size: 20px;
 
 body {
     min-height: 100vh;
@@ -48,6 +49,13 @@ header nav {
 
 .tab-main {
     min-height: 30vh;
+    .tabheader {
+        img,
+        svg {
+            height: $mini-icon-size;
+            width: $mini-icon-size;
+        }
+    }
 }
 
 .tab-pane {
@@ -202,9 +210,18 @@ header nav {
 
 .example-content-button {
     background-color: #6495ed !important;
+    img {
+        margin-left: 0.5em;
+        height: $mini-icon-size;
+        width: $mini-icon-size;
+        opacity: 0.5;
+    }
     &:hover {
         left: 2px;
         bottom: 1px;
         position: relative;
+        img {
+            opacity: 1;
+        }
     }
 }

@@ -116,6 +116,12 @@ const MainTab: React.FC<MainTabProps> = ({
         }
     }, [svgParentRef, key]);
 
+    useEffect(() => {
+        if (!svgContent && key === 'preview') {
+            setKey('pycode');
+        }
+    }, [svgContent]);
+
     return (
         <div
             className={classNames('tab-main', 'flex-column', 'flex-fill', 'p-2', {
@@ -149,10 +155,8 @@ const MainTab: React.FC<MainTabProps> = ({
                                     Preview
                                 </Nav.Link>
                             </Nav.Item>
-                            <Nav.Item className="py-2 ms-auto">
+                            <Nav.Item className="py-2 ms-auto tabheader">
                                 <svg
-                                    width="20"
-                                    height="20"
                                     className={
                                         conversionResult?.additionalFields?.blockly
                                             ?.slot === undefined
@@ -166,9 +170,7 @@ const MainTab: React.FC<MainTabProps> = ({
                                     ></use>
                                 </svg>
                                 <img
-                                    width="20"
-                                    height="20"
-                                    src={`./static/img/devtype${conversionResult?.deviceType}.png`}
+                                    src={`./static/img/devtype_${conversionResult?.devicetype}.png`}
                                     alt="Device type"
                                 ></img>
                             </Nav.Item>

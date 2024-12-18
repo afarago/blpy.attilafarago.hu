@@ -67,19 +67,38 @@ const FileSelector: React.FC<FileSelectorProps> = ({
         {
             file: './static/samples/demo_cityshaper_cranemission.llsp3',
             label: 'SPIKE blocks',
+            icon: './static/img/devtype_spike.png',
+            alt: 'LEGO SPIKE',
         },
-        { file: './static/samples/demo_iconblocks.llsp3', label: 'SPIKE icon-blocks' },
+        {
+            file: './static/samples/demo_iconblocks.llsp3',
+            label: 'SPIKE icon-blocks',
+            icon: './static/img/devtype_spike.png',
+            alt: 'LEGO SPIKE Icon Blocks',
+        },
         {
             file: './static/samples/demo_cityshaper_cranemission.lms',
             label: 'RobotInventor blocks',
+            icon: './static/img/devtype_robotinventor.png',
+            alt: 'LEGO Robot Inventor',
         },
         {
             file: './static/samples/demo_cityshaper_cranemission.lmsp',
             label: 'EV3Classroom blocks',
+            icon: './static/img/devtype_ev3classroom.png',
+            alt: 'LEGO EV3 Classroom',
         },
         {
             file: './static/samples/demo_cityshaper_cranemission.ev3',
             label: 'EV3Lab EV3G',
+            icon: './static/img/devtype_ev3g.png',
+            alt: 'LEGO EV3 Lab',
+        },
+        {
+            file: './static/samples/demo_cityshaper_cranemission.rbf',
+            label: 'EV3Lab RBF',
+            icon: './static/img/devtype_ev3b.png',
+            alt: 'LEGO EV3 Lab Binary',
         },
     ];
 
@@ -88,7 +107,7 @@ const FileSelector: React.FC<FileSelectorProps> = ({
             <Form.Group controlId="file-selector">
                 <Form.Control
                     type="file"
-                    accept=".llsp,.lms,.lmsp,.llsp3,.ev3,.ev3m"
+                    accept=".llsp,.lms,.lmsp,.llsp3,.ev3,.ev3m,.rbf"
                     ref={fileInputRef}
                     onChange={handleFileOpen}
                 />
@@ -99,18 +118,25 @@ const FileSelector: React.FC<FileSelectorProps> = ({
                     <Stack direction="horizontal" gap={2}>
                         <b>Examples:</b>
                         {examples.map((example, index) => (
-                            <Badge
-                                pill
-                                key={example.file}
-                                data-file={example.file}
-                                // bg="primary"
-                                onClick={handleExampleButtonClick}
-                                as="a"
-                                href="#"
-                                className="example-content-button"
-                            >
-                                {example.label}
-                            </Badge>
+                            <>
+                                <Badge
+                                    pill
+                                    key={example.file}
+                                    data-file={example.file}
+                                    // bg="primary"
+                                    onClick={handleExampleButtonClick}
+                                    as="a"
+                                    href="#"
+                                    className="example-content-button"
+                                >
+                                    {example.label}
+                                    <img
+                                        src={example.icon}
+                                        alt={example.alt}
+                                        title={example.alt}
+                                    />
+                                </Badge>
+                            </>
                         ))}
                     </Stack>
                 </small>
