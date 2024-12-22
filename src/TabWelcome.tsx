@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 
 const WelcomeTab: React.FC<{ isInitial: boolean }> = ({ isInitial }) => {
-    const icons: { src?: string; alt?: string; block?: JSX.Element }[] = [
+    const icons: { src?: string; alt?: string; block?: React.ReactElement }[] = [
         { src: './static/img/devtype_spike.png', alt: 'LEGO SPIKE' },
         { src: './static/img/devtype_robotinventor.png', alt: 'LEGO Robot Inventor' },
         { src: './static/img/devtype_ev3classroom.png', alt: 'LEGO EV3 Classroom' },

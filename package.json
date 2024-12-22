@@ -9,22 +9,23 @@
         "@testing-library/react": "^16.1.0",
         "@testing-library/user-event": "^14.5.2",
         "@types/jest": "^29.5.14",
-        "@types/node": "^22.10.1",
-        "@types/react": "^18.3.12",
-        "@types/react-dom": "^18.3.1",
-        "blocklypy": "^0.0.33",
+        "@types/node": "^22.10.2",
+        "@types/react": "^19.0.2",
+        "@types/react-dom": "^19.0.2",
+        "@viz-js/viz": "^3.11.0",
+        "blocklypy": "^0.0.34",
         "bootstrap-icons": "^1.11.3",
         "classnames": "^2.5.1",
         "dom-to-image": "^2.6.0",
-        "react": "^18.3.1",
-        "react-bootstrap": "^2.10.6",
-        "react-dom": "^18.3.1",
+        "react": "^19.0.0",
+        "react-bootstrap": "^2.10.7",
+        "react-dom": "^19.0.0",
         "react-hotkeys-hook": "^4.6.1",
         "react-scripts": "^5.0.1",
-        "sass": "^1.82.0",
+        "sass": "^1.83.0",
         "sass-loader": "^16.0.4",
         "style-loader": "^4.0.0",
-        "typescript": "^4.9.5",
+        "ts-graphviz": "^2.1.5",
         "web-vitals": "^4.2.4"
     },
     "engines": {
@@ -55,6 +56,8 @@
         ]
     },
     "devDependencies": {
-        "@types/dom-to-image": "^2.6.7"
+        "@types/dom-to-image": "^2.6.7",
+        "@types/stack-utils": "^2.0.3",
+        "@types/yargs": "^17.0.33"
     }
 }

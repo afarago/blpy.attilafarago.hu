@@ -10,6 +10,7 @@ import Tab from 'react-bootstrap/Tab';
 import classNames from 'classnames';
 import domtoimage from 'dom-to-image';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { instance as vizInstance } from '@viz-js/viz';
 
 interface MainTabProps {
     isInitial: boolean;
@@ -32,6 +33,7 @@ const MainTab: React.FC<MainTabProps> = ({
     const [isCopying, setIsCopying] = useState(false);
     const svgRef = useRef<HTMLDivElement>(null);
     const svgParentRef = useRef<HTMLDivElement>(null);
+    const graphRef = useRef<HTMLDivElement>(null);
 
     const handleSetIsAdditionalCommentsChecked = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -54,18 +56,27 @@ const MainTab: React.FC<MainTabProps> = ({
                         ? conversionResult?.pycode
                         : conversionResult?.plaincode;
                 navigator.clipboard.writeText(content ?? '');
-            } else if (key === 'preview') {
-                if (!svgRef.current || !selectedFile) return;
+            } else if (key === 'preview' || key === 'callgraph') {
+                let ref: React.RefObject<HTMLDivElement | null> | undefined;
+                let ext: string;
+                if (key === 'preview') {
+                    ref = svgRef;
+                    ext = 'preview';
+                } else if (key === 'callgraph') {
+                    ref = graphRef;
+                    ext = 'graph';
+                }
+                if (!ref?.current || !selectedFile) return;
                 // domtoimage.toBlob(svgRef.current, {}).then((data: Blob) => {
                 //     // copy image to clipboard
                 //     const data2 = [new ClipboardItem({ 'image/png': data })];
                 //     navigator.clipboard.write(data2);
                 // });
-                domtoimage.toPng(svgRef.current, {}).then((dataUrl: string) => {
+                domtoimage.toPng(ref.current, {}).then((dataUrl: string) => {
                     // download png file
                     const link = document.createElement('a');
                     link.href = dataUrl;
-                    link.download = changeExtension(selectedFile.name, 'png');
+                    link.download = `${getBaseName(selectedFile.name)}_${ext}.png`;
                     navigator.clipboard.writeText(dataUrl);
                     link.click();
                 });
@@ -79,15 +90,16 @@ const MainTab: React.FC<MainTabProps> = ({
         [conversionResult, key, svgRef, selectedFile],
     );
 
-    const changeExtension = (filename: string, newExtension: string): string => {
+    const getBaseName = (filename: string): string => {
         const lastDotIndex = filename.lastIndexOf('.');
         const baseName = filename.substring(0, lastDotIndex);
-        return `${baseName}.${newExtension}`;
+        return baseName;
     };
 
     useHotkeys('control+1', () => setKey('pycode'));
     useHotkeys('control+2', () => setKey('pseudocode'));
-    useHotkeys('control+3', () => setKey('preview'));
+    useHotkeys('control+3', () => setKey('callgraph'));
+    useHotkeys('control+4', () => setKey('preview'));
     useHotkeys(
         'mod+e',
         () => toggleIsAdditionalCommentsChecked(),
@@ -122,6 +134,17 @@ const MainTab: React.FC<MainTabProps> = ({
         }
     }, [svgContent, key]);
 
+    useEffect(() => {
+        const renderGraph = async () => {
+            if (!conversionResult?.dependencygraph || !graphRef?.current) return;
+            const viz = await vizInstance();
+            const svg = viz.renderSVGElement(conversionResult.dependencygraph);
+            graphRef.current.innerHTML = '';
+            graphRef.current.appendChild(svg);
+        };
+        renderGraph();
+    }, [conversionResult, graphRef]);
+
     return (
         <div
             className={classNames('tab-main', 'flex-column', 'flex-fill', 'p-2', {
@@ -150,8 +173,16 @@ const MainTab: React.FC<MainTabProps> = ({
                                     Pseudocode
                                 </Nav.Link>
                             </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link
+                                    eventKey="callgraph"
+                                    title="call graph (ctrl+3)"
+                                >
+                                    Call Graph
+                                </Nav.Link>
+                            </Nav.Item>
                             <Nav.Item className={svgContent ? '' : 'd-none'}>
-                                <Nav.Link eventKey="preview" title="preview (ctrl+3)">
+                                <Nav.Link eventKey="preview" title="preview (ctrl+4)">
                                     Preview
                                 </Nav.Link>
                             </Nav.Item>
@@ -218,9 +249,12 @@ const MainTab: React.FC<MainTabProps> = ({
                                 >
                                     <i
                                         className={classNames('bi', {
-                                            'bi-copy': !isCopying && key !== 'preview',
+                                            'bi-copy':
+                                                !isCopying &&
+                                                !['preview', 'callgraph'].includes(key),
                                             'bi-download':
-                                                !isCopying && key === 'preview',
+                                                !isCopying &&
+                                                ['preview', 'callgraph'].includes(key),
                                             'bi-check-lg': isCopying,
                                         })}
                                     ></i>
@@ -240,6 +274,13 @@ const MainTab: React.FC<MainTabProps> = ({
                                     </pre>
                                 </Tab.Pane>
                             ))}
+
+                            <Tab.Pane
+                                eventKey="callgraph"
+                                className={`p-4 preview-callgraph`}
+                            >
+                                <div ref={graphRef} />
+                            </Tab.Pane>
 
                             <Tab.Pane
                                 eventKey="preview"
