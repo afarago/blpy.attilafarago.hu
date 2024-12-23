@@ -118,10 +118,10 @@ const FileSelector: React.FC<FileSelectorProps> = ({
                     <Stack direction="horizontal" gap={2}>
                         <b>Examples:</b>
                         {examples.map((example, index) => (
-                            <>
+                            <div key={example.file}>
                                 <Badge
                                     pill
-                                    key={example.file}
+                                    // key={example.file}
                                     data-file={example.file}
                                     // bg="primary"
                                     onClick={handleExampleButtonClick}
@@ -136,7 +136,7 @@ const FileSelector: React.FC<FileSelectorProps> = ({
                                         title={example.alt}
                                     />
                                 </Badge>
-                            </>
+                            </div>
                         ))}
                     </Stack>
                 </small>

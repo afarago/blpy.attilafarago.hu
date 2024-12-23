@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
+import CallGraph from './CallGraph';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
@@ -10,7 +11,6 @@ import Tab from 'react-bootstrap/Tab';
 import classNames from 'classnames';
 import domtoimage from 'dom-to-image';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { instance as vizInstance } from '@viz-js/viz';
 
 interface MainTabProps {
     isInitial: boolean;
@@ -32,8 +32,7 @@ const MainTab: React.FC<MainTabProps> = ({
     const [key, setKey] = useState('pycode');
     const [isCopying, setIsCopying] = useState(false);
     const svgRef = useRef<HTMLDivElement>(null);
-    const svgParentRef = useRef<HTMLDivElement>(null);
-    const graphRef = useRef<HTMLDivElement>(null);
+    const graphRef = useRef(null);
 
     const handleSetIsAdditionalCommentsChecked = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -126,24 +125,13 @@ const MainTab: React.FC<MainTabProps> = ({
                 return () => panzoom?.destroy();
             }
         }
-    }, [svgParentRef, key]);
+    }, [svgRef, key]);
 
     useEffect(() => {
         if (!svgContent && key === 'preview') {
             setKey('pycode');
         }
     }, [svgContent, key]);
-
-    useEffect(() => {
-        const renderGraph = async () => {
-            if (!conversionResult?.dependencygraph || !graphRef?.current) return;
-            const viz = await vizInstance();
-            const svg = viz.renderSVGElement(conversionResult.dependencygraph);
-            graphRef.current.innerHTML = '';
-            graphRef.current.appendChild(svg);
-        };
-        renderGraph();
-    }, [conversionResult, graphRef]);
 
     return (
         <div
@@ -215,7 +203,11 @@ const MainTab: React.FC<MainTabProps> = ({
                                     'mt-5',
                                     'px-3',
                                     'float-right',
-                                    { 'd-none': !svgContent || key === 'preview' },
+                                    {
+                                        'd-none':
+                                            !svgContent ||
+                                            ['preview', 'callgraph'].includes(key),
+                                    },
                                 )}
                                 dangerouslySetInnerHTML={{
                                     __html: svgContent || '',
@@ -279,14 +271,13 @@ const MainTab: React.FC<MainTabProps> = ({
                                 eventKey="callgraph"
                                 className={`p-4 preview-callgraph`}
                             >
-                                <div ref={graphRef} />
+                                <CallGraph
+                                    ref={graphRef}
+                                    conversionResult={conversionResult}
+                                />
                             </Tab.Pane>
 
-                            <Tab.Pane
-                                eventKey="preview"
-                                className="p-4 preview-svg"
-                                ref={svgParentRef}
-                            >
+                            <Tab.Pane eventKey="preview" className="p-4 preview-svg">
                                 <div
                                     ref={svgRef}
                                     dangerouslySetInnerHTML={{

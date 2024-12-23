@@ -225,3 +225,17 @@ header nav {
         }
     }
 }
+
+.callgraph {
+    .graph {
+        .node {
+            cursor: pointer;
+        }
+        .node > polygon {
+            fill: white;
+        }
+        .node.selected > polygon {
+            fill: lightblue;
+        }
+    }
+}
