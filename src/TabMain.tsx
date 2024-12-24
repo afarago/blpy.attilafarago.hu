@@ -49,40 +49,42 @@ const MainTab: React.FC<MainTabProps> = ({
             event?.stopPropagation();
             event?.preventDefault();
 
-            if (key === 'pycode' || key === 'pseudocode') {
-                const content =
-                    key === 'pycode'
-                        ? conversionResult?.pycode
-                        : conversionResult?.plaincode;
-                navigator.clipboard.writeText(content ?? '');
-            } else if (key === 'preview' || key === 'callgraph') {
-                let ref: React.RefObject<HTMLDivElement | null> | undefined;
-                let ext: string;
-                if (key === 'preview') {
-                    ref = svgRef;
-                    ext = 'preview';
-                } else if (key === 'callgraph') {
-                    ref = graphRef;
-                    ext = 'graph';
+            try {
+                setIsCopying(true);
+                if (key === 'pycode' || key === 'pseudocode') {
+                    const content =
+                        key === 'pycode'
+                            ? conversionResult?.pycode
+                            : conversionResult?.plaincode;
+                    navigator.clipboard.writeText(content ?? '');
+                } else if (key === 'preview' || key === 'callgraph') {
+                    let ref: React.RefObject<HTMLDivElement | null> | undefined;
+                    let ext: string;
+                    if (key === 'preview') {
+                        ref = svgRef;
+                        ext = 'preview';
+                    } else if (key === 'callgraph') {
+                        ref = graphRef;
+                        ext = 'graph';
+                    }
+                    if (!ref?.current || !selectedFile) return;
+                    // domtoimage.toBlob(svgRef.current, {}).then((data: Blob) => {
+                    //     // copy image to clipboard
+                    //     const data2 = [new ClipboardItem({ 'image/png': data })];
+                    //     navigator.clipboard.write(data2);
+                    // });
+                    domtoimage.toPng(ref.current, {}).then((dataUrl: string) => {
+                        // download png file
+                        const link = document.createElement('a');
+                        link.href = dataUrl;
+                        link.download = `${getBaseName(selectedFile.name)}_${ext}.png`;
+                        // navigator.clipboard.writeText(dataUrl);
+                        link.click();
+                    });
                 }
-                if (!ref?.current || !selectedFile) return;
-                // domtoimage.toBlob(svgRef.current, {}).then((data: Blob) => {
-                //     // copy image to clipboard
-                //     const data2 = [new ClipboardItem({ 'image/png': data })];
-                //     navigator.clipboard.write(data2);
-                // });
-                domtoimage.toPng(ref.current, {}).then((dataUrl: string) => {
-                    // download png file
-                    const link = document.createElement('a');
-                    link.href = dataUrl;
-                    link.download = `${getBaseName(selectedFile.name)}_${ext}.png`;
-                    navigator.clipboard.writeText(dataUrl);
-                    link.click();
-                });
+            } catch (e) {
+                setTimeout(() => setIsCopying(false), 1000);
             }
-
-            setIsCopying(true);
-            setTimeout(() => setIsCopying(false), 1000);
 
             return false;
         },
@@ -189,7 +191,11 @@ const MainTab: React.FC<MainTabProps> = ({
                                     ></use>
                                 </svg>
                                 <img
-                                    src={`./static/img/devtype_${conversionResult?.devicetype}.png`}
+                                    src={
+                                        conversionResult
+                                            ? `./static/img/devtype_${conversionResult?.devicetype}.png`
+                                            : undefined
+                                    }
                                     alt="Device type"
                                 ></img>
                             </Nav.Item>
