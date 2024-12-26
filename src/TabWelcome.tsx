@@ -5,20 +5,14 @@ import React from 'react';
 import classNames from 'classnames';
 
 const WelcomeTab: React.FC<{ isInitial: boolean }> = ({ isInitial }) => {
-    const icons: {
-        src?: string;
-        alt?: string;
-        block?: React.ReactElement;
-    }[] = [
-        { src: 'spike' },
-        { src: 'robotinventor' },
-        { src: 'ev3classroom' },
-        { src: 'ev3g' },
-        { src: 'ev3b' },
-        {
-            block: <CaretRight key="caretright" className="tranform-caret-icon " />,
-        },
-        { src: 'pybricks' },
+    const icons: (React.ReactElement | string)[] = [
+        'spike',
+        'robotinventor',
+        'ev3classroom',
+        'ev3g',
+        'ev3b',
+        <CaretRight key="caretright" className="tranform-caret-icon " />,
+        'pybricks',
     ];
 
     return (
@@ -50,13 +44,13 @@ const WelcomeTab: React.FC<{ isInitial: boolean }> = ({ isInitial }) => {
                     </div>
                     <div>
                         {icons.map((icon, index) => {
-                            if (icon.block) {
-                                return icon.block;
+                            if (typeof icon !== 'string') {
+                                return icon;
                             } else {
                                 return (
                                     <DevTypeIcon
-                                        key={icon.src}
-                                        devtype={icon.src}
+                                        key={icon}
+                                        devtype={icon}
                                         className="icon"
                                     />
                                 );

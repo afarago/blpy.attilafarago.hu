@@ -14,10 +14,10 @@ export default defineConfig({
         },
     },
     assetsInclude: ['**/*.llsp3', '**/*.lms', '**/*.ev3', '**/*.rbf', '**/*.lmsp'],
-    // server: {
-    //   port: 8080,
-    //   hot: true,
-    // },
+    server: {
+        //   port: 8080,
+        hot: true,
+    },
     plugins: [
         react(),
         nodeResolve(),

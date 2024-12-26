@@ -1,4 +1,4 @@
-import './App.scss';
+import './scss/App.scss';
 
 import { PyConverterOptions, PyProjectResult, convertProjectToPython } from 'blocklypy';
 import React, { useCallback, useEffect, useState } from 'react';

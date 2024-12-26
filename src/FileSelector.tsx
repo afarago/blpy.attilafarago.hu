@@ -69,37 +69,31 @@ const FileSelector: React.FC<FileSelectorProps> = ({
             file: '/samples/demo_cityshaper_cranemission.llsp3',
             label: 'SPIKE blocks',
             icon: 'spike',
-            alt: 'LEGO SPIKE',
         },
         {
             file: '/samples/demo_iconblocks.llsp3',
             label: 'SPIKE icon-blocks',
             icon: 'spike',
-            alt: 'LEGO SPIKE Icon Blocks',
         },
         {
             file: '/samples/demo_cityshaper_cranemission.lms',
             label: 'RobotInventor blocks',
             icon: 'robotinventor',
-            alt: 'LEGO Robot Inventor',
         },
         {
             file: '/samples/demo_cityshaper_cranemission.lmsp',
             label: 'EV3Classroom blocks',
             icon: 'ev3classroom',
-            alt: 'LEGO EV3 Classroom',
         },
         {
             file: '/samples/demo_cityshaper_cranemission.ev3',
             label: 'EV3Lab EV3G',
             icon: 'ev3g',
-            alt: 'LEGO EV3 Lab',
         },
         {
             file: '/samples/demo_cityshaper_cranemission.rbf',
             label: 'EV3Lab RBF',
             icon: 'ev3b',
-            alt: 'LEGO EV3 Lab Binary',
         },
     ];
 
