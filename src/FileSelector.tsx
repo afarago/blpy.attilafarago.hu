@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
 import Badge from 'react-bootstrap/Badge';
+import { DevTypeIcon } from './DevTypeIcon';
 import Form from 'react-bootstrap/Form';
 import Stack from 'react-bootstrap/Stack';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -65,39 +66,39 @@ const FileSelector: React.FC<FileSelectorProps> = ({
 
     const examples = [
         {
-            file: './static/samples/demo_cityshaper_cranemission.llsp3',
+            file: '/samples/demo_cityshaper_cranemission.llsp3',
             label: 'SPIKE blocks',
-            icon: './static/img/devtype_spike.png',
+            icon: 'spike',
             alt: 'LEGO SPIKE',
         },
         {
-            file: './static/samples/demo_iconblocks.llsp3',
+            file: '/samples/demo_iconblocks.llsp3',
             label: 'SPIKE icon-blocks',
-            icon: './static/img/devtype_spike.png',
+            icon: 'spike',
             alt: 'LEGO SPIKE Icon Blocks',
         },
         {
-            file: './static/samples/demo_cityshaper_cranemission.lms',
+            file: '/samples/demo_cityshaper_cranemission.lms',
             label: 'RobotInventor blocks',
-            icon: './static/img/devtype_robotinventor.png',
+            icon: 'robotinventor',
             alt: 'LEGO Robot Inventor',
         },
         {
-            file: './static/samples/demo_cityshaper_cranemission.lmsp',
+            file: '/samples/demo_cityshaper_cranemission.lmsp',
             label: 'EV3Classroom blocks',
-            icon: './static/img/devtype_ev3classroom.png',
+            icon: 'ev3classroom',
             alt: 'LEGO EV3 Classroom',
         },
         {
-            file: './static/samples/demo_cityshaper_cranemission.ev3',
+            file: '/samples/demo_cityshaper_cranemission.ev3',
             label: 'EV3Lab EV3G',
-            icon: './static/img/devtype_ev3g.png',
+            icon: 'ev3g',
             alt: 'LEGO EV3 Lab',
         },
         {
-            file: './static/samples/demo_cityshaper_cranemission.rbf',
+            file: '/samples/demo_cityshaper_cranemission.rbf',
             label: 'EV3Lab RBF',
-            icon: './static/img/devtype_ev3b.png',
+            icon: 'ev3b',
             alt: 'LEGO EV3 Lab Binary',
         },
     ];
@@ -121,20 +122,14 @@ const FileSelector: React.FC<FileSelectorProps> = ({
                             <div key={example.file}>
                                 <Badge
                                     pill
-                                    // key={example.file}
                                     data-file={example.file}
-                                    // bg="primary"
                                     onClick={handleExampleButtonClick}
                                     as="a"
                                     href="#"
                                     className="example-content-button"
                                 >
                                     {example.label}
-                                    <img
-                                        src={example.icon}
-                                        alt={example.alt}
-                                        title={example.alt}
-                                    />
+                                    <DevTypeIcon devtype={example.icon} />
                                 </Badge>
                             </div>
                         ))}

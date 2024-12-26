@@ -1,11 +1,8 @@
-[![Build and Deploy to Github-Pages](https://github.com/afarago/blpy.attilafarago.hu/actions/workflows/build-deploy-pages.yml/badge.svg)](https://github.com/afarago/blpy.attilafarago.hu/actions/workflows/build-deploy-pages.yml)
+# React + Vite
 
-# 🚀 Welcome to your new awesome project!
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-This project has been created using **webpack-cli**, you can now run
+Currently, two official plugins are available:
 
-```
-npm run build
-```
-
-to bundle your application
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh

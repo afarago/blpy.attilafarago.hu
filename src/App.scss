@@ -72,14 +72,14 @@ header nav {
         margin: 0.2em;
     }
 
-    i.tranform-caret-icon {
+    .tranform-caret-icon {
         color: $icon-color;
         font-size: calc($icon-size * 0.5);
         display: inline-block;
         vertical-align: middle;
     }
 
-    i.drop-cloud-icon {
+    .drop-cloud-icon {
         font-size: $icon-size-big;
         color: $icon-color;
         line-height: 1em;

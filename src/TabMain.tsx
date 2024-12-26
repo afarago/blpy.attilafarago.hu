@@ -1,7 +1,10 @@
+import { CheckLg, Copy, Download } from 'react-bootstrap-icons';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import CallGraph from './CallGraph';
+import { CatIcon } from './CatIcon';
 import Col from 'react-bootstrap/Col';
+import { DevTypeIcon } from './DevTypeIcon';
 import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Panzoom from '@panzoom/panzoom';
@@ -83,6 +86,8 @@ const MainTab: React.FC<MainTabProps> = ({
                     });
                 }
             } catch (e) {
+                console.error('::ERROR::', e);
+            } finally {
                 setTimeout(() => setIsCopying(false), 1000);
             }
 
@@ -177,27 +182,16 @@ const MainTab: React.FC<MainTabProps> = ({
                                 </Nav.Link>
                             </Nav.Item>
                             <Nav.Item className="py-2 ms-auto tabheader">
-                                <svg
-                                    className={
+                                <CatIcon
+                                    slot={
                                         conversionResult?.additionalFields?.blockly
-                                            ?.slot === undefined
-                                            ? 'd-none'
-                                            : 'mx-2'
+                                            ?.slot
                                     }
-                                >
-                                    <use
-                                        href={`./static/img/cat${conversionResult?.additionalFields?.blockly?.slot}.svg#dsmIcon`}
-                                        xlinkHref={`./static/img/cat${conversionResult?.additionalFields?.blockly?.slot}.svg#dsmIcon`}
-                                    ></use>
-                                </svg>
-                                <img
-                                    src={
-                                        conversionResult
-                                            ? `./static/img/devtype_${conversionResult?.devicetype}.png`
-                                            : undefined
-                                    }
-                                    alt="Device type"
-                                ></img>
+                                />
+                                <DevTypeIcon
+                                    devtype={conversionResult?.devicetype}
+                                    className={conversionResult ? '' : 'd-none'}
+                                />
                             </Nav.Item>
                         </Nav>
                     </Row>
@@ -245,17 +239,13 @@ const MainTab: React.FC<MainTabProps> = ({
                                     onClick={handleCopyButtonClick}
                                     title="Copy code (ctrl/cmd+c)"
                                 >
-                                    <i
-                                        className={classNames('bi', {
-                                            'bi-copy':
-                                                !isCopying &&
-                                                !['preview', 'callgraph'].includes(key),
-                                            'bi-download':
-                                                !isCopying &&
-                                                ['preview', 'callgraph'].includes(key),
-                                            'bi-check-lg': isCopying,
-                                        })}
-                                    ></i>
+                                    {isCopying ? (
+                                        <CheckLg />
+                                    ) : ['preview', 'callgraph'].includes(key) ? (
+                                        <Download />
+                                    ) : (
+                                        <Copy />
+                                    )}
                                 </button>
                             </div>
 

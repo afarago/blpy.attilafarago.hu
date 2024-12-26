@@ -1,19 +1,24 @@
+import { CaretRight, CloudArrowUpFill } from 'react-bootstrap-icons';
+
+import { DevTypeIcon } from './DevTypeIcon';
 import React from 'react';
 import classNames from 'classnames';
 
 const WelcomeTab: React.FC<{ isInitial: boolean }> = ({ isInitial }) => {
-    const icons: { src?: string; alt?: string; block?: React.ReactElement }[] = [
-        { src: './static/img/devtype_spike.png', alt: 'LEGO SPIKE' },
-        { src: './static/img/devtype_robotinventor.png', alt: 'LEGO Robot Inventor' },
-        { src: './static/img/devtype_ev3classroom.png', alt: 'LEGO EV3 Classroom' },
-        { src: './static/img/devtype_ev3g.png', alt: 'LEGO EV3 Lab' },
-        { src: './static/img/devtype_ev3b.png', alt: 'LEGO EV3 Lab Binary' },
+    const icons: {
+        src?: string;
+        alt?: string;
+        block?: React.ReactElement;
+    }[] = [
+        { src: 'spike' },
+        { src: 'robotinventor' },
+        { src: 'ev3classroom' },
+        { src: 'ev3g' },
+        { src: 'ev3b' },
         {
-            block: (
-                <i key="caret" className="tranform-caret-icon bi bi-caret-right"></i>
-            ),
+            block: <CaretRight key="caretright" className="tranform-caret-icon " />,
         },
-        { src: './static/img/devtype_pybricks.png', alt: 'Pybricks' },
+        { src: 'pybricks' },
     ];
 
     return (
@@ -34,7 +39,7 @@ const WelcomeTab: React.FC<{ isInitial: boolean }> = ({ isInitial }) => {
             <div className="d-flex flex-column flex-fill justify-content-center">
                 <div className="text-center mb-5">
                     <div>
-                        <i className="drop-cloud-icon bi bi-cloud-arrow-up-fill"></i>
+                        <CloudArrowUpFill className="drop-cloud-icon" />
                     </div>
                     <div className="mb-4">
                         Imagine a world where magical unicorns transform your
@@ -49,12 +54,10 @@ const WelcomeTab: React.FC<{ isInitial: boolean }> = ({ isInitial }) => {
                                 return icon.block;
                             } else {
                                 return (
-                                    <img
+                                    <DevTypeIcon
                                         key={icon.src}
-                                        src={icon.src}
+                                        devtype={icon.src}
                                         className="icon"
-                                        alt={icon.alt}
-                                        title={icon.alt}
                                     />
                                 );
                             }
