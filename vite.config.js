@@ -59,7 +59,7 @@ export default defineConfig({
                         extType = 'img';
                     } else if (/css|woff|woff2/.test(extType)) {
                         extType = 'css';
-                    } else if (/llsp3|lsm|lms|lmsp|ev3|rbf/.test(extType)) {
+                    } else if (/llsp3?|lsm|lms|lmsp|ev3|rbf/.test(extType)) {
                         extType = 'lego';
                     }
                     return `assets/${extType}/[name]-[hash][extname]`;
