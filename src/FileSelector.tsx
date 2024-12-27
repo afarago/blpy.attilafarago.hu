@@ -102,7 +102,7 @@ const FileSelector: React.FC<FileSelectorProps> = ({
             <Form.Group controlId="file-selector">
                 <Form.Control
                     type="file"
-                    accept=".llsp,.lms,.lmsp,.llsp3,.ev3,.ev3m,.rbf"
+                    accept=".llsp,.lms,.lmsp,.llsp3,.ev3,.ev3m,.rbf,.py,.zip"
                     ref={fileInputRef}
                     onChange={handleFileOpen}
                 />

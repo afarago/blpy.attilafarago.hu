@@ -13,7 +13,15 @@ export default defineConfig({
             '~bootstrap': path.resolve(__dirname, 'node_modules/bootstrap'),
         },
     },
-    assetsInclude: ['**/*.llsp3', '**/*.lms', '**/*.ev3', '**/*.rbf', '**/*.lmsp'],
+    assetsInclude: [
+        '**/*.llsp3',
+        '**/*.lms',
+        '**/*.ev3',
+        '**/*.rbf',
+        '**/*.lmsp',
+        '**/*.py',
+        '**/*.zip',
+    ],
     server: {
         //   port: 8080,
         hot: true,

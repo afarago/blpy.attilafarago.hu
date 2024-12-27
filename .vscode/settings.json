@@ -5,7 +5,7 @@
     },
     "liveServer": {
         "settings": {
-            "root": "/build"
+            "root": "/dist"
         }
     },
     "github-actions.workflows.pinned.workflows": [".github/workflows/webpack.yml"]

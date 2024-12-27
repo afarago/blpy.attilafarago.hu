@@ -160,7 +160,9 @@ const MainTab: React.FC<MainTabProps> = ({
                                     Python
                                 </Nav.Link>
                             </Nav.Item>
-                            <Nav.Item>
+                            <Nav.Item
+                                className={conversionResult?.plaincode ? '' : 'd-none'}
+                            >
                                 <Nav.Link
                                     eventKey="pseudocode"
                                     title="pseudocode (ctrl+2)"
