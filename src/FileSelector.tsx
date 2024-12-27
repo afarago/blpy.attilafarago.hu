@@ -39,8 +39,8 @@ const FileSelector: React.FC<FileSelectorProps> = ({
             if (!fileName) return;
 
             const file = new File([blob], fileName);
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
+            // const dataTransfer = new DataTransfer();
+            // dataTransfer.items.add(file);
 
             setSelectedFile(file);
         } catch (error) {
@@ -102,7 +102,7 @@ const FileSelector: React.FC<FileSelectorProps> = ({
             <Form.Group controlId="file-selector">
                 <Form.Control
                     type="file"
-                    accept=".llsp,.lms,.lmsp,.llsp3,.ev3,.ev3m,.rbf,.py,.zip"
+                    accept=".llsp,.lms,.lmsp,.llsp3,.ev3,.ev3m,.rbf,.py"
                     ref={fileInputRef}
                     onChange={handleFileOpen}
                 />

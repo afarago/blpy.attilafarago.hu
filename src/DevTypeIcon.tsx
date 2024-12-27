@@ -2,6 +2,7 @@ import DevtypeEV3B from './img/devtype_ev3b.png';
 import DevtypeEV3C from './img/devtype_ev3classroom.png';
 import DevtypeEV3G from './img/devtype_ev3g.png';
 import DevtypePybricks from './img/devtype_pybricks.png';
+import DevtypePython from './img/devtype_python.png';
 import DevtypeRobotInventor from './img/devtype_robotinventor.png';
 import DevtypeSpike from './img/devtype_spike.png';
 import React from 'react';
@@ -32,6 +33,9 @@ export const DevTypeIcon: React.FC<DevTypeIconProps> = ({ devtype, className }) 
                 break;
             case 'spike':
                 prop = { src: DevtypeSpike, alt: 'LEGO SPIKE' };
+                break;
+            case 'python':
+                prop = { src: DevtypePython, alt: 'LEGO SPIKE' };
                 break;
         }
         return <img src={prop.src} alt={prop.alt} className={className} />;
