@@ -209,19 +209,28 @@ header nav {
 }
 
 .example-content-button {
-    background-color: #6495ed !important;
+    background-color: #bed2f4 !important;
+    color: black !important;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
     img {
         margin-left: 0.5em;
         height: $mini-icon-size;
         width: $mini-icon-size;
-        opacity: 0.5;
+        // opacity: 0.6;
+        border-radius: 10px;
     }
     &:hover {
-        left: 2px;
-        bottom: 1px;
-        position: relative;
+        // left: 2px;
+        // bottom: 1px;
+        // position: relative;
+        background-color: #4a82eb !important;
+        color: white !important;
+        // outline: 2px solid #6495ed;
         img {
-            opacity: 1;
+            // opacity: 1;
+            outline: 2px solid #bed2f4;
         }
     }
 }

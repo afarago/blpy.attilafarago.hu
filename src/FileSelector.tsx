@@ -120,7 +120,7 @@ const FileSelector: React.FC<FileSelectorProps> = ({
                                     onClick={handleExampleButtonClick}
                                     as="a"
                                     href="#"
-                                    className="example-content-button"
+                                    className="example-content-button bg-light text-dark"
                                 >
                                     {example.label}
                                     <DevTypeIcon devtype={example.icon} />
