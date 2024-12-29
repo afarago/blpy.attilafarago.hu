@@ -17,7 +17,7 @@
         "@svgr/plugin-jsx": "^8.1.0",
         "@svgr/plugin-svgo": "^8.1.0",
         "@viz-js/viz": "^3.11.0",
-        "blocklypy": "^0.0.40",
+        "blocklypy": "^0.0.41",
         "bootstrap": "^5.3.3",
         "bootstrap-icons": "^1.11.3",
         "classnames": "^2.5.1",
