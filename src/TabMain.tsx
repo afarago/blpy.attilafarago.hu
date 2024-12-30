@@ -24,6 +24,10 @@ interface MainTabProps {
     selectedFile?: File;
 }
 
+const TAB_PYCODE = 'pycode';
+const TAB_PLAINCODE = 'plaincode';
+const TAB_PREVIEW = 'preview';
+const TAB_CALLGRAPH = 'callgraph';
 const MainTab: React.FC<MainTabProps> = ({
     isInitial,
     svgContent,
@@ -32,7 +36,7 @@ const MainTab: React.FC<MainTabProps> = ({
     setIsAdditionalCommentsChecked,
     selectedFile,
 }) => {
-    const [key, setKey] = useState('pycode');
+    const [key, setKey] = useState(TAB_PYCODE);
     const [isCopying, setIsCopying] = useState(false);
     const svgRef = useRef<HTMLDivElement>(null);
     const graphRef = useRef(null);
@@ -54,19 +58,19 @@ const MainTab: React.FC<MainTabProps> = ({
 
             try {
                 setIsCopying(true);
-                if (key === 'pycode' || key === 'pseudocode') {
+                if (key === TAB_PYCODE || key === TAB_PLAINCODE) {
                     const content =
-                        key === 'pycode'
+                        key === TAB_PYCODE
                             ? conversionResult?.pycode
                             : conversionResult?.plaincode;
                     navigator.clipboard.writeText(content ?? '');
-                } else if (key === 'preview' || key === 'callgraph') {
+                } else if (key === TAB_PREVIEW || key === TAB_CALLGRAPH) {
                     let ref: React.RefObject<HTMLDivElement | null> | undefined;
                     let ext: string;
-                    if (key === 'preview') {
+                    if (key === TAB_PREVIEW) {
                         ref = svgRef;
                         ext = 'preview';
-                    } else if (key === 'callgraph') {
+                    } else if (key === TAB_CALLGRAPH) {
                         ref = graphRef;
                         ext = 'graph';
                     }
@@ -102,10 +106,10 @@ const MainTab: React.FC<MainTabProps> = ({
         return baseName;
     };
 
-    useHotkeys('control+1', () => setKey('pycode'));
-    useHotkeys('control+2', () => setKey('pseudocode'));
-    useHotkeys('control+3', () => setKey('callgraph'));
-    useHotkeys('control+4', () => setKey('preview'));
+    useHotkeys('control+1', () => setKey(TAB_PYCODE));
+    useHotkeys('control+2', () => setKey(TAB_PLAINCODE));
+    useHotkeys('control+3', () => setKey(TAB_CALLGRAPH));
+    useHotkeys('control+4', () => setKey(TAB_PREVIEW));
     useHotkeys(
         'mod+e',
         () => toggleIsAdditionalCommentsChecked(),
@@ -135,159 +139,174 @@ const MainTab: React.FC<MainTabProps> = ({
     }, [svgRef, key]);
 
     useEffect(() => {
-        if (!svgContent && key === 'preview') {
-            setKey('pycode');
+        if (!svgContent && key === TAB_PREVIEW) {
+            setKey(TAB_PYCODE);
         }
     }, [svgContent, key]);
 
     return (
-        <div
-            className={classNames('tab-main', 'flex-column', 'flex-fill', 'p-2', {
-                'd-flex': !isInitial,
-                'd-none': isInitial,
-            })}
-        >
-            <Tab.Container
-                activeKey={key}
-                onSelect={(k) => setKey(k ?? '')}
-                defaultActiveKey="pycode"
-            >
-                <Col>
-                    <Row sm={9} style={{ zIndex: 1, position: 'relative' }}>
-                        <Nav variant="tabs" className="flex-rows px-0">
-                            <Nav.Item>
-                                <Nav.Link eventKey="pycode" title="pycode (ctrl+1)">
-                                    Python
-                                </Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item
-                                className={conversionResult?.plaincode ? '' : 'd-none'}
-                            >
-                                <Nav.Link
-                                    eventKey="pseudocode"
-                                    title="pseudocode (ctrl+2)"
-                                >
-                                    Pseudocode
-                                </Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link
-                                    eventKey="callgraph"
-                                    title="call graph (ctrl+3)"
-                                >
-                                    Call Graph
-                                </Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item className={svgContent ? '' : 'd-none'}>
-                                <Nav.Link eventKey="preview" title="preview (ctrl+4)">
-                                    Preview
-                                </Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item className="py-2 ms-auto tabheader">
-                                <CatIcon
-                                    slot={
-                                        conversionResult?.additionalFields?.blockly
-                                            ?.slot
+        !isInitial && (
+            <div className="tab-main flex-column flex-fill p-2 d-flex">
+                <Tab.Container
+                    activeKey={key}
+                    onSelect={(k) => setKey(k ?? '')}
+                    defaultActiveKey={TAB_PYCODE}
+                >
+                    <Col>
+                        <Row sm={9} style={{ zIndex: 1, position: 'relative' }}>
+                            <Nav variant="tabs" className="flex-rows px-0">
+                                <Nav.Item>
+                                    <Nav.Link
+                                        eventKey={TAB_PYCODE}
+                                        title="pycode (ctrl+1)"
+                                    >
+                                        Python
+                                    </Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item
+                                    className={
+                                        conversionResult?.plaincode ? '' : 'd-none'
                                     }
-                                />
-                                <DevTypeIcon
-                                    devtype={conversionResult?.devicetype}
-                                    className={conversionResult ? '' : 'd-none'}
-                                />
-                            </Nav.Item>
-                        </Nav>
-                    </Row>
-                    <Row sm={9} className="position-relative" style={{ top: -1 }}>
-                        <Tab.Content className="h-75 border p-0 position-relative">
-                            <div
-                                className={classNames(
-                                    'svg-minimap',
-                                    'mt-5',
-                                    'px-3',
-                                    'float-right',
-                                    {
-                                        'd-none':
-                                            !svgContent ||
-                                            ['preview', 'callgraph'].includes(key),
-                                    },
-                                )}
-                                dangerouslySetInnerHTML={{
-                                    __html: svgContent || '',
-                                }}
-                                onClick={() => setKey('preview')}
-                                role="presentation"
-                            ></div>
-
-                            <div className="code-top-container">
-                                <Form.Check
-                                    type="switch"
-                                    id="additionalCommentsCheck" /* needed for the label to be clickable */
-                                    label="Explanatory&nbsp;Comments"
-                                    checked={isAdditionalCommentsChecked}
-                                    title="Add explanatory comments to the source code (ctrl/cmd+e)"
-                                    className={classNames({
-                                        'd-none': key !== 'pycode',
-                                    })}
-                                    onChange={handleSetIsAdditionalCommentsChecked}
-                                />
-                                <button
-                                    className={classNames(
-                                        'copy-button',
-                                        `copy-button-${key}`,
-                                        {
-                                            success: isCopying,
-                                        },
-                                    )}
-                                    onClick={handleCopyButtonClick}
-                                    title="Copy code (ctrl/cmd+c)"
                                 >
-                                    {isCopying ? (
-                                        <CheckLg />
-                                    ) : ['preview', 'callgraph'].includes(key) ? (
-                                        <Download />
-                                    ) : (
-                                        <Copy />
+                                    <Nav.Link
+                                        eventKey={TAB_PLAINCODE}
+                                        title="pseudocode (ctrl+2)"
+                                    >
+                                        Pseudocode
+                                    </Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link
+                                        eventKey={TAB_CALLGRAPH}
+                                        title="call graph (ctrl+3)"
+                                    >
+                                        Call Graph
+                                    </Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item className={svgContent ? '' : 'd-none'}>
+                                    <Nav.Link
+                                        eventKey={TAB_PREVIEW}
+                                        title="preview (ctrl+4)"
+                                    >
+                                        Preview
+                                    </Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item className="py-2 ms-auto tabheader">
+                                    {conversionResult?.additionalFields?.blockly
+                                        ?.slot !== undefined && (
+                                        <CatIcon
+                                            slot={
+                                                conversionResult?.additionalFields
+                                                    ?.blockly?.slot
+                                            }
+                                        />
                                     )}
-                                </button>
-                            </div>
+                                    {conversionResult?.devicetype && (
+                                        <DevTypeIcon
+                                            devtype={conversionResult?.devicetype}
+                                        />
+                                    )}
+                                </Nav.Item>
+                            </Nav>
+                        </Row>
+                        <Row sm={9} className="position-relative" style={{ top: -1 }}>
+                            <Tab.Content className="h-75 border p-0 position-relative">
+                                {svgContent &&
+                                    [TAB_PYCODE, TAB_PLAINCODE].includes(key) && (
+                                        <div
+                                            className="svg-minimap mt-5 px-3 float-right"
+                                            dangerouslySetInnerHTML={{
+                                                __html: svgContent || '',
+                                            }}
+                                            onClick={() => setKey(TAB_PREVIEW)}
+                                            role="presentation"
+                                        ></div>
+                                    )}
 
-                            {['pycode', 'pseudocode'].map((tabKey) => (
+                                <div className="code-top-container">
+                                    {key === TAB_PYCODE && (
+                                        <Form.Check
+                                            type="switch"
+                                            id="additionalCommentsCheck" /* needed for the label to be clickable */
+                                            label="Explanatory&nbsp;Comments"
+                                            checked={isAdditionalCommentsChecked}
+                                            title="Add explanatory comments to the source code (ctrl/cmd+e)"
+                                            onChange={
+                                                handleSetIsAdditionalCommentsChecked
+                                            }
+                                        />
+                                    )}
+                                    <button
+                                        className={classNames(
+                                            'copy-button',
+                                            `copy-button-${key}`,
+                                            {
+                                                success: isCopying,
+                                            },
+                                        )}
+                                        onClick={handleCopyButtonClick}
+                                        title="Copy code (ctrl/cmd+c)"
+                                    >
+                                        {isCopying ? (
+                                            <CheckLg />
+                                        ) : [TAB_PREVIEW, TAB_CALLGRAPH].includes(
+                                              key,
+                                          ) ? (
+                                            <Download />
+                                        ) : (
+                                            <Copy />
+                                        )}
+                                    </button>
+                                </div>
+
+                                {[TAB_PYCODE, TAB_PLAINCODE].map((tabKey) => (
+                                    <Tab.Pane
+                                        eventKey={tabKey}
+                                        className={`p-4 preview-${tabKey}`}
+                                        key={tabKey}
+                                    >
+                                        <pre>
+                                            {tabKey === TAB_PYCODE &&
+                                                tabKey === key &&
+                                                conversionResult?.pycode}
+                                            {tabKey === TAB_PLAINCODE &&
+                                                tabKey === key &&
+                                                conversionResult?.plaincode}
+                                        </pre>
+                                    </Tab.Pane>
+                                ))}
+
                                 <Tab.Pane
-                                    eventKey={tabKey}
-                                    className={`p-4 preview-${tabKey}`}
-                                    key={tabKey}
+                                    eventKey={TAB_CALLGRAPH}
+                                    className={`p-4 preview-callgraph`}
                                 >
-                                    <pre>
-                                        {tabKey === 'pycode'
-                                            ? conversionResult?.pycode
-                                            : conversionResult?.plaincode}
-                                    </pre>
+                                    {key === TAB_CALLGRAPH && (
+                                        <CallGraph
+                                            ref={graphRef}
+                                            conversionResult={conversionResult}
+                                        />
+                                    )}
                                 </Tab.Pane>
-                            ))}
 
-                            <Tab.Pane
-                                eventKey="callgraph"
-                                className={`p-4 preview-callgraph`}
-                            >
-                                <CallGraph
-                                    ref={graphRef}
-                                    conversionResult={conversionResult}
-                                />
-                            </Tab.Pane>
-
-                            <Tab.Pane eventKey="preview" className="p-4 preview-svg">
-                                <div
-                                    ref={svgRef}
-                                    dangerouslySetInnerHTML={{
-                                        __html: svgContent || '',
-                                    }}
-                                ></div>
-                            </Tab.Pane>
-                        </Tab.Content>
-                    </Row>
-                </Col>
-            </Tab.Container>
-        </div>
+                                <Tab.Pane
+                                    eventKey={TAB_PREVIEW}
+                                    className="p-4 preview-svg"
+                                >
+                                    {key === TAB_PREVIEW && (
+                                        <div
+                                            ref={svgRef}
+                                            dangerouslySetInnerHTML={{
+                                                __html: svgContent || '',
+                                            }}
+                                        ></div>
+                                    )}
+                                </Tab.Pane>
+                            </Tab.Content>
+                        </Row>
+                    </Col>
+                </Tab.Container>
+            </div>
+        )
     );
 };
 

@@ -212,6 +212,7 @@ header nav {
     background-color: #bed2f4 !important;
     color: black !important;
     text-decoration: none;
+    font-weight: normal;
     display: inline-flex;
     align-items: center;
     img {
@@ -235,16 +236,26 @@ header nav {
     }
 }
 
+.preview-callgraph.tab-pane {
+    display: grid;
+}
 .callgraph {
-    .graph {
-        .node {
-            cursor: pointer;
-        }
-        .node > polygon {
-            fill: white;
-        }
-        .node.selected > polygon {
-            fill: lightblue;
+    // @at-root .tab-pane:has(&) {
+    //     display: grid;
+    // }
+    svg {
+        width: 100%;
+        height: 100%;
+        .graph {
+            .node {
+                cursor: pointer;
+            }
+            .node > polygon {
+                fill: white;
+            }
+            .node.selected > polygon {
+                fill: lightblue;
+            }
         }
     }
 }

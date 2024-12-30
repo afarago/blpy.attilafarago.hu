@@ -79,6 +79,7 @@ export default defineConfig({
             },
             // preserveEntrySignatures: "strict",
         },
+        chunkSizeWarningLimit: 800, // ignore graphviz 739kb limit // TODO: selective ignore only for this chunk
         minify: 'esbuild',
         esbuild: { legalComments: 'none', minify: true },
         // minify: 'terser', // Use Terser for minification
