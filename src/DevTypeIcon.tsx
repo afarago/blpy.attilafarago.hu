@@ -35,10 +35,12 @@ export const DevTypeIcon: React.FC<DevTypeIconProps> = ({ devtype, className }) 
                 prop = { src: DevtypeSpike, alt: 'LEGO SPIKE' };
                 break;
             case 'python':
-                prop = { src: DevtypePython, alt: 'LEGO SPIKE' };
+                prop = { src: DevtypePython, alt: 'LEGO Python' };
                 break;
         }
-        return <img src={prop.src} alt={prop.alt} className={className} />;
+        return (
+            <img src={prop.src} alt={prop.alt} title={prop.alt} className={className} />
+        );
     };
 
     return renderIcon();

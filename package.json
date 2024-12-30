@@ -1,5 +1,5 @@
 {
-    "name": "my-vite-ts-project",
+    "name": "blocklypy-web",
     "private": true,
     "version": "0.0.0",
     "type": "module",
@@ -22,10 +22,10 @@
         "bootstrap-icons": "^1.11.3",
         "classnames": "^2.5.1",
         "dom-to-image": "^2.6.0",
-        "react": "^18.3.1",
+        "react": "^19.0.0",
         "react-bootstrap": "^2.10.7",
         "react-bootstrap-icons": "^1.11.5",
-        "react-dom": "^18.3.1",
+        "react-dom": "^19.0.0",
         "react-hotkeys-hook": "^4.6.1",
         "ts-graphviz": "^2.1.5",
         "web-vitals": "^4.2.4"
@@ -42,13 +42,13 @@
         "@types/dom-to-image": "^2.6.7",
         "@types/jest": "^29.5.14",
         "@types/json-schema": "^7.0.15",
-        "@types/react": "^18.3.18",
-        "@types/react-dom": "^18.3.5",
+        "@types/react": "^19.0.2",
+        "@types/react-dom": "^19.0.2",
         "@vitejs/plugin-react": "^4.3.4",
         "babel-jest": "^29.7.0",
         "eslint": "^9.17.0",
-        "eslint-plugin-react": "^7.37.2",
-        "eslint-plugin-react-hooks": "^5.0.0",
+        "eslint-plugin-react": "^7.37.3",
+        "eslint-plugin-react-hooks": "^5.1.0",
         "eslint-plugin-react-refresh": "^0.4.16",
         "file-loader": "^6.2.0",
         "globals": "^15.14.0",
@@ -59,7 +59,7 @@
         "sass-embedded": "^1.83.0",
         "ts-jest": "^29.2.5",
         "ts-node": "^10.9.2",
-        "vite": "^6.0.5",
+        "vite": "^6.0.6",
         "vite-plugin-svgr": "^4.3.0"
     }
 }

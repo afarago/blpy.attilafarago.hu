@@ -49,6 +49,13 @@ header nav {
 
 .tab-main {
     min-height: 30vh;
+    .row:first-child {
+        z-index: 1;
+        position: relative;
+    }
+    .row:nth-child(2) {
+        top: -1px;
+    }
     .tabheader {
         img,
         svg {

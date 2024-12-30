@@ -1,22 +1,27 @@
 import { CaretRight, CloudArrowUpFill } from 'react-bootstrap-icons';
+import React, { useContext } from 'react';
 
 import { DevTypeIcon } from './DevTypeIcon';
-import React from 'react';
-import classNames from 'classnames';
+import { MyContext } from './contexts/MyContext';
 
-const WelcomeTab: React.FC<{ isInitial: boolean }> = ({ isInitial }) => {
-    const icons: (React.ReactElement | string)[] = [
-        'spike',
-        'robotinventor',
-        'ev3classroom',
-        'ev3g',
-        'ev3b',
-        <CaretRight key="caretright" className="tranform-caret-icon " />,
-        'pybricks',
-    ];
+const icons: (React.ReactElement | string)[] = [
+    'spike',
+    'robotinventor',
+    'ev3classroom',
+    'ev3g',
+    'ev3b',
+    'python',
+    <CaretRight key="caretright" className="tranform-caret-icon " />,
+    'pybricks',
+];
+
+const WelcomeTab: React.FC = () => {
+    const context = useContext(MyContext);
+    if (!context) throw new Error('MyComponent must be used within a MyProvider');
+    const { conversionResult } = context;
 
     return (
-        isInitial && (
+        !conversionResult && (
             <div className="tab-welcome flex-row flex-fill active py-5 mb-5 d-flex">
                 <div className="d-flex flex-column flex-fill justify-content-center">
                     <div className="text-center mb-5">

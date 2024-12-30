@@ -1,41 +1,35 @@
 import { CheckLg, Copy, Download } from 'react-bootstrap-icons';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import CallGraph from './CallGraph';
 import { CatIcon } from './CatIcon';
 import Col from 'react-bootstrap/Col';
 import { DevTypeIcon } from './DevTypeIcon';
 import Form from 'react-bootstrap/Form';
+import { MyContext } from './contexts/MyContext';
 import Nav from 'react-bootstrap/Nav';
 import Panzoom from '@panzoom/panzoom';
-import { PyProjectResult } from 'blocklypy';
 import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';
 import classNames from 'classnames';
 import domtoimage from 'dom-to-image';
 import { useHotkeys } from 'react-hotkeys-hook';
 
-interface MainTabProps {
-    isInitial: boolean;
-    svgContent?: string;
-    conversionResult?: PyProjectResult;
-    isAdditionalCommentsChecked: boolean;
-    setIsAdditionalCommentsChecked: (checked: boolean) => void;
-    selectedFile?: File;
-}
-
 const TAB_PYCODE = 'pycode';
 const TAB_PLAINCODE = 'plaincode';
 const TAB_PREVIEW = 'preview';
 const TAB_CALLGRAPH = 'callgraph';
-const MainTab: React.FC<MainTabProps> = ({
-    isInitial,
-    svgContent,
-    conversionResult,
-    isAdditionalCommentsChecked,
-    setIsAdditionalCommentsChecked,
-    selectedFile,
-}) => {
+
+const MainTab: React.FC = () => {
+    const context = useContext(MyContext);
+    if (!context) throw new Error('MyComponent must be used within a MyProvider');
+    const {
+        filename,
+        conversionResult,
+        isAdditionalCommentsChecked,
+        setIsAdditionalCommentsChecked,
+    } = context;
+
     const [key, setKey] = useState(TAB_PYCODE);
     const [isCopying, setIsCopying] = useState(false);
     const svgRef = useRef<HTMLDivElement>(null);
@@ -74,7 +68,7 @@ const MainTab: React.FC<MainTabProps> = ({
                         ref = graphRef;
                         ext = 'graph';
                     }
-                    if (!ref?.current || !selectedFile) return;
+                    if (!ref?.current || !conversionResult || !filename) return;
                     // domtoimage.toBlob(svgRef.current, {}).then((data: Blob) => {
                     //     // copy image to clipboard
                     //     const data2 = [new ClipboardItem({ 'image/png': data })];
@@ -84,7 +78,7 @@ const MainTab: React.FC<MainTabProps> = ({
                         // download png file
                         const link = document.createElement('a');
                         link.href = dataUrl;
-                        link.download = `${getBaseName(selectedFile.name)}_${ext}.png`;
+                        link.download = `${getBaseName(filename)}_${ext}.png`;
                         // navigator.clipboard.writeText(dataUrl);
                         link.click();
                     });
@@ -97,7 +91,7 @@ const MainTab: React.FC<MainTabProps> = ({
 
             return false;
         },
-        [conversionResult, key, svgRef, selectedFile],
+        [conversionResult, key, svgRef, filename],
     );
 
     const getBaseName = (filename: string): string => {
@@ -138,17 +132,24 @@ const MainTab: React.FC<MainTabProps> = ({
         }
     }, [svgRef, key]);
 
+    function svgContentData() {
+        return conversionResult?.additionalFields?.blockly?.svg;
+    }
+    function isInitialState() {
+        return conversionResult === undefined;
+    }
+
     useEffect(() => {
         if (
-            (key === TAB_PREVIEW && !svgContent) ||
+            (key === TAB_PREVIEW && !svgContentData()) ||
             (key === TAB_PLAINCODE && !conversionResult?.plaincode)
         ) {
             setKey(TAB_PYCODE);
         }
-    }, [svgContent, key]);
+    }, [conversionResult, key]);
 
     return (
-        !isInitial && (
+        !isInitialState() && (
             <div className="tab-main flex-column flex-fill p-2 d-flex">
                 <Tab.Container
                     activeKey={key}
@@ -156,7 +157,8 @@ const MainTab: React.FC<MainTabProps> = ({
                     defaultActiveKey={TAB_PYCODE}
                 >
                     <Col>
-                        <Row sm={9} style={{ zIndex: 1, position: 'relative' }}>
+                        {/* Tab Headers */}
+                        <Row sm={9}>
                             <Nav variant="tabs" className="flex-rows px-0">
                                 <Nav.Item>
                                     <Nav.Link
@@ -186,7 +188,7 @@ const MainTab: React.FC<MainTabProps> = ({
                                         Call Graph
                                     </Nav.Link>
                                 </Nav.Item>
-                                <Nav.Item className={svgContent ? '' : 'd-none'}>
+                                <Nav.Item className={svgContentData() ? '' : 'd-none'}>
                                     <Nav.Link
                                         eventKey={TAB_PREVIEW}
                                         title="preview (ctrl+4)"
@@ -212,14 +214,16 @@ const MainTab: React.FC<MainTabProps> = ({
                                 </Nav.Item>
                             </Nav>
                         </Row>
-                        <Row sm={9} className="position-relative" style={{ top: -1 }}>
+
+                        {/* Tab Contents */}
+                        <Row sm={9} className="position-relative">
                             <Tab.Content className="h-75 border p-0 position-relative">
-                                {svgContent &&
+                                {svgContentData() &&
                                     [TAB_PYCODE, TAB_PLAINCODE].includes(key) && (
                                         <div
                                             className="svg-minimap mt-5 px-3 float-right"
                                             dangerouslySetInnerHTML={{
-                                                __html: svgContent || '',
+                                                __html: svgContentData() || '',
                                             }}
                                             onClick={() => setKey(TAB_PREVIEW)}
                                             role="presentation"
@@ -299,7 +303,7 @@ const MainTab: React.FC<MainTabProps> = ({
                                         <div
                                             ref={svgRef}
                                             dangerouslySetInnerHTML={{
-                                                __html: svgContent || '',
+                                                __html: svgContentData() || '',
                                             }}
                                         ></div>
                                     )}
