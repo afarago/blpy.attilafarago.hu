@@ -139,7 +139,10 @@ const MainTab: React.FC<MainTabProps> = ({
     }, [svgRef, key]);
 
     useEffect(() => {
-        if (!svgContent && key === TAB_PREVIEW) {
+        if (
+            (key === TAB_PREVIEW && !svgContent) ||
+            (key === TAB_PLAINCODE && !conversionResult?.plaincode)
+        ) {
             setKey(TAB_PYCODE);
         }
     }, [svgContent, key]);
