@@ -52,9 +52,19 @@ header nav {
     .row:first-child {
         z-index: 1;
         position: relative;
+        a {
+            .nav {
+                flex-wrap: nowrap;
+            }
+        }
     }
     .row:nth-child(2) {
         top: -1px;
+    }
+    .nav-item {
+        .bi {
+            margin-right: 0.25em;
+        }
     }
     .tabheader {
         img,

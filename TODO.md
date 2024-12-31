@@ -1,10 +1,13 @@
 # List of my TODO items
 
 ## NOW
-n/a
+
+-   dynamic loading of conversion/blpy for faster rendering
 
 ## NEXT
+
 n/a
 
 ## LATER
+
 n/a

@@ -1,4 +1,12 @@
-import { CheckLg, Copy, Download } from 'react-bootstrap-icons';
+import {
+    CheckLg,
+    CodeSlash,
+    Copy,
+    Diagram2,
+    Download,
+    FileEarmarkImage,
+    FiletypePy,
+} from 'react-bootstrap-icons';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import CallGraph from './CallGraph';
@@ -165,6 +173,7 @@ const MainTab: React.FC = () => {
                                         eventKey={TAB_PYCODE}
                                         title="pycode (ctrl+1)"
                                     >
+                                        <FiletypePy className="d-none d-md-inline" />
                                         Python
                                     </Nav.Link>
                                 </Nav.Item>
@@ -177,25 +186,32 @@ const MainTab: React.FC = () => {
                                         eventKey={TAB_PLAINCODE}
                                         title="pseudocode (ctrl+2)"
                                     >
+                                        <CodeSlash className="d-none d-md-inline" />
                                         Pseudocode
                                     </Nav.Link>
                                 </Nav.Item>
-                                <Nav.Item>
-                                    <Nav.Link
-                                        eventKey={TAB_CALLGRAPH}
-                                        title="call graph (ctrl+3)"
-                                    >
-                                        Call Graph
-                                    </Nav.Link>
-                                </Nav.Item>
-                                <Nav.Item className={svgContentData() ? '' : 'd-none'}>
-                                    <Nav.Link
-                                        eventKey={TAB_PREVIEW}
-                                        title="preview (ctrl+4)"
-                                    >
-                                        Preview
-                                    </Nav.Link>
-                                </Nav.Item>
+                                {conversionResult?.dependencygraph && (
+                                    <Nav.Item>
+                                        <Nav.Link
+                                            eventKey={TAB_CALLGRAPH}
+                                            title="call graph (ctrl+3)"
+                                        >
+                                            <Diagram2 className="d-none d-md-inline" />
+                                            Call Graph
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                )}
+                                {svgContentData() && (
+                                    <Nav.Item>
+                                        <Nav.Link
+                                            eventKey={TAB_PREVIEW}
+                                            title="preview (ctrl+4)"
+                                        >
+                                            <FileEarmarkImage className="d-none d-md-inline" />
+                                            Preview
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                )}
                                 <Nav.Item className="py-2 ms-auto tabheader">
                                     {conversionResult?.additionalFields?.blockly
                                         ?.slot !== undefined && (
