@@ -1,4 +1,5 @@
 import {
+    BookHalf,
     CheckLg,
     CodeSlash,
     Copy,
@@ -25,6 +26,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 
 const TAB_PYCODE = 'pycode';
 const TAB_PLAINCODE = 'plaincode';
+const TAB_EV3BDECOMPILED = 'ev3b_decompiled';
 const TAB_PREVIEW = 'preview';
 const TAB_CALLGRAPH = 'callgraph';
 
@@ -141,7 +143,10 @@ const MainTab: React.FC = () => {
     }, [svgRef, key]);
 
     function svgContentData() {
-        return conversionResult?.additionalFields?.blockly?.svg;
+        return conversionResult?.extra?.['blockly.svg'];
+    }
+    function rbfDecompileData() {
+        return conversionResult?.extra?.['ev3b.decompiled'];
     }
     function isInitialState() {
         return conversionResult === undefined;
@@ -150,7 +155,8 @@ const MainTab: React.FC = () => {
     useEffect(() => {
         if (
             (key === TAB_PREVIEW && !svgContentData()) ||
-            (key === TAB_PLAINCODE && !conversionResult?.plaincode)
+            (key === TAB_PLAINCODE && !conversionResult?.plaincode) ||
+            (key === TAB_EV3BDECOMPILED && !rbfDecompileData())
         ) {
             setKey(TAB_PYCODE);
         }
@@ -190,6 +196,18 @@ const MainTab: React.FC = () => {
                                         Pseudocode
                                     </Nav.Link>
                                 </Nav.Item>
+                                <Nav.Item
+                                    className={rbfDecompileData() ? '' : 'd-none'}
+                                >
+                                    <Nav.Link
+                                        eventKey={TAB_EV3BDECOMPILED}
+                                        title="decompiled"
+                                    >
+                                        <BookHalf className="d-none d-md-inline" />
+                                        Decompiled RBF
+                                    </Nav.Link>
+                                </Nav.Item>
+
                                 {conversionResult?.dependencygraph && (
                                     <Nav.Item>
                                         <Nav.Link
@@ -213,12 +231,13 @@ const MainTab: React.FC = () => {
                                     </Nav.Item>
                                 )}
                                 <Nav.Item className="py-2 ms-auto tabheader">
-                                    {conversionResult?.additionalFields?.blockly
-                                        ?.slot !== undefined && (
+                                    {conversionResult?.extra?.['blockly.slot'] !==
+                                        undefined && (
                                         <CatIcon
                                             slot={
-                                                conversionResult?.additionalFields
-                                                    ?.blockly?.slot
+                                                conversionResult?.extra?.[
+                                                    'blockly.slot'
+                                                ]
                                             }
                                         />
                                     )}
@@ -285,7 +304,7 @@ const MainTab: React.FC = () => {
                                 {[TAB_PYCODE, TAB_PLAINCODE].map((tabKey) => (
                                     <Tab.Pane
                                         eventKey={tabKey}
-                                        className={`p-4 preview-${tabKey}`}
+                                        className={`p-4 code preview-${tabKey}`}
                                         key={tabKey}
                                     >
                                         <pre>
@@ -322,6 +341,15 @@ const MainTab: React.FC = () => {
                                                 __html: svgContentData() || '',
                                             }}
                                         ></div>
+                                    )}
+                                </Tab.Pane>
+
+                                <Tab.Pane
+                                    eventKey={TAB_EV3BDECOMPILED}
+                                    className={`p-4 code preview-decompiled`}
+                                >
+                                    {key === TAB_EV3BDECOMPILED && (
+                                        <pre>{rbfDecompileData()}</pre>
                                     )}
                                 </Tab.Pane>
                             </Tab.Content>

@@ -58,12 +58,16 @@ const AppContent: React.FC = () => {
                 const input = await file.arrayBuffer();
                 const options: PyConverterOptions = {
                     filename: file.name,
-                    debug: isAdditionalCommentsChecked
-                        ? { showExplainingComments: true }
-                        : {},
+                    debug: {
+                        'ev3b.decompiled': true,
+                        ...(isAdditionalCommentsChecked
+                            ? { showExplainingComments: true }
+                            : {}),
+                    },
                 };
 
                 const retval = await convertProjectToPython(input, options);
+                console.log('Conversion result:', retval);
 
                 setToastMessage(undefined);
                 setConversionResult(retval);
