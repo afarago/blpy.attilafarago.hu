@@ -67,7 +67,6 @@ const AppContent: React.FC = () => {
                 };
 
                 const retval = await convertProjectToPython(input, options);
-                console.log('Conversion result:', retval);
 
                 setToastMessage(undefined);
                 setConversionResult(retval);
