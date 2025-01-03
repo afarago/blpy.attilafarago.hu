@@ -5,7 +5,7 @@ const Footer: React.FC = () => (
     <footer className="border-top footer text-muted">
         <div className="mx-5">
             &copy; Attila Faragó - <a href="https://github.com/afarago">@afarago</a> -{' '}
-            <span title={GITHUB_VERSION}>2024</span>
+            <span title={GITHUB_VERSION}>2025</span>
         </div>
     </footer>
 );

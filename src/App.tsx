@@ -18,7 +18,7 @@ const App: React.FC = () => {
 
     return (
         <MyProvider>
-            <div className="App d-flex flex-column flex-fill">
+            <div className="App ">
                 <Header />
                 <Toast
                     onClose={() => setToastMessage(undefined)}
