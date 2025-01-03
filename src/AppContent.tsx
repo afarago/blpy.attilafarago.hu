@@ -44,8 +44,12 @@ const useDragAndDrop = (
 const AppContent: React.FC = () => {
     const context = useContext(MyContext);
     if (!context) throw new Error('MyComponent must be used within a MyProvider');
-    const { isAdditionalCommentsChecked, setConversionResult, setToastMessage } =
-        context;
+    const {
+        isAdditionalCommentsChecked,
+        setConversionResult,
+        setToastMessage,
+        setFilename,
+    } = context;
 
     const [selectedFile, setSelectedFile] = useState<File>();
 
@@ -68,6 +72,7 @@ const AppContent: React.FC = () => {
 
                 const retval = await convertProjectToPython(input, options);
 
+                setFilename(file.name);
                 setToastMessage(undefined);
                 setConversionResult(retval);
             } catch (error) {
@@ -78,6 +83,7 @@ const AppContent: React.FC = () => {
                         : 'An unknown error occurred.',
                 );
                 setConversionResult(undefined);
+                setFilename(undefined);
             }
         },
         [isAdditionalCommentsChecked],

@@ -3,7 +3,6 @@ import React, { useEffect, useRef } from 'react';
 import Badge from 'react-bootstrap/Badge';
 import { DevTypeIcon } from './DevTypeIcon';
 import Form from 'react-bootstrap/Form';
-import Stack from 'react-bootstrap/Stack';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 interface FileSelectorProps {
@@ -96,6 +95,11 @@ const FileSelector: React.FC<FileSelectorProps> = ({
             label: 'EV3Lab RBF',
             icon: 'ev3b',
         },
+        {
+            file: '/samples/demo_cityshaper_cranemission.py',
+            label: 'Pybricks Python',
+            icon: 'pybricks',
+        },
     ];
 
     return (
@@ -110,9 +114,11 @@ const FileSelector: React.FC<FileSelectorProps> = ({
             </Form.Group>
 
             <div className="file-examples col-sm-12 m-0 p-0 pt-1">
-                <small>
-                    <Stack direction="horizontal" gap={2}>
+                <small className="d-flex flex-row flex-nowrap align-items-baseline">
+                    <div>
                         <b>Examples:</b>
+                    </div>
+                    <div className="p-2 flex-fill d-flex gap-1 flex-wrap">
                         {examples.map((example, index) => (
                             <div key={example.file}>
                                 <Badge
@@ -128,7 +134,7 @@ const FileSelector: React.FC<FileSelectorProps> = ({
                                 </Badge>
                             </div>
                         ))}
-                    </Stack>
+                    </div>
                 </small>
             </div>
         </div>

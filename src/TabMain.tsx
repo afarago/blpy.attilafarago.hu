@@ -55,43 +55,83 @@ const MainTab: React.FC = () => {
         setIsAdditionalCommentsChecked(!isAdditionalCommentsChecked);
     }, [setIsAdditionalCommentsChecked, isAdditionalCommentsChecked]);
 
+    const REFMAP = {
+        [TAB_PREVIEW]: { ref: svgRef, ext: 'preview' },
+        [TAB_CALLGRAPH]: { ref: graphRef, ext: 'graph' },
+    };
     const handleCopyButtonClick = useCallback(
         (event?: React.MouseEvent<HTMLButtonElement>) => {
             event?.stopPropagation();
             event?.preventDefault();
 
             try {
+                if (!conversionResult || !conversionResult || !filename) return;
+
                 setIsCopying(true);
-                if (key === TAB_PYCODE || key === TAB_PLAINCODE) {
-                    const content =
-                        key === TAB_PYCODE
-                            ? conversionResult?.pycode
-                            : conversionResult?.plaincode;
-                    navigator.clipboard.writeText(content ?? '');
-                } else if (key === TAB_PREVIEW || key === TAB_CALLGRAPH) {
-                    let ref: React.RefObject<HTMLDivElement | null> | undefined;
-                    let ext: string;
-                    if (key === TAB_PREVIEW) {
-                        ref = svgRef;
-                        ext = 'preview';
-                    } else if (key === TAB_CALLGRAPH) {
-                        ref = graphRef;
-                        ext = 'graph';
-                    }
-                    if (!ref?.current || !conversionResult || !filename) return;
-                    // domtoimage.toBlob(svgRef.current, {}).then((data: Blob) => {
-                    //     // copy image to clipboard
-                    //     const data2 = [new ClipboardItem({ 'image/png': data })];
-                    //     navigator.clipboard.write(data2);
-                    // });
-                    domtoimage.toPng(ref.current, {}).then((dataUrl: string) => {
-                        // download png file
-                        const link = document.createElement('a');
-                        link.href = dataUrl;
-                        link.download = `${getBaseName(filename)}_${ext}.png`;
-                        // navigator.clipboard.writeText(dataUrl);
-                        link.click();
-                    });
+                let textcontent: string | undefined;
+                switch (key) {
+                    case TAB_PYCODE:
+                    case TAB_PLAINCODE:
+                        textcontent = conversionResult[key];
+                        navigator.clipboard.writeText(textcontent ?? '');
+                        break;
+
+                    case TAB_EV3BDECOMPILED:
+                        textcontent = rbfDecompileData();
+                        navigator.clipboard.writeText(textcontent ?? '');
+                        break;
+
+                    case TAB_PREVIEW:
+                    case TAB_CALLGRAPH:
+                        const { ref, ext } = REFMAP[key];
+                        // let ref: React.RefObject<HTMLDivElement | null> | undefined;
+                        // let ext: string;
+                        // if (key === TAB_PREVIEW) {
+                        //     ref = svgRef;
+                        //     ext = 'preview';
+                        // } else if (key === TAB_CALLGRAPH) {
+                        //     ref = graphRef;
+                        //     ext = 'graph';
+                        // }
+                        if (!ref?.current) return;
+
+                        // domtoimage.toBlob(svgRef.current, {}).then((data: Blob) => {
+                        //     // copy image to clipboard
+                        //     const data2 = [new ClipboardItem({ 'image/png': data })];
+                        //     navigator.clipboard.write(data2);
+                        // });
+
+                        domtoimage
+                            .toBlob(ref.current, {})
+                            .then((blob: Blob) => {
+                                const dataUrl = URL.createObjectURL(blob); // Create a temporary URL for the image data
+
+                                // Proceed with download using the temporary URL
+                                const link = document.createElement('a');
+                                link.href = dataUrl;
+                                link.download = `${getBaseName(filename)}_${ext}.png`;
+                                link.click();
+
+                                // Important: Release the object URL when it's no longer needed to avoid memory leaks
+                                URL.revokeObjectURL(dataUrl); // Release the temporary URL after the download
+                            })
+                            .catch((error) => {
+                                console.error('Error capturing image:', error);
+                            });
+
+                        // domtoimage
+                        //     .toPng(ref.current, {})
+                        //     .then((dataUrl: string) => {
+                        //         const link = document.createElement('a');
+                        //         link.href = dataUrl;
+                        //         link.download = `${getBaseName(filename)}_${ext}.png`;
+                        //         link.click();
+                        //         URL.revokeObjectURL(dataUrl);
+                        //     })
+                        //     .catch((error) => {
+                        //         console.error('Error capturing image:', error);
+                        //     });
+                        break;
                 }
             } catch (e) {
                 console.error('::ERROR::', e);
@@ -101,7 +141,7 @@ const MainTab: React.FC = () => {
 
             return false;
         },
-        [conversionResult, key, svgRef, filename],
+        [conversionResult, key, svgRef, filename, REFMAP, rbfDecompileData],
     );
 
     const getBaseName = (filename: string): string => {
@@ -275,6 +315,12 @@ const MainTab: React.FC = () => {
                                             title="Add explanatory comments to the source code (ctrl/cmd+e)"
                                             onChange={
                                                 handleSetIsAdditionalCommentsChecked
+                                            }
+                                            className={
+                                                conversionResult?.devicetype ===
+                                                'python'
+                                                    ? 'd-none'
+                                                    : ''
                                             }
                                         />
                                     )}
