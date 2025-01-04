@@ -65,7 +65,7 @@ const AppContent: React.FC = () => {
                     debug: {
                         'ev3b.decompiled': true,
                         ...(isAdditionalCommentsChecked
-                            ? { showExplainingComments: true }
+                            ? { showExplainingComments: true, showBlockIds: true }
                             : {}),
                     },
                 };
