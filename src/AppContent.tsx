@@ -8,8 +8,13 @@ import MainTab from './TabMain';
 import { MyContext } from './contexts/MyContext';
 import WelcomeTab from './TabWelcome';
 
+export interface IFileContent {
+    file: File;
+    builtin?: boolean;
+}
+
 const useDragAndDrop = (
-    setSelectedFile: React.Dispatch<React.SetStateAction<File | undefined>>,
+    setSelectedFile: React.Dispatch<React.SetStateAction<IFileContent | undefined>>,
 ) => {
     const [isDragging, setIsDragging] = useState(false);
 
@@ -32,7 +37,7 @@ const useDragAndDrop = (
             event.stopPropagation();
             event.preventDefault();
             setIsDragging(false);
-            setSelectedFile(event.dataTransfer?.files[0]);
+            setSelectedFile({ file: event.dataTransfer?.files[0], builtin: false });
         },
         [setSelectedFile],
     );
@@ -50,17 +55,17 @@ const AppContent: React.FC = () => {
         setFilename,
     } = context;
 
-    const [selectedFile, setSelectedFile] = useState<File>();
+    const [selectedFile, setSelectedFile] = useState<IFileContent>();
 
     const { isDragging, handleDragOver, handleDragLeave, handleDrop } =
         useDragAndDrop(setSelectedFile);
 
     const handleFileUpload = useCallback(
-        async (file: File) => {
+        async (file: IFileContent) => {
             try {
-                const input = await file.arrayBuffer();
+                const input = await file.file.arrayBuffer();
                 const options: PyConverterOptions = {
-                    filename: file.name,
+                    filename: file.file.name,
                     debug: {
                         'ev3b.decompiled': true,
                         ...(isAdditionalCommentsChecked
@@ -71,14 +76,14 @@ const AppContent: React.FC = () => {
 
                 const retval = await convertProjectToPython(input, options);
 
-                setFilename(file.name);
+                setFilename(file.file.name);
                 setToastMessage(undefined);
                 setConversionResult(retval);
             } catch (error) {
                 console.error('Error converting project to Python:', error);
                 setToastMessage(
                     error instanceof Error
-                        ? `${error.message} - ${file.name}`
+                        ? `${error.message} - ${file.file.name}`
                         : 'An unknown error occurred.',
                 );
                 setConversionResult(undefined);

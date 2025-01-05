@@ -1,13 +1,17 @@
 import React, { useEffect, useRef } from 'react';
 
+import { ACCEPTED_EXTENSIONS } from './constants';
 import Badge from 'react-bootstrap/Badge';
+import Button from 'react-bootstrap/esm/Button';
 import { DevTypeIcon } from './DevTypeIcon';
+import { Download } from 'react-bootstrap-icons';
 import Form from 'react-bootstrap/Form';
+import { IFileContent } from './AppContent';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 interface FileSelectorProps {
-    selectedFile: File | undefined;
-    setSelectedFile: (file: File | undefined) => void;
+    selectedFile: IFileContent | undefined;
+    setSelectedFile: (file: IFileContent | undefined) => void;
 }
 
 const FileSelector: React.FC<FileSelectorProps> = ({
@@ -19,14 +23,27 @@ const FileSelector: React.FC<FileSelectorProps> = ({
     const handleFileOpen = (event: React.ChangeEvent<HTMLInputElement>) => {
         const target = event.target as HTMLInputElement;
         if (target.files?.length) {
-            setSelectedFile(target.files[0]);
+            setSelectedFile({ file: target.files[0], builtin: false });
             target.blur();
         } else {
             updateFileInput(selectedFile);
         }
     };
 
-    const handleExampleButtonClick = async (
+    const handleExampleButtonDownloadClick = async () => {
+        if (!selectedFile) return;
+
+        const dataUrl = URL.createObjectURL(selectedFile.file);
+        const link = document.createElement('a');
+        link.href = dataUrl;
+        link.download = selectedFile.file.name;
+        link.click();
+
+        // Important: Release the object URL when it's no longer needed to avoid memory leaks
+        URL.revokeObjectURL(dataUrl); // Release the temporary URL after the download
+    };
+
+    const handleExampleButtonOpenClick = async (
         event: React.MouseEvent<HTMLButtonElement>,
     ) => {
         const path = (event.target as HTMLAnchorElement).dataset.file;
@@ -38,7 +55,7 @@ const FileSelector: React.FC<FileSelectorProps> = ({
             const fileName = path.split('/').pop();
             if (!fileName) return;
 
-            const file = new File([blob], fileName);
+            const file = { file: new File([blob], fileName), builtin: true };
             // const dataTransfer = new DataTransfer();
             // dataTransfer.items.add(file);
 
@@ -48,10 +65,10 @@ const FileSelector: React.FC<FileSelectorProps> = ({
         }
     };
 
-    const updateFileInput = (file?: File) => {
+    const updateFileInput = (file?: IFileContent) => {
         if (fileInputRef.current && file) {
             const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
+            dataTransfer.items.add(file.file);
             fileInputRef.current.files = dataTransfer.files;
         }
     };
@@ -104,13 +121,22 @@ const FileSelector: React.FC<FileSelectorProps> = ({
 
     return (
         <div>
-            <Form.Group controlId="file-selector">
+            <Form.Group controlId="file-selector" className="d-flex flex-row">
                 <Form.Control
                     type="file"
-                    accept=".llsp,.lms,.lmsp,.llsp3,.ev3,.ev3m,.rbf,.py"
+                    accept={ACCEPTED_EXTENSIONS}
                     ref={fileInputRef}
                     onChange={handleFileOpen}
                 />
+                {selectedFile?.builtin && (
+                    <Button
+                        className="btn-light"
+                        onClick={handleExampleButtonDownloadClick}
+                        title="Download example file"
+                    >
+                        <Download></Download>
+                    </Button>
+                )}
             </Form.Group>
 
             <div className="file-examples col-sm-12 m-0 p-0 pt-1">
@@ -124,7 +150,7 @@ const FileSelector: React.FC<FileSelectorProps> = ({
                                 <Badge
                                     pill
                                     data-file={example.file}
-                                    onClick={handleExampleButtonClick}
+                                    onClick={handleExampleButtonOpenClick}
                                     as="a"
                                     href="#"
                                     className="example-content-button bg-light text-dark"
