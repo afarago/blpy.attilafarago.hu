@@ -64,7 +64,7 @@ const MainTab: React.FC = () => {
             event?.preventDefault();
 
             try {
-                if (!conversionResult || !conversionResult || !filename) return;
+                if (!conversionResult || !filename) return;
 
                 setIsCopying(true);
                 let textcontent: string | undefined;
