@@ -7,7 +7,6 @@ import FileSelector from './FileSelector';
 import MainTab from './TabMain';
 import { MyContext } from './contexts/MyContext';
 import WelcomeTab from './TabWelcome';
-import classNames from 'classnames';
 
 const useDragAndDrop = (
     setSelectedFile: React.Dispatch<React.SetStateAction<File | undefined>>,
@@ -96,7 +95,7 @@ const AppContent: React.FC = () => {
     }, [selectedFile, handleFileUpload]);
 
     return (
-        <div className="container d-flex flex-column flex-fill">
+        <div className="appcontent container-md d-flex flex-column flex-fill">
             <h3>
                 SPIKE and EV3 to Pybricks Wizard{' '}
                 <small className="text-muted d-block d-lg-inline">
@@ -113,18 +112,12 @@ const AppContent: React.FC = () => {
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
-                    className={classNames(
-                        'main-content',
-                        'dropzone',
-                        'container',
-                        'pt-3',
-                        'd-flex',
-                        'flex-column',
-                        'flex-fill',
-                        {
-                            'drop-active': isDragging,
-                        },
-                    )}
+                    className={
+                        'main-content dropzone container-md pt-3 d-flex flex-column flex-fill' +
+                        isDragging
+                            ? 'drop-active'
+                            : ''
+                    }
                     role="presentation"
                 >
                     <FileSelector

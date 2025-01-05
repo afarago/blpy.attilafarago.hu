@@ -20,7 +20,6 @@
         "blocklypy": "^0.0.49",
         "bootstrap": "^5.3.3",
         "bootstrap-icons": "^1.11.3",
-        "classnames": "^2.5.1",
         "dom-to-image": "^2.6.0",
         "react": "^19.0.0",
         "react-bootstrap": "^2.10.7",

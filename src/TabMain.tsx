@@ -20,7 +20,6 @@ import Nav from 'react-bootstrap/Nav';
 import Panzoom from '@panzoom/panzoom';
 import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';
-import classNames from 'classnames';
 import domtoimage from 'dom-to-image';
 import { useHotkeys } from 'react-hotkeys-hook';
 
@@ -202,6 +201,44 @@ const MainTab: React.FC = () => {
         }
     }, [conversionResult, key]);
 
+    const tabListHeaders = [
+        {
+            key: TAB_PYCODE,
+            title: 'pycode (ctrl+1)',
+            icon: FiletypePy,
+            name: 'Python',
+            condition: true,
+        },
+        {
+            key: TAB_PLAINCODE,
+            title: 'pseudocode (ctrl+2)',
+            icon: CodeSlash,
+            name: 'Pseudocode',
+            condition: conversionResult?.plaincode !== undefined,
+        },
+        {
+            key: TAB_EV3BDECOMPILED,
+            title: 'decompiled',
+            icon: BookHalf,
+            name: 'Decompiled RBF',
+            condition: !!rbfDecompileData(),
+        },
+        {
+            key: TAB_CALLGRAPH,
+            title: 'call graph (ctrl+3)',
+            icon: Diagram2,
+            name: 'Call Graph',
+            condition: !!conversionResult?.dependencygraph,
+        },
+        {
+            key: TAB_PREVIEW,
+            title: 'preview (ctrl+4)',
+            icon: FileEarmarkImage,
+            name: 'Preview',
+            condition: !!svgContentData(),
+        },
+    ];
+
     return (
         !isInitialState() && (
             <div className="tab-main flex-column flex-fill p-2 d-flex">
@@ -211,65 +248,27 @@ const MainTab: React.FC = () => {
                     defaultActiveKey={TAB_PYCODE}
                 >
                     <Col>
-                        {/* Tab Headers */}
+                        {/* Tab Headers top line */}
                         <Row sm={9}>
                             <Nav variant="tabs" className="flex-rows px-0">
-                                <Nav.Item>
-                                    <Nav.Link
-                                        eventKey={TAB_PYCODE}
-                                        title="pycode (ctrl+1)"
-                                    >
-                                        <FiletypePy className="d-none d-md-inline" />
-                                        Python
-                                    </Nav.Link>
-                                </Nav.Item>
-                                <Nav.Item
-                                    className={
-                                        conversionResult?.plaincode ? '' : 'd-none'
-                                    }
-                                >
-                                    <Nav.Link
-                                        eventKey={TAB_PLAINCODE}
-                                        title="pseudocode (ctrl+2)"
-                                    >
-                                        <CodeSlash className="d-none d-md-inline" />
-                                        Pseudocode
-                                    </Nav.Link>
-                                </Nav.Item>
-                                <Nav.Item
-                                    className={rbfDecompileData() ? '' : 'd-none'}
-                                >
-                                    <Nav.Link
-                                        eventKey={TAB_EV3BDECOMPILED}
-                                        title="decompiled"
-                                    >
-                                        <BookHalf className="d-none d-md-inline" />
-                                        Decompiled RBF
-                                    </Nav.Link>
-                                </Nav.Item>
+                                {/* Tab headers */}
+                                {tabListHeaders.map(
+                                    (elem) =>
+                                        elem.condition && (
+                                            <Nav.Item key={elem.key}>
+                                                <Nav.Link
+                                                    eventKey={elem.key}
+                                                    title={`${elem.title}`}
+                                                    className="icon-link icon-link-hover"
+                                                >
+                                                    <elem.icon className="d-none d-md-inline" />
+                                                    {elem.name}
+                                                </Nav.Link>
+                                            </Nav.Item>
+                                        ),
+                                )}
 
-                                {conversionResult?.dependencygraph && (
-                                    <Nav.Item>
-                                        <Nav.Link
-                                            eventKey={TAB_CALLGRAPH}
-                                            title="call graph (ctrl+3)"
-                                        >
-                                            <Diagram2 className="d-none d-md-inline" />
-                                            Call Graph
-                                        </Nav.Link>
-                                    </Nav.Item>
-                                )}
-                                {svgContentData() && (
-                                    <Nav.Item>
-                                        <Nav.Link
-                                            eventKey={TAB_PREVIEW}
-                                            title="preview (ctrl+4)"
-                                        >
-                                            <FileEarmarkImage className="d-none d-md-inline" />
-                                            Preview
-                                        </Nav.Link>
-                                    </Nav.Item>
-                                )}
+                                {/* Extra icons */}
                                 <Nav.Item className="py-2 ms-auto tabheader">
                                     {conversionResult?.extra?.['blockly.slot'] !==
                                         undefined && (
@@ -293,6 +292,7 @@ const MainTab: React.FC = () => {
                         {/* Tab Contents */}
                         <Row sm={9} className="position-relative">
                             <Tab.Content className="h-75 border p-0 position-relative">
+                                {/* Mini-map */}
                                 {svgContentData() &&
                                     [TAB_PYCODE, TAB_PLAINCODE].includes(key) && (
                                         <div
@@ -305,33 +305,25 @@ const MainTab: React.FC = () => {
                                         ></div>
                                     )}
 
+                                {/* Top header - explanatiory comments; copy controls */}
                                 <div className="code-top-container">
-                                    {key === TAB_PYCODE && (
-                                        <Form.Check
-                                            type="switch"
-                                            id="additionalCommentsCheck" /* needed for the label to be clickable */
-                                            label="Explanatory&nbsp;Comments"
-                                            checked={isAdditionalCommentsChecked}
-                                            title="Add explanatory comments to the source code (ctrl/cmd+e)"
-                                            onChange={
-                                                handleSetIsAdditionalCommentsChecked
-                                            }
-                                            className={
-                                                conversionResult?.devicetype ===
-                                                'python'
-                                                    ? 'd-none'
-                                                    : ''
-                                            }
-                                        />
-                                    )}
-                                    <button
-                                        className={classNames(
-                                            'copy-button',
-                                            `copy-button-${key}`,
-                                            {
-                                                success: isCopying,
-                                            },
+                                    {key === TAB_PYCODE &&
+                                        conversionResult?.devicetype !== 'python' && (
+                                            <Form.Check
+                                                type="switch"
+                                                id="additionalCommentsCheck" /* needed for the label to be clickable */
+                                                label="Explanatory&nbsp;Comments"
+                                                checked={isAdditionalCommentsChecked}
+                                                title="Add explanatory comments to the source code (ctrl/cmd+e)"
+                                                onChange={
+                                                    handleSetIsAdditionalCommentsChecked
+                                                }
+                                            />
                                         )}
+                                    <button
+                                        className={`copy-button copy-button-${key} ${
+                                            isCopying ? 'success' : ''
+                                        }`}
                                         onClick={handleCopyButtonClick}
                                         title="Copy code (ctrl/cmd+c)"
                                     >

@@ -29,15 +29,23 @@ footer {
 }
 
 header {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    // position: sticky;
+    // top: 0;
+    // z-index: 1000;
+    transition: height 0.3s ease, padding 0.3s ease, font-size 0.3s ease;
     nav {
         background-color: $headerfooter-background-color;
     }
+    &.collapsed {
+        font-size: 0.5rem;
+        .navbar {
+            --bs-navbar-padding-y: 0.2rem;
+        }
+    }
 }
 
-.main-content {
+.appcontent {
+    margin-top: 6em;
     &::after {
         content: '';
         display: block;
@@ -47,7 +55,7 @@ header {
 
 .navbar-brand {
     white-space: normal;
-    text-align: center;
+    // text-align: center;
     word-break: break-all;
     font-size: 200%;
     padding-bottom: 0;
@@ -55,6 +63,10 @@ header {
     .brandlogo {
         position: relative;
         top: -5px;
+    }
+    .hidden {
+        visibility: hidden;
+        font-size: 1px;
     }
 }
 
@@ -67,6 +79,9 @@ header {
             .nav {
                 flex-wrap: nowrap;
             }
+        }
+        .icon-link-hover {
+            --bs-icon-link-transform: translate3d(0, -0.125rem, 0);
         }
     }
     .row:nth-child(2) {

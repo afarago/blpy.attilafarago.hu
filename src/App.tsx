@@ -1,17 +1,12 @@
 import './scss/App.scss';
 
-import { MyContext, MyProvider } from './contexts/MyContext';
-import { PyConverterOptions, PyProjectResult, convertProjectToPython } from 'blocklypy';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import AppContent from './AppContent';
-import FileSelector from './FileSelector';
 import Footer from './Footer';
 import Header from './Header';
-import MainTab from './TabMain';
+import { MyProvider } from './contexts/MyContext';
 import Toast from 'react-bootstrap/Toast';
-import WelcomeTab from './TabWelcome';
-import classNames from 'classnames';
 
 const App: React.FC = () => {
     const [toastMessage, setToastMessage] = useState<string>();
