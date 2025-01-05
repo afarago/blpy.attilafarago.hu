@@ -245,7 +245,7 @@ const MainTab: React.FC = () => {
 
     function getCopyIcon() {
         if (isCopying) return <CheckLg />;
-        if ([TAB_PREVIEW, TAB_CALLGRAPH].includes(key)) <Download />;
+        if ([TAB_PREVIEW, TAB_CALLGRAPH].includes(key)) return <Download />;
         return <Copy />;
     }
 

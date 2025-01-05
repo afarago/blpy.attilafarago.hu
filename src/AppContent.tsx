@@ -118,6 +118,8 @@ const AppContent: React.FC = () => {
                             ? 'drop-active'
                             : ''
                     }
+                    aria-dropeffect="move"
+                    role="presentation"
                 >
                     <FileSelector
                         selectedFile={selectedFile}
