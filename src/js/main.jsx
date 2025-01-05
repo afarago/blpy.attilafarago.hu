@@ -1,4 +1,3 @@
-// import "../index.css";
 import '../scss/styles.scss';
 
 import App from '../App.tsx';

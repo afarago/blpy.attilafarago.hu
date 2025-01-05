@@ -98,7 +98,7 @@ const AppContent: React.FC = () => {
         <div className="appcontent container-md d-flex flex-column flex-fill">
             <h3>
                 SPIKE and EV3 to Pybricks Wizard{' '}
-                <small className="text-muted d-block d-lg-inline">
+                <small className="text-muted d-sm-block d-none d-lg-inline">
                     block-code converter to Pybricks python code
                 </small>
             </h3>

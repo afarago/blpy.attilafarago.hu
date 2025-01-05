@@ -67,22 +67,22 @@ const FileSelector: React.FC<FileSelectorProps> = ({
     const examples = [
         {
             file: '/samples/demo_cityshaper_cranemission.llsp3',
-            label: 'SPIKE blocks',
+            label: 'SPIKE',
             icon: 'spike',
         },
         {
             file: '/samples/demo_iconblocks.llsp3',
-            label: 'SPIKE icon-blocks',
+            label: 'SPIKE icon blocks',
             icon: 'spike',
         },
         {
             file: '/samples/demo_cityshaper_cranemission.lms',
-            label: 'RobotInventor blocks',
+            label: 'RobotInventor',
             icon: 'robotinventor',
         },
         {
             file: '/samples/demo_cityshaper_cranemission.lmsp',
-            label: 'EV3Classroom blocks',
+            label: 'EV3Classroom',
             icon: 'ev3classroom',
         },
         {
@@ -115,10 +115,10 @@ const FileSelector: React.FC<FileSelectorProps> = ({
 
             <div className="file-examples col-sm-12 m-0 p-0 pt-1">
                 <small className="d-flex flex-row flex-nowrap align-items-baseline">
-                    <div>
+                    <div className="d-none d-sm-block pe-2">
                         <b>Examples:</b>
                     </div>
-                    <div className="p-2 flex-fill d-flex gap-1 flex-wrap">
+                    <div className="flex-fill d-flex gap-1 flex-wrap">
                         {examples.map((example, index) => (
                             <div key={example.file}>
                                 <Badge

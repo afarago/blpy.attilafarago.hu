@@ -28,7 +28,8 @@ const Header: React.FC = () => {
                     <div className="navbar-brand w-100">
                         <LogoFull height="1.5em" width="4em" className="brandlogo" />
                         &nbsp;
-                        <b>BlocklyPy</b>&nbsp;· LegoAppTools
+                        <b>BlocklyPy</b>
+                        <span className="d-none d-sm-inline">&nbsp;· LegoAppTools</span>
                         <div className={'float-end ' + (isScrolled ? '' : 'hidden')}>
                             <small>SPIKE and EV3 to Pybricks Wizard</small>
                         </div>
