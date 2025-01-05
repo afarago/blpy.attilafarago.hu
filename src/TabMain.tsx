@@ -82,54 +82,58 @@ const MainTab: React.FC = () => {
 
                     case TAB_PREVIEW:
                     case TAB_CALLGRAPH:
-                        const { ref, ext } = REFMAP[key];
-                        // let ref: React.RefObject<HTMLDivElement | null> | undefined;
-                        // let ext: string;
-                        // if (key === TAB_PREVIEW) {
-                        //     ref = svgRef;
-                        //     ext = 'preview';
-                        // } else if (key === TAB_CALLGRAPH) {
-                        //     ref = graphRef;
-                        //     ext = 'graph';
-                        // }
-                        if (!ref?.current) return;
+                        {
+                            const { ref, ext } = REFMAP[key];
+                            // let ref: React.RefObject<HTMLDivElement | null> | undefined;
+                            // let ext: string;
+                            // if (key === TAB_PREVIEW) {
+                            //     ref = svgRef;
+                            //     ext = 'preview';
+                            // } else if (key === TAB_CALLGRAPH) {
+                            //     ref = graphRef;
+                            //     ext = 'graph';
+                            // }
+                            if (!ref?.current) return;
 
-                        // domtoimage.toBlob(svgRef.current, {}).then((data: Blob) => {
-                        //     // copy image to clipboard
-                        //     const data2 = [new ClipboardItem({ 'image/png': data })];
-                        //     navigator.clipboard.write(data2);
-                        // });
+                            // domtoimage.toBlob(svgRef.current, {}).then((data: Blob) => {
+                            //     // copy image to clipboard
+                            //     const data2 = [new ClipboardItem({ 'image/png': data })];
+                            //     navigator.clipboard.write(data2);
+                            // });
 
-                        domtoimage
-                            .toBlob(ref.current, {})
-                            .then((blob: Blob) => {
-                                const dataUrl = URL.createObjectURL(blob); // Create a temporary URL for the image data
+                            domtoimage
+                                .toBlob(ref.current, {})
+                                .then((blob: Blob) => {
+                                    const dataUrl = URL.createObjectURL(blob); // Create a temporary URL for the image data
 
-                                // Proceed with download using the temporary URL
-                                const link = document.createElement('a');
-                                link.href = dataUrl;
-                                link.download = `${getBaseName(filename)}_${ext}.png`;
-                                link.click();
+                                    // Proceed with download using the temporary URL
+                                    const link = document.createElement('a');
+                                    link.href = dataUrl;
+                                    link.download = `${getBaseName(
+                                        filename,
+                                    )}_${ext}.png`;
+                                    link.click();
 
-                                // Important: Release the object URL when it's no longer needed to avoid memory leaks
-                                URL.revokeObjectURL(dataUrl); // Release the temporary URL after the download
-                            })
-                            .catch((error) => {
-                                console.error('Error capturing image:', error);
-                            });
+                                    // Important: Release the object URL when it's no longer needed to avoid memory leaks
+                                    URL.revokeObjectURL(dataUrl); // Release the temporary URL after the download
+                                })
+                                .catch((error) => {
+                                    console.error('Error capturing image:', error);
+                                });
 
-                        // domtoimage
-                        //     .toPng(ref.current, {})
-                        //     .then((dataUrl: string) => {
-                        //         const link = document.createElement('a');
-                        //         link.href = dataUrl;
-                        //         link.download = `${getBaseName(filename)}_${ext}.png`;
-                        //         link.click();
-                        //         URL.revokeObjectURL(dataUrl);
-                        //     })
-                        //     .catch((error) => {
-                        //         console.error('Error capturing image:', error);
-                        //     });
+                            // domtoimage
+                            //     .toPng(ref.current, {})
+                            //     .then((dataUrl: string) => {
+                            //         const link = document.createElement('a');
+                            //         link.href = dataUrl;
+                            //         link.download = `${getBaseName(filename)}_${ext}.png`;
+                            //         link.click();
+                            //         URL.revokeObjectURL(dataUrl);
+                            //     })
+                            //     .catch((error) => {
+                            //         console.error('Error capturing image:', error);
+                            //     });
+                        }
                         break;
                 }
             } catch (e) {
@@ -239,6 +243,12 @@ const MainTab: React.FC = () => {
         },
     ];
 
+    function getCopyIcon() {
+        if (isCopying) return <CheckLg />;
+        if ([TAB_PREVIEW, TAB_CALLGRAPH].includes(key)) <Download />;
+        return <Copy />;
+    }
+
     return (
         !isInitialState() && (
             <div className="tab-main flex-column flex-fill p-2 d-flex">
@@ -327,15 +337,7 @@ const MainTab: React.FC = () => {
                                         onClick={handleCopyButtonClick}
                                         title="Copy code (ctrl/cmd+c)"
                                     >
-                                        {isCopying ? (
-                                            <CheckLg />
-                                        ) : [TAB_PREVIEW, TAB_CALLGRAPH].includes(
-                                              key,
-                                          ) ? (
-                                            <Download />
-                                        ) : (
-                                            <Copy />
-                                        )}
+                                        {getCopyIcon()}
                                     </button>
                                 </div>
 

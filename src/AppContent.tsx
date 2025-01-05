@@ -1,6 +1,6 @@
 import './scss/App.scss';
 
-import { PyConverterOptions, PyProjectResult, convertProjectToPython } from 'blocklypy';
+import { PyConverterOptions, convertProjectToPython } from 'blocklypy';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 import FileSelector from './FileSelector';
@@ -118,7 +118,6 @@ const AppContent: React.FC = () => {
                             ? 'drop-active'
                             : ''
                     }
-                    role="presentation"
                 >
                     <FileSelector
                         selectedFile={selectedFile}
