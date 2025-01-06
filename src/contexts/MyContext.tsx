@@ -1,5 +1,5 @@
 // src/contexts/MyContext.tsx
-import { ReactNode, createContext, useState } from 'react';
+import { ReactNode, createContext, useRef, useState } from 'react';
 
 import { PyProjectResult } from 'blocklypy';
 
@@ -12,6 +12,7 @@ interface MyContextProps {
     setToastMessage: (value: string | undefined) => void;
     selectedFile?: IFileContent;
     setSelectedFile: (value: IFileContent | undefined) => void;
+    fileInputRef: React.RefObject<HTMLInputElement | null>;
 }
 
 export interface IFileContent {
@@ -27,6 +28,7 @@ const MyProvider = ({ children }: { children: ReactNode }) => {
     const [conversionResult, setConversionResult] = useState<PyProjectResult>();
     const [toastMessage, setToastMessage] = useState<string>();
     const [selectedFile, setSelectedFile] = useState<IFileContent>();
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     return (
         <MyContext.Provider
@@ -39,6 +41,7 @@ const MyProvider = ({ children }: { children: ReactNode }) => {
                 setToastMessage,
                 selectedFile,
                 setSelectedFile,
+                fileInputRef,
             }}
         >
             {children}

@@ -109,7 +109,7 @@ const AppContent: React.FC = () => {
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
                     className={
-                        'main-content dropzone container-md pt-3 d-flex flex-column flex-fill' +
+                        'main-content dropzone container-md py-3 d-flex flex-column flex-fill' +
                         (isDragging ? ' drop-active' : '')
                     }
                     aria-dropeffect="move"

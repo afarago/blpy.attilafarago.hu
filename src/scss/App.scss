@@ -18,14 +18,17 @@ footer {
     bottom: 0;
     right: 0;
     // text-align: right;
-    padding-top: 1em;
+    // padding-top: 1em;
     width: 100%;
-    height: 60px;
+    // height: 60px;
     background-color: $headerfooter-background-color;
 
     // position: sticky;
     // bottom: 0;
     // z-index: 1000;
+    .small {
+        font-size: 0.7em;
+    }
 }
 
 header {
@@ -127,6 +130,7 @@ header {
         font-size: $icon-size-big;
         color: $icon-color;
         line-height: 1em;
+        cursor: pointer;
     }
 }
 

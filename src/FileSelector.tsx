@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+import { IFileContent, MyContext } from './contexts/MyContext';
+import React, { useContext, useEffect, useRef } from 'react';
 
 import { ACCEPTED_EXTENSIONS } from './constants';
 import Badge from 'react-bootstrap/Badge';
@@ -6,7 +7,6 @@ import Button from 'react-bootstrap/esm/Button';
 import { DevTypeIcon } from './DevTypeIcon';
 import { Download } from 'react-bootstrap-icons';
 import Form from 'react-bootstrap/Form';
-import { IFileContent } from './contexts/MyContext';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 interface FileSelectorProps {
@@ -18,7 +18,10 @@ const FileSelector: React.FC<FileSelectorProps> = ({
     selectedFile,
     setSelectedFile,
 }) => {
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const context = useContext(MyContext);
+    if (!context) throw new Error('MyComponent must be used within a MyProvider');
+    const { fileInputRef } = context;
+    // const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const handleFileOpen = (event: React.ChangeEvent<HTMLInputElement>) => {
         const target = event.target as HTMLInputElement;

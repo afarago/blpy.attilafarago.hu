@@ -1,5 +1,5 @@
 import { CaretRight, CloudArrowUpFill } from 'react-bootstrap-icons';
-import React, { useContext } from 'react';
+import React, { MouseEventHandler, useContext } from 'react';
 
 import { ACCEPTED_EXTENSIONS } from './constants';
 import { DevTypeIcon } from './DevTypeIcon';
@@ -19,7 +19,13 @@ const icons: (React.ReactElement | string)[] = [
 const WelcomeTab: React.FC = () => {
     const context = useContext(MyContext);
     if (!context) throw new Error('MyComponent must be used within a MyProvider');
-    const { conversionResult } = context;
+    const { conversionResult, fileInputRef } = context;
+
+    function handleCloudIconClick(event: React.MouseEvent<HTMLAnchorElement>): void {
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
+        }
+    }
 
     return (
         !conversionResult && (
@@ -27,7 +33,9 @@ const WelcomeTab: React.FC = () => {
                 <div className="d-flex flex-column flex-fill justify-content-center">
                     <div className="text-center mb-5">
                         <div>
-                            <CloudArrowUpFill className="drop-cloud-icon" />
+                            <a onClick={handleCloudIconClick}>
+                                <CloudArrowUpFill className="drop-cloud-icon" />
+                            </a>
                         </div>
                         <div className="mb-4">
                             Imagine a world where magical unicorns transform your
