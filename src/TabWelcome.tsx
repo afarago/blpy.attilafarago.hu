@@ -37,10 +37,11 @@ const WelcomeTab: React.FC = () => {
                                 <CloudArrowUpFill className="drop-cloud-icon" />
                             </a>
                         </div>
-                        <div className="mb-4">
-                            Imagine a world where magical unicorns transform your
-                            <br />
-                            LEGO blockly programs into Python code!
+                        <div className="mb-4 d-flex flex-column align-items-center">
+                            <div style={{ width: '30em' }}>
+                                Imagine a world where magical unicorns transform your
+                                LEGO blockly programs into Python code!
+                            </div>
                         </div>
                         <div>
                             <small>

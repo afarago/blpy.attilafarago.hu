@@ -1,3 +1,4 @@
+import './scss/index.scss';
 import './scss/App.scss';
 
 import React, { useState } from 'react';
