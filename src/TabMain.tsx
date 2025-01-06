@@ -33,7 +33,7 @@ const MainTab: React.FC = () => {
     const context = useContext(MyContext);
     if (!context) throw new Error('MyComponent must be used within a MyProvider');
     const {
-        filename,
+        selectedFile,
         conversionResult,
         isAdditionalCommentsChecked,
         setIsAdditionalCommentsChecked,
@@ -64,7 +64,7 @@ const MainTab: React.FC = () => {
             event?.preventDefault();
 
             try {
-                if (!conversionResult || !filename) return;
+                if (!conversionResult || !selectedFile) return;
 
                 setIsCopying(true);
                 let textcontent: string | undefined;
@@ -110,7 +110,7 @@ const MainTab: React.FC = () => {
                                     const link = document.createElement('a');
                                     link.href = dataUrl;
                                     link.download = `${getBaseName(
-                                        filename,
+                                        selectedFile.file.name,
                                     )}_${ext}.png`;
                                     link.click();
 
@@ -144,7 +144,7 @@ const MainTab: React.FC = () => {
 
             return false;
         },
-        [conversionResult, key, svgRef, filename, REFMAP, rbfDecompileData],
+        [conversionResult, key, svgRef, selectedFile, REFMAP, rbfDecompileData],
     );
 
     const getBaseName = (filename: string): string => {

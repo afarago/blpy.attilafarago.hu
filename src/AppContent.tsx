@@ -1,21 +1,14 @@
 import './scss/App.scss';
 
+import { IFileContent, MyContext } from './contexts/MyContext';
 import { PyConverterOptions, convertProjectToPython } from 'blocklypy';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 import FileSelector from './FileSelector';
 import MainTab from './TabMain';
-import { MyContext } from './contexts/MyContext';
 import WelcomeTab from './TabWelcome';
 
-export interface IFileContent {
-    file: File;
-    builtin?: boolean;
-}
-
-const useDragAndDrop = (
-    setSelectedFile: React.Dispatch<React.SetStateAction<IFileContent | undefined>>,
-) => {
+const useDragAndDrop = (setSelectedFile: (file: IFileContent | undefined) => void) => {
     const [isDragging, setIsDragging] = useState(false);
 
     const handleDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -52,10 +45,9 @@ const AppContent: React.FC = () => {
         isAdditionalCommentsChecked,
         setConversionResult,
         setToastMessage,
-        setFilename,
+        selectedFile,
+        setSelectedFile,
     } = context;
-
-    const [selectedFile, setSelectedFile] = useState<IFileContent>();
 
     const { isDragging, handleDragOver, handleDragLeave, handleDrop } =
         useDragAndDrop(setSelectedFile);
@@ -76,7 +68,6 @@ const AppContent: React.FC = () => {
 
                 const retval = await convertProjectToPython(input, options);
 
-                setFilename(file.file.name);
                 setToastMessage(undefined);
                 setConversionResult(retval);
             } catch (error) {
@@ -87,7 +78,6 @@ const AppContent: React.FC = () => {
                         : 'An unknown error occurred.',
                 );
                 setConversionResult(undefined);
-                setFilename(undefined);
             }
         },
         [isAdditionalCommentsChecked],
@@ -102,6 +92,7 @@ const AppContent: React.FC = () => {
     return (
         <div className="appcontent container-md d-flex flex-column flex-fill">
             <h3>
+                {' '}
                 SPIKE and EV3 to Pybricks Wizard{' '}
                 <small className="text-muted d-sm-block d-none d-lg-inline">
                     block-code converter to Pybricks python code
@@ -119,9 +110,7 @@ const AppContent: React.FC = () => {
                     onDrop={handleDrop}
                     className={
                         'main-content dropzone container-md pt-3 d-flex flex-column flex-fill' +
-                        isDragging
-                            ? 'drop-active'
-                            : ''
+                        (isDragging ? ' drop-active' : '')
                     }
                     aria-dropeffect="move"
                     role="presentation"

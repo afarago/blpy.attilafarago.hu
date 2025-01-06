@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/esm/Button';
 import { DevTypeIcon } from './DevTypeIcon';
 import { Download } from 'react-bootstrap-icons';
 import Form from 'react-bootstrap/Form';
-import { IFileContent } from './AppContent';
+import { IFileContent } from './contexts/MyContext';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 interface FileSelectorProps {

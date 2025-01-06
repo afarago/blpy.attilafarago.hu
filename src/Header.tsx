@@ -6,7 +6,7 @@ import { MyContext } from './contexts/MyContext';
 const Header: React.FC = () => {
     const context = useContext(MyContext);
     if (!context) throw new Error('MyComponent must be used within a MyProvider');
-    const { setConversionResult } = context;
+    const { setSelectedFile, setConversionResult } = context;
     const [isScrolled, setIsScrolled] = useState(false);
 
     useEffect(() => {
@@ -28,6 +28,7 @@ const Header: React.FC = () => {
     function handleClickOnLogo(event: React.MouseEvent<SVGSVGElement>): void {
         event.preventDefault();
         setConversionResult(undefined);
+        setSelectedFile(undefined);
     }
 
     return (
