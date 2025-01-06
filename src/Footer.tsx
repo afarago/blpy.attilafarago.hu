@@ -14,19 +14,29 @@ const Footer: React.FC = () => (
         <div className="container text-center">
             <div className="small text-muted">
                 No robots were harmed in making this converter and visualizer of LEGO
-                SPIKE and EV3 robot files. News and updates are available on the
-                <a href="https://www.facebook.com/ev3treevis">facebook page</a>,
-                open-source on{' '}
-                <a href="https://github.com/afarago/blpy.attilafarago.hu">GitHub</a> and{' '}
-                <a href="https://www.npmjs.com/package/blocklypy">npm</a>. You might
-                freely use, share any generated artifacts, visualizations with
-                attribution in place.
+                SPIKE and EV3 robot files. News and updates are available on the{' '}
+                <a href="https://www.facebook.com/ev3treevis" target="_blank">
+                    facebook page
+                </a>
+                , open-source on{' '}
+                <a
+                    href="https://github.com/afarago/blpy.attilafarago.hu"
+                    target="_blank"
+                >
+                    GitHub
+                </a>{' '}
+                and{' '}
+                <a href="https://www.npmjs.com/package/blocklypy" target="_blank">
+                    npm
+                </a>
+                . You might freely use, share any generated artifacts, visualizations
+                with attribution in place.
             </div>
             <div className="d-inline-flex gap-2 mx-md-5 text-center text-md-end">
-                <a href="https://www.facebook.com/ev3treevis">
+                <a href="https://www.facebook.com/ev3treevis" target="_blank">
                     <Facebook />
                 </a>
-                <a href="https://www.linkedin.com/in/afarago/">
+                <a href="https://www.linkedin.com/in/afarago/" target="_blank">
                     <Linkedin />
                 </a>
                 <a href="mailto:attila.farago.hu+ev3treevis@gmail.com">
