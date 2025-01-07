@@ -30,7 +30,8 @@ const useDragAndDrop = (setSelectedFile: (file: IFileContent | undefined) => voi
             event.stopPropagation();
             event.preventDefault();
             setIsDragging(false);
-            setSelectedFile({ file: event.dataTransfer?.files[0], builtin: false });
+            const file: File = event.dataTransfer?.files[0];
+            setSelectedFile({ file, builtin: false });
         },
         [setSelectedFile],
     );
@@ -53,11 +54,16 @@ const AppContent: React.FC = () => {
         useDragAndDrop(setSelectedFile);
 
     const handleFileUpload = useCallback(
-        async (file: IFileContent) => {
+        async (filecontent: IFileContent) => {
+            const file = filecontent.file;
             try {
-                const input = await file.file.arrayBuffer();
+                const input = await file.arrayBuffer();
                 const options: PyConverterOptions = {
-                    filename: file.file.name,
+                    filename: file.name,
+                    filelastmodified: filecontent.builtin
+                        ? undefined
+                        : new Date(file.lastModified),
+                    filesize: file.size,
                     debug: {
                         'ev3b.decompiled': true,
                         ...(isAdditionalCommentsChecked
@@ -74,7 +80,7 @@ const AppContent: React.FC = () => {
                 console.error('Error converting project to Python:', error);
                 setToastMessage(
                     error instanceof Error
-                        ? `${error.message} - ${file.file.name}`
+                        ? `${error.message} - ${file.name}`
                         : 'An unknown error occurred.',
                 );
                 setConversionResult(undefined);

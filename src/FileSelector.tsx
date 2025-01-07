@@ -26,6 +26,7 @@ const FileSelector: React.FC<FileSelectorProps> = ({
     const handleFileOpen = (event: React.ChangeEvent<HTMLInputElement>) => {
         const target = event.target as HTMLInputElement;
         if (target.files?.length) {
+            const file = target.files[0];
             setSelectedFile({ file: target.files[0], builtin: false });
             target.blur();
         } else {
