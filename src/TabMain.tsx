@@ -290,7 +290,7 @@ const MainTab: React.FC = () => {
                                 )}
 
                                 {/* Extra icons */}
-                                <Nav.Item className="py-2 pe-2 ms-auto tabheader">
+                                <Nav.Item className="py-2 pe-2 ms-auto tabheader d-none d-md-block">
                                     {conversionResult?.extra?.['blockly.slot'] !==
                                         undefined && (
                                         <CatIcon

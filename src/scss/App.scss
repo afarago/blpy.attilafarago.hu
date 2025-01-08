@@ -62,7 +62,8 @@ body,
 .tab-main,
 .tab-main .col,
 .tab-main .col .row:nth-child(2),
-form {
+form,
+.code pre {
     // .flex-column {
     flex-direction: column !important;
     // .flex-fill {
