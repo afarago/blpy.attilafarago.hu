@@ -50,7 +50,7 @@ const FileSelector: React.FC<FileSelectorProps> = ({
     const handleExampleButtonOpenClick = async (
         event: React.MouseEvent<HTMLButtonElement>,
     ) => {
-        const path = (event.target as HTMLAnchorElement).dataset.file;
+        const path = (event.target as HTMLElement).closest('a')?.dataset.file;
         if (!path) return;
 
         try {
