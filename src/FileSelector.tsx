@@ -134,11 +134,11 @@ const FileSelector: React.FC<FileSelectorProps> = ({
                 />
                 {selectedFile?.builtin && (
                     <Button
-                        className="btn-light"
+                        className="btn-light mini-button"
                         onClick={handleExampleButtonDownloadClick}
                         title="Download example file"
                     >
-                        <Download></Download>
+                        <Download />
                     </Button>
                 )}
             </Form.Group>

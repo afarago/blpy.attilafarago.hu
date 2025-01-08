@@ -29,8 +29,8 @@ const WelcomeTab: React.FC = () => {
 
     return (
         !conversionResult && (
-            <div className="tab-welcome flex-row flex-fill active py-5 mb-5 d-flex">
-                <div className="d-flex flex-column flex-fill justify-content-center">
+            <div className="tab-welcome active py-5 mb-5">
+                <div className="justify-content-center">
                     <div className="text-center mb-5">
                         <div>
                             <a onClick={handleCloudIconClick}>

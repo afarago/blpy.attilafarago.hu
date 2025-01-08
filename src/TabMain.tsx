@@ -7,6 +7,8 @@ import {
     Download,
     FileEarmarkImage,
     FiletypePy,
+    Fullscreen,
+    FullscreenExit,
 } from 'react-bootstrap-icons';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
@@ -37,6 +39,8 @@ const MainTab: React.FC = () => {
         conversionResult,
         isAdditionalCommentsChecked,
         setIsAdditionalCommentsChecked,
+        fullScreen,
+        toggleFullScreen,
     } = context;
 
     const [key, setKey] = useState(TAB_PYCODE);
@@ -102,7 +106,10 @@ const MainTab: React.FC = () => {
                             // });
 
                             domtoimage
-                                .toBlob(ref.current, {})
+                                .toBlob(ref.current, {
+                                    // height: 4096,
+                                    // width: window.outerWidth,
+                                })
                                 .then((blob: Blob) => {
                                     const dataUrl = URL.createObjectURL(blob); // Create a temporary URL for the image data
 
@@ -167,6 +174,10 @@ const MainTab: React.FC = () => {
         conversionResult,
         key,
     ]);
+    useHotkeys('mod+f', () => toggleFullScreen(), { preventDefault: true }, [
+        fullScreen,
+    ]);
+    useHotkeys('esc', () => toggleFullScreen(false), { preventDefault: true }, []);
 
     useEffect(() => {
         if (key === 'preview') {
@@ -251,13 +262,13 @@ const MainTab: React.FC = () => {
 
     return (
         !isInitialState() && (
-            <div className="tab-main flex-column flex-fill p-2 d-flex">
+            <div className="tab-main p-2">
                 <Tab.Container
                     activeKey={key}
                     onSelect={(k) => setKey(k ?? '')}
                     defaultActiveKey={TAB_PYCODE}
                 >
-                    <Col>
+                    <Col className="">
                         {/* Tab Headers top line */}
                         <Row sm={9}>
                             <Nav variant="tabs" className="flex-rows px-0">
@@ -279,7 +290,7 @@ const MainTab: React.FC = () => {
                                 )}
 
                                 {/* Extra icons */}
-                                <Nav.Item className="py-2 ms-auto tabheader">
+                                <Nav.Item className="py-2 pe-2 ms-auto tabheader">
                                     {conversionResult?.extra?.['blockly.slot'] !==
                                         undefined && (
                                         <CatIcon
@@ -301,7 +312,7 @@ const MainTab: React.FC = () => {
 
                         {/* Tab Contents */}
                         <Row sm={9} className="position-relative">
-                            <Tab.Content className="h-75 border p-0 position-relative">
+                            <Tab.Content className="border p-0 position-relative">
                                 {/* Mini-map */}
                                 {svgContentData() &&
                                     [TAB_PYCODE, TAB_PLAINCODE].includes(key) && (
@@ -331,13 +342,24 @@ const MainTab: React.FC = () => {
                                             />
                                         )}
                                     <button
-                                        className={`copy-button copy-button-${key} ${
+                                        className={`mini-button copy-button-${key} ${
                                             isCopying ? 'success' : ''
                                         }`}
                                         onClick={handleCopyButtonClick}
                                         title="Copy code (ctrl/cmd+c)"
                                     >
                                         {getCopyIcon()}
+                                    </button>
+                                    <button
+                                        className="mini-button"
+                                        onClick={() => toggleFullScreen()}
+                                        title="Full screen (ctrl/cmd+f)"
+                                    >
+                                        {fullScreen ? (
+                                            <FullscreenExit />
+                                        ) : (
+                                            <Fullscreen />
+                                        )}
                                     </button>
                                 </div>
 

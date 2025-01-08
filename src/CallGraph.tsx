@@ -9,6 +9,14 @@ interface CallGraphProps {
     conversionResult?: PyProjectResult;
 }
 
+function removeSvgDimensions(svgString: string): string {
+    const regex =
+        /<svg\s[^>]*?(?:width\s*=\s*"[^"]*")?\s*?(?:height\s*=\s*"[^"]*")?\s*>/i;
+    return svgString.replace(regex, (match) => {
+        return match.replace(/width\s*=\s*"[^"]*"\s*|height\s*=\s*"[^"]*"\s*/g, '');
+    });
+}
+
 const CallGraph = forwardRef<HTMLDivElement, CallGraphProps>(
     ({ conversionResult }, ref) => {
         const localRef = useRef<HTMLDivElement>(null);
@@ -16,7 +24,6 @@ const CallGraph = forwardRef<HTMLDivElement, CallGraphProps>(
 
         async function renderGraph() {
             if (!conversionResult?.dependencygraph || !localRef?.current) return;
-
             // const viz = await vizInstance();
             // const svg = viz.renderSVGElement(conversionResult.dependencygraph);
             // localRef.current.innerHTML = svg.outerHTML;
@@ -25,7 +32,8 @@ const CallGraph = forwardRef<HTMLDivElement, CallGraphProps>(
             const graphviz = await Graphviz.load();
             // console.log(graphviz.version());
             const svg = await graphviz.dot(conversionResult.dependencygraph);
-            localRef.current.innerHTML = svg;
+            // need to remove width and height attributes from svg for successful download for domtoimage
+            localRef.current.innerHTML = removeSvgDimensions(svg);
 
             // setup registry
             type NodeRegistryEntry = {

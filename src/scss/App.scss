@@ -11,6 +11,7 @@ $mini-icon-size: 20px;
 body {
     min-height: 100vh;
     position: relative;
+    background-color: hsla(0, 0%, 96%, 0.3); // whitesmoke;
 }
 
 footer {
@@ -47,6 +48,27 @@ header {
     }
 }
 
+body,
+#root,
+.App,
+.appcontent,
+.main-content,
+.tab-welcome,
+.tab-welcome > *,
+.tab-content,
+.tab-pane.active,
+.tab-main,
+.tab-main .col,
+.tab-main .col .row:nth-child(2),
+form {
+    // .flex-column {
+    flex-direction: column !important;
+    // .flex-fill {
+    flex: 1 1 auto !important;
+    // .d-flex {
+    display: flex !important;
+}
+
 .appcontent {
     margin-top: 6em;
     &::after {
@@ -71,6 +93,18 @@ header {
     .hidden {
         visibility: hidden;
         font-size: 1px;
+    }
+}
+
+.fullscreen.App {
+    & > :not(.appcontent) {
+        display: none !important;
+    }
+    .appcontent > :not(form) {
+        display: none !important;
+    }
+    .main-content > :not(.tab-main) {
+        display: none !important;
     }
 }
 
@@ -103,6 +137,18 @@ header {
             width: $mini-icon-size;
         }
     }
+
+    .fullscreen & {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.tab-content {
+    background-color: white;
 }
 
 .tab-pane {
@@ -201,32 +247,37 @@ header {
     }
 }
 
+.mini-button {
+    cursor: pointer;
+    border-radius: 5px;
+    border: 1px lightgray solid;
+    // margin: 0.5em;
+    z-index: 999;
+
+    &.success {
+        animation: copysuccess-animation 0.5s 1 ease-in;
+        animation-delay: 0s;
+        animation-fill-mode: forwards;
+        -webkit-animation-fill-mode: forwards;
+        outline: 2px solid lightgreen;
+        background-color: hsl(120, 73%, 80%);
+    }
+}
+
 .code-top-container {
     position: absolute;
-    top: 0;
+    top: 0.5em;
     right: 0;
     white-space: nowrap;
     z-index: 1;
 
-    .form-switch {
-        display: inline-block;
+    & > button,
+    & > div {
+        margin-right: 0.5em;
     }
 
-    .copy-button {
-        cursor: pointer;
-        border-radius: 5px;
-        border: 1px lightgray solid;
-        margin: 0.5em;
-        z-index: 999;
-
-        &.success {
-            animation: copysuccess-animation 0.5s 1 ease-in;
-            animation-delay: 0s;
-            animation-fill-mode: forwards;
-            -webkit-animation-fill-mode: forwards;
-            outline: 2px solid lightgreen;
-            background-color: hsl(120, 73%, 80%);
-        }
+    .form-switch {
+        display: inline-block;
     }
 }
 
@@ -235,7 +286,7 @@ header {
     position: absolute;
     right: 0;
     top: 0;
-    opacity: 0.3;
+    opacity: 0.2;
     z-index: 998;
 
     &:hover {

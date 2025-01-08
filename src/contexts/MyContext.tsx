@@ -13,6 +13,8 @@ interface MyContextProps {
     selectedFile?: IFileContent;
     setSelectedFile: (value: IFileContent | undefined) => void;
     fileInputRef: React.RefObject<HTMLInputElement | null>;
+    fullScreen?: boolean;
+    toggleFullScreen: (value?: boolean) => void;
 }
 
 export interface IFileContent {
@@ -28,7 +30,12 @@ const MyProvider = ({ children }: { children: ReactNode }) => {
     const [conversionResult, setConversionResult] = useState<PyProjectResult>();
     const [toastMessage, setToastMessage] = useState<string>();
     const [selectedFile, setSelectedFile] = useState<IFileContent>();
+    const [fullScreen, setFullScreen] = useState<boolean>();
     const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+    function toggleFullScreen(value?: boolean) {
+        setFullScreen((prev) => (value === undefined ? !prev : value));
+    }
 
     return (
         <MyContext.Provider
@@ -42,6 +49,8 @@ const MyProvider = ({ children }: { children: ReactNode }) => {
                 selectedFile,
                 setSelectedFile,
                 fileInputRef,
+                fullScreen,
+                toggleFullScreen,
             }}
         >
             {children}
