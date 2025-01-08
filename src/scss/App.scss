@@ -1,3 +1,5 @@
+@import 'animate.css';
+
 $drop-highlight-color: cornflowerblue;
 $success-color: rgba(144, 238, 144, 1);
 $success-outline: rgba(144, 238, 144, 0.5);
@@ -154,6 +156,9 @@ form {
 .tab-pane {
     min-height: 32vh;
     position: relative;
+
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in-out forwards;
 }
 
 .tab-welcome {
@@ -351,15 +356,21 @@ form {
             .node {
                 cursor: pointer;
             }
-            .node:hover > polygon {
+            .node:hover > polygon,
+            .node:hover > path {
                 stroke: blue;
                 stroke-width: 3px;
+                animation: fadeIn 0.5s ease-in-out forwards;
             }
-            .node > polygon {
+            .node > polygon,
+            .node > path {
                 fill: white;
+                animation: fadeIn 0.5s ease-in-out forwards;
             }
-            .node.selected > polygon {
+            .node.selected > polygon,
+            .node.selected > path {
                 fill: lightblue;
+                animation: fadeIn 0.5s ease-in-out forwards;
             }
         }
     }

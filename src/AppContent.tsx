@@ -85,7 +85,7 @@ const AppContent: React.FC = () => {
                 console.error('Error converting project to Python:', error);
                 setToastMessage(
                     error instanceof Error
-                        ? `${error.message} - ${file.name}`
+                        ? `${error.message} - ${file?.name}`
                         : 'An unknown error occurred.',
                 );
                 setConversionResult(undefined);

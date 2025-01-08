@@ -31,6 +31,12 @@ const CallGraph = forwardRef<HTMLDivElement, CallGraphProps>(
             // const graphviz = gv.Graphviz;
             const graphviz = await Graphviz.load();
             // console.log(graphviz.version());
+            conversionResult.dependencygraph =
+                conversionResult.dependencygraph.replaceAll(
+                    'shape = box',
+                    'shape = box, style = rounded',
+                );
+            // console.log(conversionResult.dependencygraph);
             const svg = await graphviz.dot(conversionResult.dependencygraph);
             // need to remove width and height attributes from svg for successful download for domtoimage
             localRef.current.innerHTML = removeSvgDimensions(svg);

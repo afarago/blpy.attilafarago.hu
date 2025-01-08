@@ -46,7 +46,7 @@ const MainTab: React.FC = () => {
     const [key, setKey] = useState(TAB_PYCODE);
     const [isCopying, setIsCopying] = useState(false);
     const svgRef = useRef<HTMLDivElement>(null);
-    const graphRef = useRef(null);
+    const graphRef = useRef<HTMLDivElement>(null);
 
     const handleSetIsAdditionalCommentsChecked = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -61,6 +61,8 @@ const MainTab: React.FC = () => {
     const REFMAP = {
         [TAB_PREVIEW]: { ref: svgRef, ext: 'preview' },
         [TAB_CALLGRAPH]: { ref: graphRef, ext: 'graph' },
+    } as {
+        [key: string]: { ref: React.RefObject<HTMLDivElement>; ext: string };
     };
     const handleCopyButtonClick = useCallback(
         (event?: React.MouseEvent<HTMLButtonElement>) => {
@@ -180,21 +182,19 @@ const MainTab: React.FC = () => {
     useHotkeys('esc', () => toggleFullScreen(false), { preventDefault: true }, []);
 
     useEffect(() => {
-        if (key === 'preview') {
-            const element = svgRef.current as unknown as HTMLElement;
-            if (element) {
-                const panzoom = Panzoom(element, {
-                    maxScale: 5,
-                });
+        const element = REFMAP[key]?.ref.current;
+        if (element) {
+            const panzoom = Panzoom(element, {
+                maxScale: 7,
+            });
 
-                // button.addEventListener('click', panzoom.zoomIn);
-                element.parentElement?.addEventListener('wheel', panzoom.zoomWithWheel);
+            element.parentElement?.addEventListener('dblclick', () => panzoom.reset());
+            element.parentElement?.addEventListener('wheel', panzoom.zoomWithWheel);
 
-                // Clean up the panzoom instance on component unmount
-                return () => panzoom?.destroy();
-            }
+            // Clean up the panzoom instance on component unmount
+            return () => panzoom?.destroy();
         }
-    }, [svgRef, key]);
+    }, [svgRef, graphRef, key, REFMAP]);
 
     function svgContentData() {
         return conversionResult?.extra?.['blockly.svg'];
