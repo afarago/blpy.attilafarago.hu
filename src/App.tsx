@@ -1,15 +1,20 @@
 import './scss/index.scss';
 import './scss/App.scss';
 
-import React, { useState } from 'react';
-
 import AppContent from './AppContent';
 import { MyProvider } from './contexts/MyContext';
+import React from 'react';
+import ReactGA from 'react-ga4';
+
+const GA_TRACKING_ID = 'G-WRDV9368S9';
+ReactGA.initialize(GA_TRACKING_ID);
 
 const App: React.FC = () => {
     return (
         <MyProvider>
-            <AppContent />
+            <div className="App">
+                <AppContent />
+            </div>
         </MyProvider>
     );
 };

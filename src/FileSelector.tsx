@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/esm/Button';
 import { DevTypeIcon } from './DevTypeIcon';
 import { Download } from 'react-bootstrap-icons';
 import Form from 'react-bootstrap/Form';
+import ReactGA from 'react-ga4';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 interface FileSelectorProps {
@@ -70,7 +71,7 @@ const FileSelector: React.FC<FileSelectorProps> = ({
     };
 
     const updateFileInput = (file?: IFileContent) => {
-        if (fileInputRef.current && file) {
+        if (fileInputRef.current && file?.file) {
             const dataTransfer = new DataTransfer();
             dataTransfer.items.add(file.file);
             fileInputRef.current.files = dataTransfer.files;
@@ -78,6 +79,15 @@ const FileSelector: React.FC<FileSelectorProps> = ({
     };
 
     useEffect(() => {
+        ReactGA.send({
+            hitType: 'event',
+            eventCategory: 'FileSelector',
+            eventAction: 'updateFileInput',
+            eventLabel: 'selectedFile',
+            eventValue:
+                (selectedFile?.builtin ? '#sample#' : '') + selectedFile?.file?.name,
+        });
+
         updateFileInput(selectedFile);
     }, [selectedFile]);
 

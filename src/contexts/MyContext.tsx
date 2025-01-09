@@ -1,5 +1,5 @@
 // src/contexts/MyContext.tsx
-import { ReactNode, createContext, useRef, useState } from 'react';
+import { ReactNode, createContext, useEffect, useRef, useState } from 'react';
 
 import { PyProjectResult } from 'blocklypy';
 
@@ -15,6 +15,8 @@ interface MyContextProps {
     fileInputRef: React.RefObject<HTMLInputElement | null>;
     fullScreen?: boolean;
     toggleFullScreen: (value?: boolean) => void;
+    svgContentData: string | undefined;
+    rbfDecompileData: string | undefined;
 }
 
 export interface IFileContent {
@@ -31,11 +33,20 @@ const MyProvider = ({ children }: { children: ReactNode }) => {
     const [toastMessage, setToastMessage] = useState<string>();
     const [selectedFile, setSelectedFile] = useState<IFileContent>();
     const [fullScreen, setFullScreen] = useState<boolean>();
+    const [svgContentData, setSvgContentData] = useState<string>();
+    const [rbfDecompileData, setRbfDecompileData] = useState<string>();
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-    function toggleFullScreen(value?: boolean) {
+    const toggleFullScreen = (value?: boolean) => {
         setFullScreen((prev) => (value === undefined ? !prev : value));
-    }
+    };
+
+    useEffect(() => {
+        if (conversionResult) {
+            setSvgContentData(conversionResult.extra?.['blockly.svg']);
+            setRbfDecompileData(conversionResult.extra?.['ev3b.decompiled']);
+        }
+    }, [conversionResult]);
 
     return (
         <MyContext.Provider
@@ -51,6 +62,8 @@ const MyProvider = ({ children }: { children: ReactNode }) => {
                 fileInputRef,
                 fullScreen,
                 toggleFullScreen,
+                svgContentData,
+                rbfDecompileData,
             }}
         >
             {children}

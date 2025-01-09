@@ -1,5 +1,5 @@
 import { CaretRight, CloudArrowUpFill } from 'react-bootstrap-icons';
-import React, { MouseEventHandler, useContext } from 'react';
+import React, { useContext } from 'react';
 
 import { ACCEPTED_EXTENSIONS } from './constants';
 import { DevTypeIcon } from './DevTypeIcon';
@@ -21,11 +21,11 @@ const WelcomeTab: React.FC = () => {
     if (!context) throw new Error('MyComponent must be used within a MyProvider');
     const { conversionResult, fileInputRef } = context;
 
-    function handleCloudIconClick(event: React.MouseEvent<HTMLAnchorElement>): void {
+    const handleCloudIconClick = (event: React.MouseEvent<HTMLAnchorElement>): void => {
         if (fileInputRef.current) {
             fileInputRef.current.click();
         }
-    }
+    };
 
     return (
         !conversionResult && (

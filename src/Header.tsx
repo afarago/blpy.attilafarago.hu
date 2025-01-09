@@ -25,14 +25,15 @@ const Header: React.FC = () => {
         };
     }, []);
 
-    function handleClickOnLogo(event: React.MouseEvent<SVGSVGElement>): void {
+    const handleClickOnLogo = (event: React.MouseEvent<SVGSVGElement>): void => {
         event.preventDefault();
-        setConversionResult(undefined);
+
         setSelectedFile(undefined);
-    }
+        setConversionResult(undefined);
+    };
 
     return (
-        <header className={'fixed-top ' + (isScrolled ? 'collapsed' : '')}>
+        <header className={'fixed-top' + (isScrolled ? ' collapsed' : '')}>
             <nav className="navbar navbar-expand-sm border-bottom box-shadow mb-3">
                 <div className="container-md">
                     <div className="navbar-brand w-100">

@@ -9,20 +9,20 @@ interface CallGraphProps {
     conversionResult?: PyProjectResult;
 }
 
-function removeSvgDimensions(svgString: string): string {
+const removeSvgDimensions = (svgString: string): string => {
     const regex =
         /<svg\s[^>]*?(?:width\s*=\s*"[^"]*")?\s*?(?:height\s*=\s*"[^"]*")?\s*>/i;
     return svgString.replace(regex, (match) => {
         return match.replace(/width\s*=\s*"[^"]*"\s*|height\s*=\s*"[^"]*"\s*/g, '');
     });
-}
+};
 
 const CallGraph = forwardRef<HTMLDivElement, CallGraphProps>(
     ({ conversionResult }, ref) => {
         const localRef = useRef<HTMLDivElement>(null);
         useImperativeHandle(ref, () => localRef.current as HTMLDivElement);
 
-        async function renderGraph() {
+        const renderGraph = async () => {
             if (!conversionResult?.dependencygraph || !localRef?.current) return;
             // const viz = await vizInstance();
             // const svg = viz.renderSVGElement(conversionResult.dependencygraph);
@@ -149,7 +149,7 @@ const CallGraph = forwardRef<HTMLDivElement, CallGraphProps>(
                     }
                 });
             });
-        }
+        };
 
         useEffect(() => {
             renderGraph();

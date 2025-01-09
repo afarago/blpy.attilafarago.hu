@@ -50,9 +50,14 @@ header {
     }
 }
 
+.toast {
+    z-index: 9999;
+}
+
 body,
 #root,
 .App,
+.App > div,
 .appcontent,
 .main-content,
 .tab-welcome,
@@ -64,11 +69,11 @@ body,
 .tab-main .col .row:nth-child(2),
 form,
 .code pre {
-    // .flex-column {
+    // .flex-column
     flex-direction: column !important;
-    // .flex-fill {
+    // .flex-fill
     flex: 1 1 auto !important;
-    // .d-flex {
+    // .d-flex
     display: flex !important;
 }
 
@@ -83,7 +88,6 @@ form,
 
 .navbar-brand {
     white-space: normal;
-    // text-align: center;
     word-break: break-all;
     font-size: 200%;
     padding-bottom: 0;
@@ -99,7 +103,7 @@ form,
     }
 }
 
-.fullscreen.App {
+.App > .fullscreen {
     & > :not(.appcontent) {
         display: none !important;
     }
@@ -297,6 +301,7 @@ form,
 
     &:hover {
         opacity: 1;
+        animation: fadeIn 0.5s ease-in-out forwards;
     }
 }
 

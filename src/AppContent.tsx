@@ -101,7 +101,7 @@ const AppContent: React.FC = () => {
     }, [selectedFile, handleFileUpload]);
 
     return (
-        <div className={`App ${fullScreen ? 'fullscreen' : ''}`}>
+        <div className={fullScreen ? 'fullscreen' : ''}>
             <Header />
             <Toast
                 onClose={() => setToastMessage(undefined)}

@@ -1,419 +1,74 @@
-import {
-    BookHalf,
-    CheckLg,
-    CodeSlash,
-    Copy,
-    Diagram2,
-    Download,
-    FileEarmarkImage,
-    FiletypePy,
-    Fullscreen,
-    FullscreenExit,
-} from 'react-bootstrap-icons';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 
-import CallGraph from './CallGraph';
-import { CatIcon } from './CatIcon';
 import Col from 'react-bootstrap/Col';
-import { DevTypeIcon } from './DevTypeIcon';
-import Form from 'react-bootstrap/Form';
 import { MyContext } from './contexts/MyContext';
-import Nav from 'react-bootstrap/Nav';
-import Panzoom from '@panzoom/panzoom';
 import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';
-import domtoimage from 'dom-to-image';
+import TabContents from './TabContents';
+import TabHeaders from './TabHeaders';
+import TabTopControls from './TabTopControls';
 import { useHotkeys } from 'react-hotkeys-hook';
 
-const TAB_PYCODE = 'pycode';
-const TAB_PLAINCODE = 'plaincode';
-const TAB_EV3BDECOMPILED = 'ev3b_decompiled';
-const TAB_PREVIEW = 'preview';
-const TAB_CALLGRAPH = 'callgraph';
+export enum TabKey {
+    PYCODE = 'pycode',
+    PLAINCODE = 'plaincode',
+    EV3BDECOMPILED = 'ev3b_decompiled',
+    PREVIEW = 'preview',
+    CALLGRAPH = 'callgraph',
+}
 
 const MainTab: React.FC = () => {
     const context = useContext(MyContext);
     if (!context) throw new Error('MyComponent must be used within a MyProvider');
-    const {
-        selectedFile,
-        conversionResult,
-        isAdditionalCommentsChecked,
-        setIsAdditionalCommentsChecked,
-        fullScreen,
-        toggleFullScreen,
-    } = context;
+    const { conversionResult, svgContentData, rbfDecompileData } = context;
 
-    const [key, setKey] = useState(TAB_PYCODE);
-    const [isCopying, setIsCopying] = useState(false);
+    const [tabkey, setTabkey] = useState(TabKey.PYCODE);
     const svgRef = useRef<HTMLDivElement>(null);
     const graphRef = useRef<HTMLDivElement>(null);
 
-    const handleSetIsAdditionalCommentsChecked = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) =>
-            setIsAdditionalCommentsChecked(event.target.checked),
-        [setIsAdditionalCommentsChecked],
-    );
-
-    const toggleIsAdditionalCommentsChecked = useCallback(() => {
-        setIsAdditionalCommentsChecked(!isAdditionalCommentsChecked);
-    }, [setIsAdditionalCommentsChecked, isAdditionalCommentsChecked]);
-
-    const REFMAP = {
-        [TAB_PREVIEW]: { ref: svgRef, ext: 'preview' },
-        [TAB_CALLGRAPH]: { ref: graphRef, ext: 'graph' },
-    } as {
-        [key: string]: { ref: React.RefObject<HTMLDivElement>; ext: string };
-    };
-    const handleCopyButtonClick = useCallback(
-        (event?: React.MouseEvent<HTMLButtonElement>) => {
-            event?.stopPropagation();
-            event?.preventDefault();
-
-            try {
-                if (!conversionResult || !selectedFile) return;
-
-                setIsCopying(true);
-                let textcontent: string | undefined;
-                switch (key) {
-                    case TAB_PYCODE:
-                    case TAB_PLAINCODE:
-                        textcontent = conversionResult[key];
-                        navigator.clipboard.writeText(textcontent ?? '');
-                        break;
-
-                    case TAB_EV3BDECOMPILED:
-                        textcontent = rbfDecompileData();
-                        navigator.clipboard.writeText(textcontent ?? '');
-                        break;
-
-                    case TAB_PREVIEW:
-                    case TAB_CALLGRAPH:
-                        {
-                            const { ref, ext } = REFMAP[key];
-                            // let ref: React.RefObject<HTMLDivElement | null> | undefined;
-                            // let ext: string;
-                            // if (key === TAB_PREVIEW) {
-                            //     ref = svgRef;
-                            //     ext = 'preview';
-                            // } else if (key === TAB_CALLGRAPH) {
-                            //     ref = graphRef;
-                            //     ext = 'graph';
-                            // }
-                            if (!ref?.current) return;
-
-                            // domtoimage.toBlob(svgRef.current, {}).then((data: Blob) => {
-                            //     // copy image to clipboard
-                            //     const data2 = [new ClipboardItem({ 'image/png': data })];
-                            //     navigator.clipboard.write(data2);
-                            // });
-
-                            domtoimage
-                                .toBlob(ref.current, {
-                                    // height: 4096,
-                                    // width: window.outerWidth,
-                                })
-                                .then((blob: Blob) => {
-                                    const dataUrl = URL.createObjectURL(blob); // Create a temporary URL for the image data
-
-                                    // Proceed with download using the temporary URL
-                                    const link = document.createElement('a');
-                                    link.href = dataUrl;
-                                    link.download = `${getBaseName(
-                                        selectedFile.file.name,
-                                    )}_${ext}.png`;
-                                    link.click();
-
-                                    // Important: Release the object URL when it's no longer needed to avoid memory leaks
-                                    URL.revokeObjectURL(dataUrl); // Release the temporary URL after the download
-                                })
-                                .catch((error) => {
-                                    console.error('Error capturing image:', error);
-                                });
-
-                            // domtoimage
-                            //     .toPng(ref.current, {})
-                            //     .then((dataUrl: string) => {
-                            //         const link = document.createElement('a');
-                            //         link.href = dataUrl;
-                            //         link.download = `${getBaseName(filename)}_${ext}.png`;
-                            //         link.click();
-                            //         URL.revokeObjectURL(dataUrl);
-                            //     })
-                            //     .catch((error) => {
-                            //         console.error('Error capturing image:', error);
-                            //     });
-                        }
-                        break;
-                }
-            } catch (e) {
-                console.error('::ERROR::', e);
-            } finally {
-                setTimeout(() => setIsCopying(false), 1000);
-            }
-
-            return false;
-        },
-        [conversionResult, key, svgRef, selectedFile, REFMAP, rbfDecompileData],
-    );
-
-    const getBaseName = (filename: string): string => {
-        const lastDotIndex = filename.lastIndexOf('.');
-        const baseName = filename.substring(0, lastDotIndex);
-        return baseName;
-    };
-
-    useHotkeys('control+1', () => setKey(TAB_PYCODE));
-    useHotkeys('control+2', () => setKey(TAB_PLAINCODE));
-    useHotkeys('control+3', () => setKey(TAB_CALLGRAPH));
-    useHotkeys('control+4', () => setKey(TAB_PREVIEW));
-    useHotkeys(
-        'mod+e',
-        () => toggleIsAdditionalCommentsChecked(),
-        { preventDefault: true },
-        [setIsAdditionalCommentsChecked, isAdditionalCommentsChecked],
-    );
-    useHotkeys('mod+c', () => handleCopyButtonClick(), { preventDefault: true }, [
-        conversionResult,
-        key,
-    ]);
-    useHotkeys('mod+f', () => toggleFullScreen(), { preventDefault: true }, [
-        fullScreen,
-    ]);
-    useHotkeys('esc', () => toggleFullScreen(false), { preventDefault: true }, []);
-
-    useEffect(() => {
-        const element = REFMAP[key]?.ref.current;
-        if (element) {
-            const panzoom = Panzoom(element, {
-                maxScale: 7,
-            });
-
-            element.parentElement?.addEventListener('dblclick', () => panzoom.reset());
-            element.parentElement?.addEventListener('wheel', panzoom.zoomWithWheel);
-
-            // Clean up the panzoom instance on component unmount
-            return () => panzoom?.destroy();
-        }
-    }, [svgRef, graphRef, key, REFMAP]);
-
-    function svgContentData() {
-        return conversionResult?.extra?.['blockly.svg'];
-    }
-    function rbfDecompileData() {
-        return conversionResult?.extra?.['ev3b.decompiled'];
-    }
-    function isInitialState() {
-        return conversionResult === undefined;
-    }
+    useHotkeys('control+1', () => setTabkey(TabKey.PYCODE));
+    useHotkeys('control+2', () => setTabkey(TabKey.PLAINCODE));
+    useHotkeys('control+3', () => setTabkey(TabKey.CALLGRAPH));
+    useHotkeys('control+4', () => setTabkey(TabKey.PREVIEW));
 
     useEffect(() => {
         if (
-            (key === TAB_PREVIEW && !svgContentData()) ||
-            (key === TAB_PLAINCODE && !conversionResult?.plaincode) ||
-            (key === TAB_EV3BDECOMPILED && !rbfDecompileData())
+            (tabkey === TabKey.PREVIEW && !svgContentData) ||
+            (tabkey === TabKey.PLAINCODE && !conversionResult?.plaincode) ||
+            (tabkey === TabKey.EV3BDECOMPILED && !rbfDecompileData)
         ) {
-            setKey(TAB_PYCODE);
+            setTabkey(TabKey.PYCODE);
         }
-    }, [conversionResult, key]);
-
-    const tabListHeaders = [
-        {
-            key: TAB_PYCODE,
-            title: 'pycode (ctrl+1)',
-            icon: FiletypePy,
-            name: 'Python',
-            condition: true,
-        },
-        {
-            key: TAB_PLAINCODE,
-            title: 'pseudocode (ctrl+2)',
-            icon: CodeSlash,
-            name: 'Pseudocode',
-            condition: conversionResult?.plaincode !== undefined,
-        },
-        {
-            key: TAB_EV3BDECOMPILED,
-            title: 'decompiled',
-            icon: BookHalf,
-            name: 'Decompiled RBF',
-            condition: !!rbfDecompileData(),
-        },
-        {
-            key: TAB_CALLGRAPH,
-            title: 'call graph (ctrl+3)',
-            icon: Diagram2,
-            name: 'Call Graph',
-            condition: !!conversionResult?.dependencygraph,
-        },
-        {
-            key: TAB_PREVIEW,
-            title: 'preview (ctrl+4)',
-            icon: FileEarmarkImage,
-            name: 'Preview',
-            condition: !!svgContentData(),
-        },
-    ];
-
-    function getCopyIcon() {
-        if (isCopying) return <CheckLg />;
-        if ([TAB_PREVIEW, TAB_CALLGRAPH].includes(key)) return <Download />;
-        return <Copy />;
-    }
+    }, [conversionResult, tabkey, setTabkey]);
 
     return (
-        !isInitialState() && (
+        !!conversionResult && (
             <div className="tab-main p-2">
                 <Tab.Container
-                    activeKey={key}
-                    onSelect={(k) => setKey(k ?? '')}
-                    defaultActiveKey={TAB_PYCODE}
+                    activeKey={tabkey}
+                    onSelect={(k) => setTabkey(k as TabKey)}
+                    defaultActiveKey={TabKey.PYCODE}
                 >
-                    <Col className="">
-                        {/* Tab Headers top line */}
+                    <Col>
                         <Row sm={9}>
-                            <Nav variant="tabs" className="flex-rows px-0">
-                                {/* Tab headers */}
-                                {tabListHeaders.map(
-                                    (elem) =>
-                                        elem.condition && (
-                                            <Nav.Item key={elem.key}>
-                                                <Nav.Link
-                                                    eventKey={elem.key}
-                                                    title={`${elem.title}`}
-                                                    className="icon-link icon-link-hover"
-                                                >
-                                                    <elem.icon className="d-none d-md-inline" />
-                                                    {elem.name}
-                                                </Nav.Link>
-                                            </Nav.Item>
-                                        ),
-                                )}
-
-                                {/* Extra icons */}
-                                <Nav.Item className="py-2 pe-2 ms-auto tabheader d-none d-md-block">
-                                    {conversionResult?.extra?.['blockly.slot'] !==
-                                        undefined && (
-                                        <CatIcon
-                                            slot={
-                                                conversionResult?.extra?.[
-                                                    'blockly.slot'
-                                                ]
-                                            }
-                                        />
-                                    )}
-                                    {conversionResult?.devicetype && (
-                                        <DevTypeIcon
-                                            devtype={conversionResult?.devicetype}
-                                        />
-                                    )}
-                                </Nav.Item>
-                            </Nav>
+                            <TabHeaders conversionResult={conversionResult} />
                         </Row>
 
                         {/* Tab Contents */}
                         <Row sm={9} className="position-relative">
                             <Tab.Content className="border p-0 position-relative">
-                                {/* Mini-map */}
-                                {svgContentData() &&
-                                    [TAB_PYCODE, TAB_PLAINCODE].includes(key) && (
-                                        <div
-                                            className="svg-minimap mt-5 px-3 float-right"
-                                            dangerouslySetInnerHTML={{
-                                                __html: svgContentData() || '',
-                                            }}
-                                            onClick={() => setKey(TAB_PREVIEW)}
-                                            role="presentation"
-                                        ></div>
-                                    )}
+                                <TabTopControls
+                                    tabkey={tabkey}
+                                    setTabkey={setTabkey}
+                                    svgRef={svgRef}
+                                    graphRef={graphRef}
+                                />
 
-                                {/* Top header - explanatiory comments; copy controls */}
-                                <div className="code-top-container">
-                                    {key === TAB_PYCODE &&
-                                        conversionResult?.devicetype !== 'python' && (
-                                            <Form.Check
-                                                type="switch"
-                                                id="additionalCommentsCheck" /* needed for the label to be clickable */
-                                                label="Explanatory&nbsp;Comments"
-                                                checked={isAdditionalCommentsChecked}
-                                                title="Add explanatory comments to the source code (ctrl/cmd+e)"
-                                                onChange={
-                                                    handleSetIsAdditionalCommentsChecked
-                                                }
-                                            />
-                                        )}
-                                    <button
-                                        className={`mini-button copy-button-${key} ${
-                                            isCopying ? 'success' : ''
-                                        }`}
-                                        onClick={handleCopyButtonClick}
-                                        title="Copy code (ctrl/cmd+c)"
-                                    >
-                                        {getCopyIcon()}
-                                    </button>
-                                    <button
-                                        className="mini-button"
-                                        onClick={() => toggleFullScreen()}
-                                        title="Full screen (ctrl/cmd+f)"
-                                    >
-                                        {fullScreen ? (
-                                            <FullscreenExit />
-                                        ) : (
-                                            <Fullscreen />
-                                        )}
-                                    </button>
-                                </div>
-
-                                {[TAB_PYCODE, TAB_PLAINCODE].map((tabKey) => (
-                                    <Tab.Pane
-                                        eventKey={tabKey}
-                                        className={`p-4 code preview-${tabKey}`}
-                                        key={tabKey}
-                                    >
-                                        <pre>
-                                            {tabKey === TAB_PYCODE &&
-                                                tabKey === key &&
-                                                conversionResult?.pycode}
-                                            {tabKey === TAB_PLAINCODE &&
-                                                tabKey === key &&
-                                                conversionResult?.plaincode}
-                                        </pre>
-                                    </Tab.Pane>
-                                ))}
-
-                                <Tab.Pane
-                                    eventKey={TAB_CALLGRAPH}
-                                    className={`p-4 preview-callgraph`}
-                                >
-                                    {key === TAB_CALLGRAPH && (
-                                        <CallGraph
-                                            ref={graphRef}
-                                            conversionResult={conversionResult}
-                                        />
-                                    )}
-                                </Tab.Pane>
-
-                                <Tab.Pane
-                                    eventKey={TAB_PREVIEW}
-                                    className="p-4 preview-svg"
-                                >
-                                    {key === TAB_PREVIEW && (
-                                        <div
-                                            ref={svgRef}
-                                            dangerouslySetInnerHTML={{
-                                                __html: svgContentData() || '',
-                                            }}
-                                        ></div>
-                                    )}
-                                </Tab.Pane>
-
-                                <Tab.Pane
-                                    eventKey={TAB_EV3BDECOMPILED}
-                                    className={`p-4 code preview-decompiled`}
-                                >
-                                    {key === TAB_EV3BDECOMPILED && (
-                                        <pre>{rbfDecompileData()}</pre>
-                                    )}
-                                </Tab.Pane>
+                                <TabContents
+                                    tabkey={tabkey}
+                                    svgRef={svgRef}
+                                    graphRef={graphRef}
+                                />
                             </Tab.Content>
                         </Row>
                     </Col>
