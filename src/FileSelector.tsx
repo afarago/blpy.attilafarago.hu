@@ -79,15 +79,6 @@ const FileSelector: React.FC<FileSelectorProps> = ({
     };
 
     useEffect(() => {
-        ReactGA.send({
-            hitType: 'event',
-            eventCategory: 'FileSelector',
-            eventAction: 'updateFileInput',
-            eventLabel: 'selectedFile',
-            eventValue:
-                (selectedFile?.builtin ? '#sample#' : '') + selectedFile?.file?.name,
-        });
-
         updateFileInput(selectedFile);
     }, [selectedFile]);
 

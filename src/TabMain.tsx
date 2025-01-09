@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 
 import Col from 'react-bootstrap/Col';
 import { MyContext } from './contexts/MyContext';
+import ReactGA from 'react-ga4';
 import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';
 import TabContents from './TabContents';
@@ -40,6 +41,16 @@ const MainTab: React.FC = () => {
             setTabkey(TabKey.PYCODE);
         }
     }, [conversionResult, tabkey, setTabkey]);
+
+    useEffect(() => {
+        ReactGA.send({
+            hitType: 'event',
+            eventCategory: 'navigation',
+            eventAction: 'select_tab',
+            eventLabel: tabkey,
+            // eventValue: ,
+        });
+    });
 
     return (
         !!conversionResult && (

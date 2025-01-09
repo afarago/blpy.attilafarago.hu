@@ -8,6 +8,7 @@ import FileSelector from './FileSelector';
 import Footer from './Footer';
 import Header from './Header';
 import MainTab from './TabMain';
+import ReactGA from 'react-ga4';
 import { Toast } from 'react-bootstrap';
 import WelcomeTab from './TabWelcome';
 
@@ -47,6 +48,7 @@ const AppContent: React.FC = () => {
     if (!context) throw new Error('MyComponent must be used within a MyProvider');
     const {
         isAdditionalCommentsChecked,
+        conversionResult,
         setConversionResult,
         toastMessage,
         setToastMessage,
@@ -79,9 +81,28 @@ const AppContent: React.FC = () => {
 
                 const retval = await convertProjectToPython(input, options);
 
+                ReactGA.send({
+                    hitType: 'event',
+                    eventCategory: 'file_conversion',
+                    eventAction: 'finished_conversion',
+                    eventLabel: `file_name: ${selectedFile?.builtin ? '#sample#' : ''}${
+                        selectedFile?.file.name
+                    }`,
+                });
+
                 setToastMessage(undefined);
                 setConversionResult(retval);
             } catch (error) {
+                ReactGA.send({
+                    hitType: 'event',
+                    eventCategory: 'file_conversion',
+                    eventAction: 'failed_conversion',
+                    eventLabel: `file_name: ${selectedFile?.builtin ? '#sample#' : ''}${
+                        selectedFile?.file.name
+                    }`,
+                    eventValue: error,
+                });
+
                 console.error('Error converting project to Python:', error);
                 setToastMessage(
                     error instanceof Error
