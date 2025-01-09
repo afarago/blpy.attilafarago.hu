@@ -84,6 +84,12 @@ form,
         display: block;
         height: 4em; /* Set same as footer's height */
     }
+    * {
+        -webkit-user-drag: none;
+        -moz-user-drag: none;
+        -ms-user-drag: none;
+        user-drag: none;
+    }
 }
 
 .navbar-brand {
@@ -121,10 +127,6 @@ form,
         z-index: 1;
         position: relative;
         a {
-            -webkit-user-drag: none;
-            -moz-user-drag: none;
-            -ms-user-drag: none;
-            user-drag: none;
             .nav {
                 flex-wrap: nowrap;
             }
@@ -328,10 +330,7 @@ form,
     font-weight: normal;
     display: inline-flex;
     align-items: center;
-    -webkit-user-drag: none;
-    -moz-user-drag: none;
-    -ms-user-drag: none;
-    user-drag: none;
+
     img {
         margin-left: 0.5em;
         height: $mini-icon-size;
