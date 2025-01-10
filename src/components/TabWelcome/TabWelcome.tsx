@@ -33,7 +33,7 @@ const WelcomeTab: React.FC = () => {
                 <div className="justify-content-center">
                     <div className="text-center mb-5">
                         <div>
-                            <a onClick={handleCloudIconClick}>
+                            <a href="#" onClick={handleCloudIconClick}>
                                 <CloudArrowUpFill className="drop-cloud-icon" />
                             </a>
                         </div>

@@ -10,8 +10,7 @@ interface CallGraphProps {
 }
 
 const removeSvgDimensions = (svgString: string): string => {
-    const regex =
-        /<svg\s[^>]*?(?:width\s*=\s*"[^"]*")?\s*?(?:height\s*=\s*"[^"]*")?\s*>/i;
+    const regex = /<svg[^>]*>/i;
     return svgString.replace(regex, (match) => {
         return match.replace(/width\s*=\s*"[^"]*"\s*|height\s*=\s*"[^"]*"\s*/g, '');
     });
