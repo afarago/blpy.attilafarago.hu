@@ -10,14 +10,6 @@ $icon-size: 3.5em;
 $icon-size-big: 10em;
 $mini-icon-size: 20px;
 
-body {
-    min-height: 100vh;
-    position: relative;
-    background-color: hsla(0, 0%, 96%, 0.3); // whitesmoke;
-    background-image: url('/lego-piece-bg.svg');
-    background-repeat: repeat;
-}
-
 footer {
     position: absolute;
     bottom: 0;
@@ -56,8 +48,6 @@ header {
     z-index: 9999;
 }
 
-body,
-#root,
 .App,
 .App > div,
 .appcontent,

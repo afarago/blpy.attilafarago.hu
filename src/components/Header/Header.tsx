@@ -1,7 +1,7 @@
 import React, { MouseEventHandler, useContext, useEffect, useState } from 'react';
 
-import LogoFull from './img/logo_full.svg?react';
-import { MyContext } from './contexts/MyContext';
+import LogoFull from '../../assets/img/logo_full.svg?react';
+import { MyContext } from '../../contexts/MyContext';
 
 const Header: React.FC = () => {
     const context = useContext(MyContext);

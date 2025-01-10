@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 
-import CallGraph from './CallGraph';
-import { MyContext } from './contexts/MyContext';
+import CallGraph from '../../components/CallGraph/CallGraph';
+import { MyContext } from '../../contexts/MyContext';
 import Panzoom from '@panzoom/panzoom';
 import { Tab } from 'react-bootstrap';
 import { TabKey } from './TabMain';

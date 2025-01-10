@@ -1,16 +1,14 @@
-import './scss/App.scss';
-
-import { IFileContent, MyContext } from './contexts/MyContext';
+import { IFileContent, MyContext } from '../../contexts/MyContext';
 import { PyConverterOptions, convertProjectToPython } from 'blocklypy';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 
-import FileSelector from './FileSelector';
-import Footer from './Footer';
-import Header from './Header';
-import MainTab from './TabMain';
+import FileSelector from '../../components/FileSelector/FileSelector';
+import Footer from '../../components/Footer/Footer';
+import Header from '../../components/Header/Header';
+import MainTab from '../../components/TabMain/TabMain';
 import ReactGA from 'react-ga4';
 import { Toast } from 'react-bootstrap';
-import WelcomeTab from './TabWelcome';
+import WelcomeTab from '../../components/TabWelcome/TabWelcome';
 
 const useDragAndDrop = (setSelectedFile: (file: IFileContent | undefined) => void) => {
     const [isDragging, setIsDragging] = useState(false);

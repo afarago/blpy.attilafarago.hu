@@ -1,9 +1,9 @@
 import { CaretRight, CloudArrowUpFill } from 'react-bootstrap-icons';
 import React, { useContext } from 'react';
 
-import { ACCEPTED_EXTENSIONS } from './constants';
-import { DevTypeIcon } from './DevTypeIcon';
-import { MyContext } from './contexts/MyContext';
+import { ACCEPTED_EXTENSIONS } from '../../utils/constants';
+import { DevTypeIcon } from '../Icons/DevTypeIcon';
+import { MyContext } from '../../contexts/MyContext';
 
 const icons: (React.ReactElement | string)[] = [
     'spike',

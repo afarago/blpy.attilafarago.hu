@@ -8,7 +8,7 @@ import {
 import React, { useCallback, useContext, useState } from 'react';
 
 import { Form } from 'react-bootstrap';
-import { MyContext } from './contexts/MyContext';
+import { MyContext } from '../../contexts/MyContext';
 import { TabKey } from './TabMain';
 import domtoimage from 'dom-to-image';
 import { useHotkeys } from 'react-hotkeys-hook';

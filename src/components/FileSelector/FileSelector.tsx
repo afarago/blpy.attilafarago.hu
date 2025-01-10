@@ -1,10 +1,10 @@
-import { IFileContent, MyContext } from './contexts/MyContext';
+import { IFileContent, MyContext } from '../../contexts/MyContext';
 import React, { useContext, useEffect, useRef } from 'react';
 
-import { ACCEPTED_EXTENSIONS } from './constants';
+import { ACCEPTED_EXTENSIONS } from '../../utils/constants';
 import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/esm/Button';
-import { DevTypeIcon } from './DevTypeIcon';
+import { DevTypeIcon } from '../Icons/DevTypeIcon';
 import { Download } from 'react-bootstrap-icons';
 import Form from 'react-bootstrap/Form';
 import ReactGA from 'react-ga4';

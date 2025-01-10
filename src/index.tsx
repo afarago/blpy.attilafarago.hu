@@ -1,4 +1,6 @@
-import App from './App';
+import './scss/index.scss';
+
+import App from './containers/App/App';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';

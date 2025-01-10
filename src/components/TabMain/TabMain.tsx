@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 
 import Col from 'react-bootstrap/Col';
-import { MyContext } from './contexts/MyContext';
+import { MyContext } from '../../contexts/MyContext';
 import ReactGA from 'react-ga4';
 import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';

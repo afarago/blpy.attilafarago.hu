@@ -1,8 +1,7 @@
-import './scss/index.scss';
-import './scss/App.scss';
+import './App.scss';
 
 import AppContent from './AppContent';
-import { MyProvider } from './contexts/MyContext';
+import { MyProvider } from '../../contexts/MyContext';
 import React from 'react';
 import ReactGA from 'react-ga4';
 

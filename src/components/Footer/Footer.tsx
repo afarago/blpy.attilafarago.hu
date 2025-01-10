@@ -6,7 +6,7 @@ import {
     Mailbox,
 } from 'react-bootstrap-icons';
 
-import { GITHUB_VERSION } from './github_version';
+import { GITHUB_VERSION } from '../../github_version';
 import React from 'react';
 
 const Footer: React.FC = () => (

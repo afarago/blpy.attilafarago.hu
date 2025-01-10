@@ -6,8 +6,8 @@ import {
     FiletypePy,
 } from 'react-bootstrap-icons';
 
-import { CatIcon } from './CatIcon';
-import { DevTypeIcon } from './DevTypeIcon';
+import { CatIcon } from '../Icons/CatIcon';
+import { DevTypeIcon } from '../Icons/DevTypeIcon';
 import { Nav } from 'react-bootstrap';
 import React from 'react';
 import { TabKey } from './TabMain';
