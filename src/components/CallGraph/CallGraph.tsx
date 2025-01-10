@@ -16,6 +16,25 @@ const removeSvgDimensions = (svgString: string): string => {
     });
 };
 
+type NodeRegistryEntry = {
+    name: string;
+    to: NodeRegistryEntry[];
+    from: NodeRegistryEntry[];
+    element: Element;
+    // edges1: Element[];
+};
+
+const selSome = (
+    elref: NodeRegistryEntry,
+    selFn: (elref: NodeRegistryEntry, acc: NodeRegistryEntry[]) => NodeRegistryEntry[],
+    acc: NodeRegistryEntry[],
+) => {
+    const elrefs = selFn(elref, acc);
+    elrefs.forEach((elref2) => {
+        if (!acc.includes(elref2)) selSome(elref2, selFn, acc);
+    });
+};
+
 const CallGraph = forwardRef<HTMLDivElement, CallGraphProps>(
     ({ conversionResult }, ref) => {
         const localRef = useRef<HTMLDivElement>(null);
@@ -40,14 +59,32 @@ const CallGraph = forwardRef<HTMLDivElement, CallGraphProps>(
             // need to remove width and height attributes from svg for successful download for domtoimage
             localRef.current.innerHTML = removeSvgDimensions(svg);
 
-            // setup registry
-            type NodeRegistryEntry = {
-                name: string;
-                to: NodeRegistryEntry[];
-                from: NodeRegistryEntry[];
-                element: Element;
-                // edges1: Element[];
+            const highlightNode = (entry?: NodeRegistryEntry) => {
+                if (entry) {
+                    const highlightNodes: NodeRegistryEntry[] = [];
+                    selSome(
+                        entry,
+                        (elref, acc) => {
+                            acc.push(elref);
+                            return elref.from;
+                        },
+                        highlightNodes,
+                    );
+                    selSome(
+                        entry,
+                        (elref, acc) => {
+                            acc.push(elref);
+                            return elref.to;
+                        },
+                        highlightNodes,
+                    );
+                    highlightNodes.forEach((elref) =>
+                        elref.element.classList.add('selected'),
+                    );
+                }
             };
+
+            // setup registry
             const nodeRegistry = new Map<string | Element, NodeRegistryEntry>();
             const setupNodesEdges = (el: NodeListOf<Element>, isNode: boolean) => {
                 el.forEach((el) => {
@@ -109,43 +146,7 @@ const CallGraph = forwardRef<HTMLDivElement, CallGraphProps>(
 
                     // select clicked node
                     const entry = nodeRegistry.get(node);
-
-                    const selSome = (
-                        elref: NodeRegistryEntry,
-                        selFn: (
-                            elref: NodeRegistryEntry,
-                            acc: NodeRegistryEntry[],
-                        ) => NodeRegistryEntry[],
-                        acc: NodeRegistryEntry[],
-                    ) => {
-                        const elrefs = selFn(elref, acc);
-                        elrefs.forEach((elref2) => {
-                            if (!acc.includes(elref2)) selSome(elref2, selFn, acc);
-                        });
-                    };
-
-                    if (entry) {
-                        const highlightNodes: NodeRegistryEntry[] = [];
-                        selSome(
-                            entry,
-                            (elref, acc) => {
-                                acc.push(elref);
-                                return elref.from;
-                            },
-                            highlightNodes,
-                        );
-                        selSome(
-                            entry,
-                            (elref, acc) => {
-                                acc.push(elref);
-                                return elref.to;
-                            },
-                            highlightNodes,
-                        );
-                        highlightNodes.forEach((elref) =>
-                            elref.element.classList.add('selected'),
-                        );
-                    }
+                    highlightNode(entry);
                 });
             });
         };
