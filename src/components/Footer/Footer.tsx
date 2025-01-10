@@ -1,10 +1,4 @@
-import {
-    Envelope,
-    EnvelopeFill,
-    Facebook,
-    Linkedin,
-    Mailbox,
-} from 'react-bootstrap-icons';
+import { EnvelopeFill, Facebook, Linkedin } from 'react-bootstrap-icons';
 
 import { GITHUB_VERSION } from '../../github_version';
 import React from 'react';
@@ -31,7 +25,7 @@ const Footer: React.FC = () => (
                 and{' '}
                 <a href="https://www.npmjs.com/package/blocklypy" target="_blank">
                     npm
-                </a>
+                </a>{' '}
                 . You might freely use, share any generated artifacts, visualizations
                 with attribution in place.
             </div>
@@ -45,6 +39,7 @@ const Footer: React.FC = () => (
                 <a href="mailto:attila.farago.hu+ev3treevis@gmail.com">
                     <EnvelopeFill />
                 </a>
+                {''}
                 Attila Farago,
                 <span title={GITHUB_VERSION}>2025</span>
             </div>

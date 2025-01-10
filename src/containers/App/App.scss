@@ -69,6 +69,11 @@ form,
     display: flex !important;
 }
 
+button {
+    border: none;
+    background: none;
+}
+
 .appcontent {
     margin-top: 6em;
     &::after {
@@ -80,7 +85,7 @@ form,
         -webkit-user-drag: none;
         -moz-user-drag: none;
         -ms-user-drag: none;
-        user-drag: none;
+        // user-drag: none;
     }
 }
 

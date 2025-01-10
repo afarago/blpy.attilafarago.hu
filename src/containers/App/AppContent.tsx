@@ -46,7 +46,6 @@ const AppContent: React.FC = () => {
     if (!context) throw new Error('MyComponent must be used within a MyProvider');
     const {
         isAdditionalCommentsChecked,
-        conversionResult,
         setConversionResult,
         toastMessage,
         setToastMessage,

@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import LogoFull from '../../assets/img/logo_full.svg?react';
 import { MyContext } from '../../contexts/MyContext';

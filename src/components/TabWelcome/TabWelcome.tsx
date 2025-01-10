@@ -21,7 +21,8 @@ const WelcomeTab: React.FC = () => {
     if (!context) throw new Error('MyComponent must be used within a MyProvider');
     const { conversionResult, fileInputRef } = context;
 
-    const handleCloudIconClick = (event: React.MouseEvent<HTMLAnchorElement>): void => {
+    const handleCloudIconClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
+        event.preventDefault();
         if (fileInputRef.current) {
             fileInputRef.current.click();
         }
@@ -33,9 +34,9 @@ const WelcomeTab: React.FC = () => {
                 <div className="justify-content-center">
                     <div className="text-center mb-5">
                         <div>
-                            <a href="#" onClick={handleCloudIconClick}>
+                            <button onClick={handleCloudIconClick}>
                                 <CloudArrowUpFill className="drop-cloud-icon" />
-                            </a>
+                            </button>
                         </div>
                         <div className="mb-4 d-flex flex-column align-items-center">
                             <div style={{ maxWidth: '30em' }}>

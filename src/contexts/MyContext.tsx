@@ -1,5 +1,5 @@
 // src/contexts/MyContext.tsx
-import { ReactNode, createContext, useEffect, useRef, useState } from 'react';
+import { ReactNode, createContext, useEffect, useMemo, useRef, useState } from 'react';
 
 import { PyProjectResult } from 'blocklypy';
 
@@ -38,7 +38,7 @@ const MyProvider = ({ children }: { children: ReactNode }) => {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const toggleFullScreen = (value?: boolean) => {
-        setFullScreen((prev) => (value === undefined ? !prev : value));
+        setFullScreen((prev) => value ?? !prev);
     };
 
     useEffect(() => {
@@ -50,21 +50,32 @@ const MyProvider = ({ children }: { children: ReactNode }) => {
 
     return (
         <MyContext.Provider
-            value={{
-                isAdditionalCommentsChecked,
-                setIsAdditionalCommentsChecked,
-                conversionResult,
-                setConversionResult,
-                toastMessage,
-                setToastMessage,
-                selectedFile,
-                setSelectedFile,
-                fileInputRef,
-                fullScreen,
-                toggleFullScreen,
-                svgContentData,
-                rbfDecompileData,
-            }}
+            value={useMemo(
+                () => ({
+                    isAdditionalCommentsChecked,
+                    setIsAdditionalCommentsChecked,
+                    conversionResult,
+                    setConversionResult,
+                    toastMessage,
+                    setToastMessage,
+                    selectedFile,
+                    setSelectedFile,
+                    fileInputRef,
+                    fullScreen,
+                    toggleFullScreen,
+                    svgContentData,
+                    rbfDecompileData,
+                }),
+                [
+                    isAdditionalCommentsChecked,
+                    conversionResult,
+                    toastMessage,
+                    selectedFile,
+                    fullScreen,
+                    svgContentData,
+                    rbfDecompileData,
+                ],
+            )}
         >
             {children}
         </MyContext.Provider>

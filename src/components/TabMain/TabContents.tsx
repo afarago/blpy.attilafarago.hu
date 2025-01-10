@@ -41,20 +41,18 @@ const TabContents: React.FC<TabContentsProps> = ({ tabkey, svgRef, graphRef }) =
 
     return (
         <>
-            {[TabKey.PYCODE, TabKey.PLAINCODE].map((tabKey) => (
+            {[TabKey.PYCODE, TabKey.PLAINCODE].map((elem) => (
                 <Tab.Pane
-                    eventKey={tabKey}
-                    className={`p-4 code preview-${tabKey}`}
-                    key={tabKey}
+                    eventKey={elem}
+                    className={`p-4 code preview-${elem}`}
+                    key={elem}
                 >
-                    <pre>
-                        {tabKey === TabKey.PYCODE &&
-                            tabKey === tabKey &&
-                            conversionResult?.pycode}
-                        {tabKey === TabKey.PLAINCODE &&
-                            tabKey === tabKey &&
-                            conversionResult?.plaincode}
-                    </pre>
+                    {tabkey === elem && (
+                        <pre>
+                            {elem === TabKey.PYCODE && conversionResult?.pycode}
+                            {elem === TabKey.PLAINCODE && conversionResult?.plaincode}
+                        </pre>
+                    )}
                 </Tab.Pane>
             ))}
             <Tab.Pane eventKey={TabKey.CALLGRAPH} className={`p-4 preview-callgraph`}>

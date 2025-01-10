@@ -1,5 +1,5 @@
 import { IFileContent, MyContext } from '../../contexts/MyContext';
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import { ACCEPTED_EXTENSIONS } from '../../utils/constants';
 import Badge from 'react-bootstrap/Badge';
@@ -7,7 +7,6 @@ import Button from 'react-bootstrap/esm/Button';
 import { DevTypeIcon } from '../Icons/DevTypeIcon';
 import { Download } from 'react-bootstrap-icons';
 import Form from 'react-bootstrap/Form';
-import ReactGA from 'react-ga4';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 interface FileSelectorProps {
@@ -27,7 +26,6 @@ const FileSelector: React.FC<FileSelectorProps> = ({
     const handleFileOpen = (event: React.ChangeEvent<HTMLInputElement>) => {
         const target = event.target as HTMLInputElement;
         if (target.files?.length) {
-            const file = target.files[0];
             setSelectedFile({ file: target.files[0], builtin: false });
             target.blur();
         } else {
