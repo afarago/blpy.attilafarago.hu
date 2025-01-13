@@ -1,1 +1,3 @@
-export const ACCEPTED_EXTENSIONS = '.llsp,.llsp3,.lms,.lmsp,.ev3,.ev3m,.rbf,.py';
+import { supportedExtensions } from 'blocklypy';
+
+export const ACCEPTED_EXTENSIONS = supportedExtensions().join(',');
