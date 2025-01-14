@@ -126,7 +126,7 @@ const AppContent: React.FC = () => {
                 show={toastMessage !== undefined}
                 delay={5000}
                 autohide
-                className="position-fixed top-0 end-0"
+                className="top-0 end-0"
             >
                 <Toast.Header>
                     <span className="me-auto">Conversion Error</span>
@@ -134,8 +134,8 @@ const AppContent: React.FC = () => {
                 <Toast.Body>{toastMessage}</Toast.Body>
             </Toast>
 
-            <div className="appcontent container-md">
-                <h3>
+            <div className="appcontent container-lg">
+                <h3 className="pt-3">
                     {' '}
                     SPIKE and EV3 to Pybricks Wizard{' '}
                     <small className="text-muted d-sm-block d-none d-lg-inline">
@@ -149,7 +149,7 @@ const AppContent: React.FC = () => {
                         onDragLeave={handleDragLeave}
                         onDrop={handleDrop}
                         className={
-                            'main-content dropzone container-md py-3' +
+                            'main-content dropzone pb-3' +
                             (isDragging ? ' drop-active' : '')
                         }
                         aria-dropeffect="move"

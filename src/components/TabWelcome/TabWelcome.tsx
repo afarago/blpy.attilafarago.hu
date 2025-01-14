@@ -30,9 +30,9 @@ const WelcomeTab: React.FC = () => {
 
     return (
         !conversionResult && (
-            <div className="tab-welcome active py-5 mb-5">
+            <div className="tab-welcome active">
                 <div className="justify-content-center">
-                    <div className="text-center mb-5">
+                    <div className="text-center">
                         <div>
                             <button onClick={handleCloudIconClick}>
                                 <CloudArrowUpFill className="drop-cloud-icon" />

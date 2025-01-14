@@ -11,18 +11,8 @@ $icon-size-big: 10em;
 $mini-icon-size: 20px;
 
 footer {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    // text-align: right;
-    // padding-top: 1em;
     width: 100%;
-    // height: 60px;
     background-color: $headerfooter-background-color;
-
-    // position: sticky;
-    // bottom: 0;
-    // z-index: 1000;
     .small {
         font-size: 0.7em;
     }
@@ -55,11 +45,26 @@ header {
 .tab-welcome,
 .tab-welcome > *,
 .tab-content,
-.tab-pane.active,
 .tab-main,
 .tab-main .col,
-.tab-main .col .row:nth-child(2),
+.tab-main .col .row.tabcontent,
+form {
+    flex-direction: column !important;
+    flex: 1 1 auto !important;
+    display: flex !important;
+    max-height: 100%;
+}
+
+.tab-pane {
+    overflow: auto;
+}
+
+.appcontent,
 form,
+.row.tabcontent {
+    overflow-y: hidden;
+}
+
 .code pre {
     // .flex-column
     flex-direction: column !important;
@@ -75,12 +80,6 @@ button {
 }
 
 .appcontent {
-    margin-top: 6em;
-    &::after {
-        content: '';
-        display: block;
-        height: 4em; /* Set same as footer's height */
-    }
     * {
         -webkit-user-drag: none;
         -moz-user-drag: none;
@@ -120,14 +119,9 @@ button {
 
 .tab-main {
     min-height: 30vh;
-    .row:first-child {
+    .row.tabheader {
         z-index: 1;
         position: relative;
-        a {
-            .nav {
-                flex-wrap: nowrap;
-            }
-        }
         .icon-link-hover {
             --bs-icon-link-transform: translate3d(0, -0.125rem, 0);
         }

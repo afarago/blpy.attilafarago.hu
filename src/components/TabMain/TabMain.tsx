@@ -54,19 +54,19 @@ const MainTab: React.FC = () => {
 
     return (
         !!conversionResult && (
-            <div className="tab-main p-2">
+            <div className="tab-main container-lg pt-2">
                 <Tab.Container
                     activeKey={tabkey}
                     onSelect={(k) => setTabkey(k as TabKey)}
                     defaultActiveKey={TabKey.PYCODE}
                 >
                     <Col>
-                        <Row sm={9}>
+                        <Row sm={9} className="tabheader">
                             <TabHeaders conversionResult={conversionResult} />
                         </Row>
 
                         {/* Tab Contents */}
-                        <Row sm={9} className="position-relative">
+                        <Row sm={9} className="tabcontent position-relative">
                             <Tab.Content className="border p-0 position-relative">
                                 <TabTopControls
                                     tabkey={tabkey}
