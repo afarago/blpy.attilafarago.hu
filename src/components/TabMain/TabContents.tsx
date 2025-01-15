@@ -3,8 +3,14 @@ import React, { useContext, useEffect } from 'react';
 import CallGraph from '../../components/CallGraph/CallGraph';
 import { MyContext } from '../../contexts/MyContext';
 import Panzoom from '@panzoom/panzoom';
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+// import SyntaxHighlighter from 'react-syntax-highlighter';
 import { Tab } from 'react-bootstrap';
 import { TabKey } from './TabMain';
+import python from 'react-syntax-highlighter/dist/esm/languages/hljs/python';
+import { vs } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+
+SyntaxHighlighter.registerLanguage('python', python);
 
 interface TabContentsProps {
     tabkey: string;
@@ -47,11 +53,15 @@ const TabContents: React.FC<TabContentsProps> = ({ tabkey, svgRef, graphRef }) =
                     className={`p-4 code preview-${elem}`}
                     key={elem}
                 >
-                    {tabkey === elem && (
-                        <pre>
-                            {elem === TabKey.PYCODE && conversionResult?.pycode}
-                            {elem === TabKey.PLAINCODE && conversionResult?.plaincode}
-                        </pre>
+                    {tabkey === elem && elem === TabKey.PYCODE && (
+                        <SyntaxHighlighter language="python" style={vs}>
+                            {conversionResult?.pycode || ''}
+                        </SyntaxHighlighter>
+                    )}
+                    {tabkey === elem && elem === TabKey.PLAINCODE && (
+                        <SyntaxHighlighter style={vs}>
+                            {conversionResult?.plaincode || ''}
+                        </SyntaxHighlighter>
                     )}
                 </Tab.Pane>
             ))}
