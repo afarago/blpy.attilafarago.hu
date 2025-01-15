@@ -57,6 +57,7 @@ form {
 
 .tab-pane {
     overflow: auto;
+    height: 100%;
 }
 
 .appcontent,
@@ -85,6 +86,10 @@ button {
         -moz-user-drag: none;
         -ms-user-drag: none;
         // user-drag: none;
+    }
+
+    .fullscreen & {
+        max-width: 100%;
     }
 }
 
@@ -148,6 +153,7 @@ button {
         left: 0;
         width: 100%;
         height: 100%;
+        max-width: 100%;
     }
 }
 
@@ -274,7 +280,7 @@ button {
 .code-top-container {
     position: absolute;
     top: 0.5em;
-    right: 0;
+    right: 0.5em;
     white-space: nowrap;
     z-index: 1;
 
@@ -310,7 +316,7 @@ button {
     height: 100%;
     pre {
         width: 100%;
-        height: 100%;
+        min-height: 100%;
         border: none;
         white-space: pre;
         margin-bottom: 0;
@@ -348,16 +354,20 @@ button {
 .preview-callgraph.tab-pane.active {
     display: grid;
 }
-.callgraph {
+.preview-callgraph,
+.preview-svg,
+.preview-svg > div {
     // @at-root .tab-pane:has(&) {
     //     display: grid;
     // }
     width: 100%;
     height: 100%;
+    max-height: 100%;
     margin: auto;
     svg {
         width: 100%;
         height: 100%;
+        max-height: 100%;
         .graph {
             .node {
                 cursor: pointer;

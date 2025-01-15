@@ -37,9 +37,9 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
         toggleFullScreen,
         svgContentData,
         rbfDecompileData,
+        isCopying,
+        setIsCopying,
     } = context;
-
-    const [isCopying, setIsCopying] = useState(false);
 
     const handleSetIsAdditionalCommentsChecked = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -84,12 +84,6 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
                             if (!ref?.current) return;
                             let ext = tabkey === TabKey.PREVIEW ? 'preview' : 'graph';
 
-                            // domtoimage.toBlob(svgRef.current, {}).then((data: Blob) => {
-                            //     // copy image to clipboard
-                            //     const data2 = [new ClipboardItem({ 'image/png': data })];
-                            //     navigator.clipboard.write(data2);
-                            // });
-
                             domtoimage
                                 .toBlob(ref.current, {})
                                 .then((blob: Blob) => {
@@ -122,6 +116,18 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
                             //     .catch((error) => {
                             //         console.error('Error capturing image:', error);
                             //     });
+
+                            // // also put it to the clipboard
+                            // // this would be subject to animations and might not work
+                            // domtoimage.toBlob(ref.current, {}).then((data: Blob) => {
+                            //     // copy image to clipboard
+                            //     const data2: any = [
+                            //         new ClipboardItem({
+                            //             'image/png': data,
+                            //         }),
+                            //     ];
+                            //     navigator.clipboard.write(data2);
+                            // });
                         }
                         break;
                 }

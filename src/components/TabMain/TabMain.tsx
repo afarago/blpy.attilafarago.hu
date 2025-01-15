@@ -40,7 +40,7 @@ const MainTab: React.FC = () => {
         ) {
             setTabkey(TabKey.PYCODE);
         }
-    }, [conversionResult, tabkey, setTabkey]);
+    }, [conversionResult, tabkey, setTabkey, svgContentData, rbfDecompileData]);
 
     useEffect(() => {
         ReactGA.send({

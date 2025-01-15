@@ -1,13 +1,7 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useContext, useEffect, useImperativeHandle, useRef } from 'react';
 
 import { Graphviz } from '@hpcc-js/wasm-graphviz';
-import { PyProjectResult } from 'blocklypy';
-
-// import { instance as vizInstance } from '@viz-js/viz';
-
-interface CallGraphProps {
-    conversionResult?: PyProjectResult;
-}
+import { MyContext } from '../../contexts/MyContext';
 
 const removeSvgDimensions = (svgString: string): string => {
     const regex = /<svg[^>]*>/i;
@@ -35,29 +29,36 @@ const selSome = (
     });
 };
 
-const CallGraph = forwardRef<HTMLDivElement, CallGraphProps>(
-    ({ conversionResult }, ref) => {
-        const localRef = useRef<HTMLDivElement>(null);
-        useImperativeHandle(ref, () => localRef.current as HTMLDivElement);
+const CallGraph = forwardRef<HTMLDivElement>(({}, ref) => {
+    const context = useContext(MyContext);
+    if (!context) throw new Error('MyComponent must be used within a MyProvider');
+    const { conversionResult, svgDependencyGraph, setSvgDependencyGraph } = context;
 
-        const renderGraph = async () => {
-            if (!conversionResult?.dependencygraph || !localRef?.current) return;
-            // const viz = await vizInstance();
-            // const svg = viz.renderSVGElement(conversionResult.dependencygraph);
-            // localRef.current.innerHTML = svg.outerHTML;
+    const localRef = useRef<HTMLDivElement>(null);
+    useImperativeHandle(ref, () => localRef.current as HTMLDivElement);
 
-            // const graphviz = gv.Graphviz;
-            const graphviz = await Graphviz.load();
-            // console.log(graphviz.version());
-            conversionResult.dependencygraph =
-                conversionResult.dependencygraph.replaceAll(
-                    'shape = box',
-                    'shape = box, style = rounded',
-                );
-            // console.log(conversionResult.dependencygraph);
-            const svg = await graphviz.dot(conversionResult.dependencygraph);
-            // need to remove width and height attributes from svg for successful download for domtoimage
-            localRef.current.innerHTML = removeSvgDimensions(svg);
+    const renderGraph = async () => {
+        if (!conversionResult?.dependencygraph || !localRef?.current) return;
+        // const viz = await vizInstance();
+        // const svg = viz.renderSVGElement(conversionResult.dependencygraph);
+        // localRef.current.innerHTML = svg.outerHTML;
+
+        // const graphviz = gv.Graphviz;
+        const graphviz = await Graphviz.load();
+        // console.log(graphviz.version());
+        conversionResult.dependencygraph = conversionResult.dependencygraph.replaceAll(
+            'shape = box',
+            'shape = box, style = rounded',
+        );
+        // console.log(conversionResult.dependencygraph);
+        let svg = await graphviz.dot(conversionResult.dependencygraph);
+        // need to remove width and height attributes from svg for successful download for domtoimage
+        // svg = removeSvgDimensions(svg);
+        setSvgDependencyGraph(svg);
+
+        const handleGraphUpdate = () => {
+            const graph = localRef.current?.querySelector('g');
+            if (!graph) return;
 
             const highlightNode = (entry?: NodeRegistryEntry) => {
                 if (entry) {
@@ -114,13 +115,12 @@ const CallGraph = forwardRef<HTMLDivElement, CallGraphProps>(
                     }
                 });
             };
-            const nodes = localRef.current.querySelectorAll('g.node');
-            const edges = localRef.current.querySelectorAll('g.edge');
+            const nodes = graph.querySelectorAll('g.node');
+            const edges = graph.querySelectorAll('g.edge');
             setupNodesEdges(nodes, true);
             setupNodesEdges(edges, false);
 
             // add unhighlight on click handlers
-            const graph = localRef.current.querySelectorAll('g')[0];
             const deselectAll = () => {
                 nodes.forEach((n) => n.classList.remove('selected'));
                 edges.forEach((n) => n.classList.remove('selected'));
@@ -151,12 +151,35 @@ const CallGraph = forwardRef<HTMLDivElement, CallGraphProps>(
             });
         };
 
-        useEffect(() => {
-            renderGraph();
-        }, [conversionResult, localRef, renderGraph]);
+        // if it is already there, just handle it,
+        handleGraphUpdate();
 
-        return <div className="callgraph" ref={localRef} />;
-    },
-);
+        // add mutationobserver to handle dynamic changes after setSvgDependencyGraph is in effect
+        const observer = new MutationObserver((mutations) => {
+            handleGraphUpdate();
+        });
+        observer.observe(localRef.current, {
+            childList: true,
+            subtree: true,
+        });
+
+        return () => {
+            observer.disconnect();
+        };
+    };
+
+    useEffect(() => {
+        renderGraph();
+    }, [conversionResult, localRef, renderGraph]);
+
+    return (
+        <div
+            ref={localRef}
+            dangerouslySetInnerHTML={{
+                __html: svgDependencyGraph || '',
+            }}
+        ></div>
+    );
+});
 
 export default CallGraph;

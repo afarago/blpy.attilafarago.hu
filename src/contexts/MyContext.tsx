@@ -16,7 +16,11 @@ interface MyContextProps {
     fullScreen?: boolean;
     toggleFullScreen: (value?: boolean) => void;
     svgContentData: string | undefined;
+    svgDependencyGraph: string | undefined;
+    setSvgDependencyGraph: (value: string | undefined) => void;
     rbfDecompileData: string | undefined;
+    isCopying: boolean;
+    setIsCopying: (value: boolean) => void;
 }
 
 export interface IFileContent {
@@ -34,7 +38,9 @@ const MyProvider = ({ children }: { children: ReactNode }) => {
     const [selectedFile, setSelectedFile] = useState<IFileContent>();
     const [fullScreen, setFullScreen] = useState<boolean>();
     const [svgContentData, setSvgContentData] = useState<string>();
+    const [svgDependencyGraph, setSvgDependencyGraph] = useState<string>();
     const [rbfDecompileData, setRbfDecompileData] = useState<string>();
+    const [isCopying, setIsCopying] = useState(false);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const toggleFullScreen = (value?: boolean) => {
@@ -45,6 +51,9 @@ const MyProvider = ({ children }: { children: ReactNode }) => {
         if (conversionResult) {
             setSvgContentData(conversionResult.extra?.['blockly.svg']);
             setRbfDecompileData(conversionResult.extra?.['ev3b.decompiled']);
+        } else {
+            setSvgContentData(undefined);
+            setRbfDecompileData(undefined);
         }
     }, [conversionResult]);
 
@@ -64,7 +73,11 @@ const MyProvider = ({ children }: { children: ReactNode }) => {
                     fullScreen,
                     toggleFullScreen,
                     svgContentData,
+                    svgDependencyGraph,
+                    setSvgDependencyGraph,
                     rbfDecompileData,
+                    setIsCopying,
+                    isCopying,
                 }),
                 [
                     isAdditionalCommentsChecked,
@@ -73,7 +86,9 @@ const MyProvider = ({ children }: { children: ReactNode }) => {
                     selectedFile,
                     fullScreen,
                     svgContentData,
+                    svgDependencyGraph,
                     rbfDecompileData,
+                    isCopying,
                 ],
             )}
         >
