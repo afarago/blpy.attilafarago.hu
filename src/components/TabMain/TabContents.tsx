@@ -107,7 +107,7 @@ const TabContents: React.FC<TabContentsProps> = ({
                     {/* Content */}
                     <Tab.Pane
                         eventKey={key}
-                        className={`p-4 preview-${elem.classOverride ?? elem.key}`}
+                        className={`p-4 content-${elem.key}`}
                         key={key}
                     >
                         {(elem.key === TabKey.PYCODE ||

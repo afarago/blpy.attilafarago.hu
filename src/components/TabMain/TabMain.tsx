@@ -28,7 +28,6 @@ export enum TabKey {
 
 export interface ITabElem {
     key: string;
-    classOverride?: string;
     title: string;
     icon?: Icon;
     name: string;
