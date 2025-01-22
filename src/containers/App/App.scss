@@ -399,7 +399,6 @@ button {
             .node > polygon,
             .node > path {
                 fill: white;
-                animation: fadeIn 0.5s ease-in-out forwards;
             }
             .node.selected > polygon,
             .node.selected > path {
