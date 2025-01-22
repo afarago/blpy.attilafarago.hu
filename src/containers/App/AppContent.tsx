@@ -1,5 +1,9 @@
 import { IFileContent, MyContext } from '../../contexts/MyContext';
-import { PyConverterOptions, convertProjectToPython } from 'blocklypy';
+import {
+    IPyConverterFile,
+    IPyConverterOptions,
+    convertProjectToPython,
+} from 'blocklypy';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 import FileSelector from '../../components/FileSelector/FileSelector';
@@ -10,7 +14,9 @@ import ReactGA from 'react-ga4';
 import { Toast } from 'react-bootstrap';
 import WelcomeTab from '../../components/TabWelcome/TabWelcome';
 
-const useDragAndDrop = (setSelectedFile: (file: IFileContent | undefined) => void) => {
+const useDragAndDrop = (
+    setSelectedFileContent: (content: IFileContent | undefined) => void,
+) => {
     const [isDragging, setIsDragging] = useState(false);
 
     const handleDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -32,10 +38,10 @@ const useDragAndDrop = (setSelectedFile: (file: IFileContent | undefined) => voi
             event.stopPropagation();
             event.preventDefault();
             setIsDragging(false);
-            const file: File = event.dataTransfer?.files[0];
-            setSelectedFile({ file, builtin: false });
+            const files = [...event.dataTransfer?.files];
+            setSelectedFileContent({ files, builtin: false });
         },
-        [setSelectedFile],
+        [setSelectedFileContent],
     );
 
     return { isDragging, handleDragOver, handleDragLeave, handleDrop };
@@ -49,61 +55,71 @@ const AppContent: React.FC = () => {
         setConversionResult,
         toastMessage,
         setToastMessage,
-        selectedFile,
-        setSelectedFile,
+        selectedFileContent: selectedFile,
+        setSelectedFileContent: setSelectedFileContent,
         fullScreen,
     } = context;
 
     const { isDragging, handleDragOver, handleDragLeave, handleDrop } =
-        useDragAndDrop(setSelectedFile);
+        useDragAndDrop(setSelectedFileContent);
 
     const handleFileUpload = useCallback(
         async (filecontent: IFileContent) => {
-            const file = filecontent.file;
+            const files = [...filecontent.files];
             try {
-                const input = await file.arrayBuffer();
-                const options: PyConverterOptions = {
-                    filename: file.name,
-                    filelastmodified: filecontent.builtin
+                const inputs: IPyConverterFile[] = [];
+                for (const file of files) {
+                    const buffer = await file.arrayBuffer();
+                    const date = filecontent.builtin
                         ? undefined
-                        : new Date(file.lastModified),
-                    filesize: file.size,
+                        : new Date(file.lastModified);
+                    inputs.push({
+                        name: file.name,
+                        buffer,
+                        size: file.size,
+                        date,
+                    });
+                }
+                const options: IPyConverterOptions = {
                     debug: {
-                        'ev3b.decompiled': true,
                         ...(isAdditionalCommentsChecked
                             ? { showExplainingComments: true, showBlockIds: true }
                             : {}),
                     },
+                    output: {
+                        'ev3b.decompiled': true,
+                    },
                 };
-
-                const retval = await convertProjectToPython(input, options);
+                const retval = await convertProjectToPython(inputs, options);
 
                 ReactGA.send({
                     hitType: 'event',
                     eventCategory: 'file_conversion',
                     eventAction: 'finished_conversion',
-                    eventLabel: `file_name: ${selectedFile?.builtin ? '#sample#' : ''}${
-                        selectedFile?.file.name
-                    }`,
+                    eventLabel: `file_name: ${[...files]
+                        .map((f) => (filecontent?.builtin ? '#sample#' : '' + f.name))
+                        .join(', ')}`,
                 });
 
                 setToastMessage(undefined);
                 setConversionResult(retval);
+
+                //TODO: handle multiple files
             } catch (error) {
                 ReactGA.send({
                     hitType: 'event',
                     eventCategory: 'file_conversion',
                     eventAction: 'failed_conversion',
-                    eventLabel: `file_name: ${selectedFile?.builtin ? '#sample#' : ''}${
-                        selectedFile?.file.name
-                    }`,
+                    eventLabel: `file_name: ${[...files]
+                        .map((f) => (filecontent?.builtin ? '#sample#' : '' + f.name))
+                        .join(', ')}`,
                     eventValue: error,
                 });
 
                 console.error('Error converting project to Python:', error);
                 setToastMessage(
                     error instanceof Error
-                        ? `${error.message} - ${file?.name}`
+                        ? error.message
                         : 'An unknown error occurred.',
                 );
                 setConversionResult(undefined);
@@ -156,8 +172,8 @@ const AppContent: React.FC = () => {
                         role="presentation"
                     >
                         <FileSelector
-                            selectedFile={selectedFile}
-                            setSelectedFile={setSelectedFile}
+                            selectedFileContent={selectedFile}
+                            setSelectedFileContent={setSelectedFileContent}
                         ></FileSelector>
                         <WelcomeTab></WelcomeTab>
                         <MainTab></MainTab>

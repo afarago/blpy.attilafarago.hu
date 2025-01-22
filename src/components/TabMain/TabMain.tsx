@@ -1,3 +1,11 @@
+import {
+    BookHalf,
+    CodeSlash,
+    Diagram2,
+    FileEarmarkImage,
+    FiletypePy,
+    Icon,
+} from 'react-bootstrap-icons';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 
 import Col from 'react-bootstrap/Col';
@@ -18,12 +26,25 @@ export enum TabKey {
     CALLGRAPH = 'callgraph',
 }
 
+export interface ITabElem {
+    key: string;
+    classOverride?: string;
+    title: string;
+    icon?: Icon;
+    name: string;
+    condition: boolean;
+    code?: string;
+    children?: ITabElem[];
+}
+
 const MainTab: React.FC = () => {
     const context = useContext(MyContext);
     if (!context) throw new Error('MyComponent must be used within a MyProvider');
-    const { conversionResult, svgContentData, rbfDecompileData } = context;
+    const { conversionResult, rbfDecompileData, svgContentData, svgDependencyGraph } =
+        context;
 
-    const [tabkey, setTabkey] = useState(TabKey.PYCODE);
+    const [tabkey, setTabkey] = useState<string>(TabKey.PYCODE);
+    const [tabElems, setTabElems] = useState<ITabElem[]>([]);
     const svgRef = useRef<HTMLDivElement>(null);
     const graphRef = useRef<HTMLDivElement>(null);
 
@@ -33,16 +54,6 @@ const MainTab: React.FC = () => {
     useHotkeys('control+4', () => setTabkey(TabKey.PREVIEW));
 
     useEffect(() => {
-        if (
-            (tabkey === TabKey.PREVIEW && !svgContentData) ||
-            (tabkey === TabKey.PLAINCODE && !conversionResult?.plaincode) ||
-            (tabkey === TabKey.EV3BDECOMPILED && !rbfDecompileData)
-        ) {
-            setTabkey(TabKey.PYCODE);
-        }
-    }, [conversionResult, tabkey, setTabkey, svgContentData, rbfDecompileData]);
-
-    useEffect(() => {
         ReactGA.send({
             hitType: 'event',
             eventCategory: 'navigation',
@@ -50,7 +61,68 @@ const MainTab: React.FC = () => {
             eventLabel: tabkey,
             // eventValue: ,
         });
-    });
+    }, [tabkey]);
+
+    useEffect(() => {
+        const tabElemValues: ITabElem[] = [
+            {
+                key: TabKey.PYCODE,
+                title: 'pycode (ctrl+1)',
+                icon: FiletypePy,
+                name: 'Python',
+                code: Array.isArray(conversionResult?.name)
+                    ? undefined
+                    : (conversionResult?.pycode as string),
+                condition: true,
+                children: Array.isArray(conversionResult?.name)
+                    ? conversionResult?.name.map(
+                          (elem, index) =>
+                              ({
+                                  name: elem,
+                                  title: elem,
+                                  key: TabKey.PYCODE + (index === 0 ? '' : `:${index}`),
+                                  code: (conversionResult.pycode as string[])[index],
+                                  condition: true,
+                              } satisfies ITabElem),
+                      )
+                    : undefined,
+            },
+            {
+                key: TabKey.PLAINCODE,
+                title: 'pseudocode (ctrl+2)',
+                icon: CodeSlash,
+                name: 'Pseudocode',
+                condition: conversionResult?.plaincode !== undefined,
+                code: conversionResult?.plaincode,
+            },
+            {
+                key: TabKey.EV3BDECOMPILED,
+                title: 'decompiled',
+                icon: BookHalf,
+                name: 'Decompiled RBF',
+                condition: rbfDecompileData !== undefined,
+                code: rbfDecompileData,
+            },
+            {
+                key: TabKey.CALLGRAPH,
+                title: 'call graph (ctrl+3)',
+                icon: Diagram2,
+                name: 'Call Graph',
+                condition: conversionResult?.dependencygraph !== undefined,
+                // code: svgDependencyGraph,
+            },
+            {
+                key: TabKey.PREVIEW,
+                title: 'preview (ctrl+4)',
+                icon: FileEarmarkImage,
+                name: 'Preview',
+                condition: svgContentData !== undefined,
+                code: svgContentData,
+            },
+        ];
+
+        setTabElems(tabElemValues);
+    }, [conversionResult, rbfDecompileData, svgContentData]);
 
     return (
         !!conversionResult && (
@@ -62,7 +134,11 @@ const MainTab: React.FC = () => {
                 >
                     <Col>
                         <Row sm={9} className="tabheader">
-                            <TabHeaders conversionResult={conversionResult} />
+                            <TabHeaders
+                                tabkey={tabkey}
+                                setTabkey={setTabkey}
+                                tabElems={tabElems}
+                            />
                         </Row>
 
                         {/* Tab Contents */}
@@ -73,12 +149,15 @@ const MainTab: React.FC = () => {
                                     setTabkey={setTabkey}
                                     svgRef={svgRef}
                                     graphRef={graphRef}
+                                    tabElems={tabElems}
                                 />
 
                                 <TabContents
                                     tabkey={tabkey}
+                                    setTabkey={setTabkey}
                                     svgRef={svgRef}
                                     graphRef={graphRef}
+                                    tabElems={tabElems}
                                 />
                             </Tab.Content>
                         </Row>

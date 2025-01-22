@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 
 import LogoFull from '../../assets/img/logo_full.svg?react';
 import { MyContext } from '../../contexts/MyContext';
@@ -6,12 +6,12 @@ import { MyContext } from '../../contexts/MyContext';
 const Header: React.FC = () => {
     const context = useContext(MyContext);
     if (!context) throw new Error('MyComponent must be used within a MyProvider');
-    const { setSelectedFile, setConversionResult } = context;
+    const { setSelectedFileContent, setConversionResult } = context;
 
     const handleClickOnLogo = (event: React.MouseEvent<SVGSVGElement>): void => {
         event.preventDefault();
 
-        setSelectedFile(undefined);
+        setSelectedFileContent(undefined);
         setConversionResult(undefined);
     };
 

@@ -3,43 +3,45 @@ import React, { useContext, useEffect } from 'react';
 
 import { ACCEPTED_EXTENSIONS } from '../../utils/constants';
 import Badge from 'react-bootstrap/Badge';
-import Button from 'react-bootstrap/esm/Button';
+import Button from 'react-bootstrap/Button';
+import { CatIcon } from '../Icons/CatIcon';
 import { DevTypeIcon } from '../Icons/DevTypeIcon';
 import { Download } from 'react-bootstrap-icons';
 import Form from 'react-bootstrap/Form';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 interface FileSelectorProps {
-    selectedFile: IFileContent | undefined;
-    setSelectedFile: (file: IFileContent | undefined) => void;
+    selectedFileContent: IFileContent | undefined;
+    setSelectedFileContent: (content: IFileContent | undefined) => void;
 }
 
 const FileSelector: React.FC<FileSelectorProps> = ({
-    selectedFile,
-    setSelectedFile,
+    selectedFileContent,
+    setSelectedFileContent,
 }) => {
     const context = useContext(MyContext);
     if (!context) throw new Error('MyComponent must be used within a MyProvider');
-    const { fileInputRef } = context;
+    const { fileInputRef, conversionResult } = context;
     // const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const handleFileOpen = (event: React.ChangeEvent<HTMLInputElement>) => {
         const target = event.target as HTMLInputElement;
         if (target.files?.length) {
-            setSelectedFile({ file: target.files[0], builtin: false });
+            setSelectedFileContent({ files: [...target.files], builtin: false });
             target.blur();
         } else {
-            updateFileInput(selectedFile);
+            updateFileInput(selectedFileContent);
         }
     };
 
     const handleExampleButtonDownloadClick = async () => {
-        if (!selectedFile) return;
+        if (!selectedFileContent) return;
 
-        const dataUrl = URL.createObjectURL(selectedFile.file);
+        const file = selectedFileContent.files[0];
+        const dataUrl = URL.createObjectURL(file);
         const link = document.createElement('a');
         link.href = dataUrl;
-        link.download = selectedFile.file.name;
+        link.download = file.name;
         link.click();
 
         // Important: Release the object URL when it's no longer needed to avoid memory leaks
@@ -58,27 +60,27 @@ const FileSelector: React.FC<FileSelectorProps> = ({
             const fileName = path.split('/').pop();
             if (!fileName) return;
 
-            const file = { file: new File([blob], fileName), builtin: true };
+            const fcontent = { files: [new File([blob], fileName)], builtin: true };
             // const dataTransfer = new DataTransfer();
             // dataTransfer.items.add(file);
 
-            setSelectedFile(file);
+            setSelectedFileContent(fcontent);
         } catch (error) {
             console.error('::ERROR::', error);
         }
     };
 
-    const updateFileInput = (file?: IFileContent) => {
-        if (fileInputRef.current && file?.file) {
+    const updateFileInput = (content?: IFileContent) => {
+        if (fileInputRef.current && content?.files) {
             const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file.file);
+            [...content.files].forEach((file) => dataTransfer.items.add(file));
             fileInputRef.current.files = dataTransfer.files;
         }
     };
 
     useEffect(() => {
-        updateFileInput(selectedFile);
-    }, [selectedFile]);
+        updateFileInput(selectedFileContent);
+    }, [selectedFileContent]);
 
     useHotkeys('mod+o', () => fileInputRef.current?.click(), { preventDefault: true }, [
         fileInputRef,
@@ -123,15 +125,26 @@ const FileSelector: React.FC<FileSelectorProps> = ({
     ];
 
     return (
-        <div>
+        <div className="file-selector">
             <Form.Group controlId="file-selector" className="d-flex flex-row">
                 <Form.Control
                     type="file"
                     accept={ACCEPTED_EXTENSIONS}
+                    multiple={true}
                     ref={fileInputRef}
                     onChange={handleFileOpen}
                 />
-                {selectedFile?.builtin && (
+                {conversionResult && (
+                    <div className="file-selector-icons">
+                        {conversionResult?.extra?.['blockly.slot'] !== undefined && (
+                            <CatIcon slot={conversionResult?.extra?.['blockly.slot']} />
+                        )}
+                        {conversionResult?.filetype && (
+                            <DevTypeIcon devtype={conversionResult?.filetype} />
+                        )}
+                    </div>
+                )}
+                {selectedFileContent?.builtin && (
                     <Button
                         className="btn-light mini-button"
                         onClick={handleExampleButtonDownloadClick}

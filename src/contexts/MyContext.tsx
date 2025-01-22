@@ -1,17 +1,17 @@
 // src/contexts/MyContext.tsx
 import { ReactNode, createContext, useEffect, useMemo, useRef, useState } from 'react';
 
-import { PyProjectResult } from 'blocklypy';
+import { IPyProjectResult } from 'blocklypy';
 
 interface MyContextProps {
     isAdditionalCommentsChecked: boolean;
     setIsAdditionalCommentsChecked: (value: boolean) => void;
-    conversionResult?: PyProjectResult;
-    setConversionResult: (value: PyProjectResult | undefined) => void;
+    conversionResult?: IPyProjectResult;
+    setConversionResult: (value: IPyProjectResult | undefined) => void;
     toastMessage?: string;
     setToastMessage: (value: string | undefined) => void;
-    selectedFile?: IFileContent;
-    setSelectedFile: (value: IFileContent | undefined) => void;
+    selectedFileContent?: IFileContent;
+    setSelectedFileContent: (value: IFileContent | undefined) => void;
     fileInputRef: React.RefObject<HTMLInputElement | null>;
     fullScreen?: boolean;
     toggleFullScreen: (value?: boolean) => void;
@@ -24,7 +24,7 @@ interface MyContextProps {
 }
 
 export interface IFileContent {
-    file: File;
+    files: File[];
     builtin?: boolean;
 }
 
@@ -33,9 +33,9 @@ const MyContext = createContext<MyContextProps | undefined>(undefined);
 const MyProvider = ({ children }: { children: ReactNode }) => {
     const [isAdditionalCommentsChecked, setIsAdditionalCommentsChecked] =
         useState(false);
-    const [conversionResult, setConversionResult] = useState<PyProjectResult>();
+    const [conversionResult, setConversionResult] = useState<IPyProjectResult>();
     const [toastMessage, setToastMessage] = useState<string>();
-    const [selectedFile, setSelectedFile] = useState<IFileContent>();
+    const [selectedFileContent, setSelectedFileContent] = useState<IFileContent>();
     const [fullScreen, setFullScreen] = useState<boolean>();
     const [svgContentData, setSvgContentData] = useState<string>();
     const [svgDependencyGraph, setSvgDependencyGraph] = useState<string>();
@@ -67,8 +67,8 @@ const MyProvider = ({ children }: { children: ReactNode }) => {
                     setConversionResult,
                     toastMessage,
                     setToastMessage,
-                    selectedFile,
-                    setSelectedFile,
+                    selectedFileContent,
+                    setSelectedFileContent,
                     fileInputRef,
                     fullScreen,
                     toggleFullScreen,
@@ -83,7 +83,7 @@ const MyProvider = ({ children }: { children: ReactNode }) => {
                     isAdditionalCommentsChecked,
                     conversionResult,
                     toastMessage,
-                    selectedFile,
+                    selectedFileContent,
                     fullScreen,
                     svgContentData,
                     svgDependencyGraph,

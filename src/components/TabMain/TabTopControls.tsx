@@ -5,19 +5,20 @@ import {
     Fullscreen,
     FullscreenExit,
 } from 'react-bootstrap-icons';
-import React, { useCallback, useContext, useState } from 'react';
+import { ITabElem, TabKey } from './TabMain';
+import React, { useCallback, useContext } from 'react';
 
 import { Form } from 'react-bootstrap';
 import { MyContext } from '../../contexts/MyContext';
-import { TabKey } from './TabMain';
 import domtoimage from 'dom-to-image';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 interface TabTopControlsProps {
-    tabkey: TabKey;
-    setTabkey: (key: TabKey) => void;
+    tabkey: string;
+    setTabkey: (key: string) => void;
     svgRef: React.RefObject<HTMLDivElement | null>;
     graphRef: React.RefObject<HTMLDivElement | null>;
+    tabElems: ITabElem[];
 }
 
 const TabTopControls: React.FC<TabTopControlsProps> = ({
@@ -25,11 +26,12 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
     setTabkey,
     svgRef,
     graphRef,
+    tabElems,
 }) => {
     const context = useContext(MyContext);
     if (!context) throw new Error('MyComponent must be used within a MyProvider');
     const {
-        selectedFile,
+        selectedFileContent,
         conversionResult,
         isAdditionalCommentsChecked,
         setIsAdditionalCommentsChecked,
@@ -57,19 +59,16 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
             event?.preventDefault();
 
             try {
-                if (!conversionResult || !selectedFile) return;
+                if (!conversionResult || !selectedFileContent) return;
 
                 setIsCopying(true);
                 let textcontent: string | undefined;
-                switch (tabkey) {
-                    case TabKey.PYCODE:
-                    case TabKey.PLAINCODE:
-                        textcontent = conversionResult[tabkey];
-                        navigator.clipboard.writeText(textcontent ?? '');
-                        break;
+                const tabelem = tabElems.find((elem) => elem.key === tabkey);
+                if (!tabelem) return;
 
+                switch (tabkey) {
                     case TabKey.EV3BDECOMPILED:
-                        textcontent = rbfDecompileData;
+                        textcontent = tabelem.code;
                         navigator.clipboard.writeText(textcontent ?? '');
                         break;
 
@@ -90,11 +89,15 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
                                     const dataUrl = URL.createObjectURL(blob); // Create a temporary URL for the image data
 
                                     // Proceed with download using the temporary URL
+                                    let filebase = getBaseName(
+                                        selectedFileContent.files[0].name,
+                                    );
+                                    if (selectedFileContent.files.length > 1) {
+                                        filebase = `${filebase}_plus_${selectedFileContent.files.length}_files`;
+                                    }
                                     const link = document.createElement('a');
                                     link.href = dataUrl;
-                                    link.download = `${getBaseName(
-                                        selectedFile.file.name,
-                                    )}_${ext}.png`;
+                                    link.download = `${filebase}_${ext}.png`;
                                     link.click();
 
                                     // Important: Release the object URL when it's no longer needed to avoid memory leaks
@@ -130,6 +133,19 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
                             // });
                         }
                         break;
+
+                    default: {
+                        if (
+                            tabkey.startsWith(TabKey.PYCODE) ||
+                            tabkey === TabKey.PLAINCODE
+                        ) {
+                            if (tabelem) {
+                                textcontent = tabelem.code;
+                                navigator.clipboard.writeText(textcontent ?? '');
+                            }
+                        }
+                        break;
+                    }
                 }
             } catch (e) {
                 console.error('::ERROR::', e);
@@ -139,7 +155,7 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
 
             return false;
         },
-        [conversionResult, tabkey, svgRef, selectedFile, rbfDecompileData],
+        [conversionResult, tabkey, svgRef, graphRef, selectedFileContent, tabElems],
     );
 
     const getBaseName = (filename: string): string => {
@@ -150,7 +166,8 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
 
     const getCopyIcon = () => {
         if (isCopying) return <CheckLg />;
-        if ([TabKey.PREVIEW, TabKey.CALLGRAPH].includes(tabkey)) return <Download />;
+        if (([TabKey.PREVIEW, TabKey.CALLGRAPH] as string[]).includes(tabkey))
+            return <Download />;
         return <Copy />;
     };
 
@@ -172,8 +189,8 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
     return (
         <>
             <div className="code-top-container">
-                {tabkey === TabKey.PYCODE &&
-                    conversionResult?.devicetype !== 'python' && (
+                {tabkey.startsWith(TabKey.PYCODE) &&
+                    conversionResult?.filetype !== 'python' && (
                         <Form.Check
                             type="switch"
                             id="additionalCommentsCheck"
@@ -184,7 +201,7 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
                         />
                     )}
                 <button
-                    className={`mini-button copy-button-${tabkey} ${
+                    className={`mini-button bg-white copy-button-${tabkey} ${
                         isCopying ? 'success' : ''
                     }`}
                     onClick={handleCopyButtonClick}
@@ -193,7 +210,7 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
                     {getCopyIcon()}
                 </button>
                 <button
-                    className="mini-button"
+                    className="mini-button bg-white"
                     onClick={(evt) => {
                         evt.preventDefault();
                         toggleFullScreen();
@@ -203,16 +220,17 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
                     {fullScreen ? <FullscreenExit /> : <Fullscreen />}
                 </button>
             </div>
-            {svgContentData && [TabKey.PYCODE, TabKey.PLAINCODE].includes(tabkey) && (
-                <div
-                    className="svg-minimap mt-5 px-3 float-right"
-                    dangerouslySetInnerHTML={{
-                        __html: svgContentData || '',
-                    }}
-                    onClick={() => setTabkey(TabKey.PREVIEW)}
-                    role="presentation"
-                ></div>
-            )}
+            {svgContentData &&
+                (tabkey.startsWith(TabKey.PYCODE) || tabkey === TabKey.PLAINCODE) && (
+                    <div
+                        className="svg-minimap mt-5 px-3 float-right"
+                        dangerouslySetInnerHTML={{
+                            __html: svgContentData || '',
+                        }}
+                        onClick={() => setTabkey(TabKey.PREVIEW)}
+                        role="presentation"
+                    ></div>
+                )}
         </>
     );
 };

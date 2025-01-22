@@ -66,6 +66,20 @@ form,
     overflow-y: hidden;
 }
 
+.file-selector {
+    .file-selector-icons {
+        white-space: nowrap;
+        img,
+        svg {
+            height: 2.4em;
+            margin-left: 0.2em;
+        }
+    }
+    .mini-button {
+        margin-left: 0.2em;
+    }
+}
+
 .code pre {
     // .flex-column
     flex-direction: column !important;
@@ -138,6 +152,7 @@ button {
         .bi {
             margin-right: 0.25em;
         }
+        white-space: nowrap;
     }
     .tabheader {
         img,
@@ -145,6 +160,9 @@ button {
             height: $mini-icon-size;
             width: $mini-icon-size;
         }
+    }
+    .multi-file-header > button {
+        --bs-btn-border-radius: 0;
     }
 
     .fullscreen & {
