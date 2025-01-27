@@ -9,7 +9,7 @@
         "lint": "eslint .",
         "preview": "vite preview",
         "test": "jest",
-        "blpy": "npm cache clean --force && npm install blocklypy@latest"
+        "blpy": "yarn add blocklypy@latest --force"
     },
     "dependencies": {
         "@hpcc-js/wasm-graphviz": "^1.7.0",
