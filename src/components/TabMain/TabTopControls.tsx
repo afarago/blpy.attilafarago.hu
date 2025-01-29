@@ -196,11 +196,11 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
         { preventDefault: true },
         [setIsAdditionalCommentsChecked, isAdditionalCommentsChecked],
     );
-    useHotkeys('mod+f', () => toggleFullScreen(), { preventDefault: true }, [
+    useHotkeys('control+f', () => toggleFullScreen(), { preventDefault: true }, [
         fullScreen,
     ]);
     useHotkeys('esc', () => toggleFullScreen(false), { preventDefault: true }, []);
-    useHotkeys('mod+c', () => handleCopyButtonClick(), { preventDefault: true }, [
+    useHotkeys('control+c', () => handleCopyButtonClick(), { preventDefault: true }, [
         conversionResult,
         selectedTabkey,
     ]);

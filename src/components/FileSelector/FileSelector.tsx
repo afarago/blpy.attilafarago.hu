@@ -82,7 +82,7 @@ const FileSelector: React.FC<FileSelectorProps> = ({
         updateFileInput(selectedFileContent);
     }, [selectedFileContent]);
 
-    useHotkeys('mod+o', () => fileInputRef.current?.click(), { preventDefault: true }, [
+    useHotkeys('control+o', () => fileInputRef.current?.click(), { preventDefault: true }, [
         fileInputRef,
     ]);
 
@@ -109,12 +109,12 @@ const FileSelector: React.FC<FileSelectorProps> = ({
         },
         {
             file: '/samples/demo_cityshaper_cranemission.ev3',
-            label: 'EV3Lab EV3G',
+            label: 'EV3Lab',
             icon: 'ev3g',
         },
         {
             file: '/samples/demo_cityshaper_cranemission.rbf',
-            label: 'EV3Lab RBF',
+            label: 'EV3Lab binary',
             icon: 'ev3b',
         },
         {
@@ -155,6 +155,7 @@ const FileSelector: React.FC<FileSelectorProps> = ({
                 )}
             </Form.Group>
 
+            {/* buttons for builtin example files */}
             <div className="file-examples col-sm-12 m-0 p-0 pt-1">
                 <small className="d-flex flex-row flex-nowrap align-items-baseline">
                     <div className="d-none d-sm-block pe-2">
