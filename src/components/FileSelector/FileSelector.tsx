@@ -8,7 +8,7 @@ import { CatIcon } from '../Icons/CatIcon';
 import { DevTypeIcon } from '../Icons/DevTypeIcon';
 import { Download } from 'react-bootstrap-icons';
 import Form from 'react-bootstrap/Form';
-import { openDirectory as pickDirectoryGetFiles } from './util';
+import { pickDirectoryGetFiles } from './util';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 const EXAMPLES = [
@@ -47,7 +47,7 @@ const EXAMPLES = [
         label: 'Pybricks Python',
         icon: 'pybricks',
     },
-]
+];
 
 interface FileSelectorProps {
     selectedFileContent: IFileContent | undefined;
@@ -66,19 +66,33 @@ const FileSelector: React.FC<FileSelectorProps> = ({
     const handleFileOpen = (event: React.ChangeEvent<HTMLInputElement>) => {
         const target = event.target as HTMLInputElement;
         if (target.files?.length) {
-            setSelectedFileContent({ files: [...target.files], builtin: false });
+            const files = [...target.files].sort((a, b) =>
+                a.name.localeCompare(b.name),
+            );
+            setSelectedFileContent({ files, builtin: false });
             target.blur();
         } else {
             updateFileInput(selectedFileContent);
         }
     };
 
-    const handleFileBrowserClick = async (event: React.MouseEvent<HTMLInputElement>) => {
+    const handleFileBrowserClick = async (e: React.MouseEvent<HTMLInputElement>) => {
         // shift-click: open a directory selector (if supported)
-        if (event.shiftKey) {
-            event.preventDefault();
+        if (e.shiftKey) {
+            // e.stopImmediatePropagation();
+            e.stopPropagation();
+            e.preventDefault();
             const files = await pickDirectoryGetFiles();
-            if (files) setSelectedFileContent({ files, builtin: false });
+            if (files) {
+                // keep only supported files
+                const supportedFiles = files
+                    .filter((file) =>
+                        ACCEPTED_EXTENSIONS.includes(file.name.split('.').pop() || ''),
+                    )
+                    .sort((a, b) => a.name.localeCompare(b.name));
+
+                setSelectedFileContent({ files: supportedFiles, builtin: false });
+            }
         }
     };
 
@@ -130,9 +144,12 @@ const FileSelector: React.FC<FileSelectorProps> = ({
         updateFileInput(selectedFileContent);
     }, [selectedFileContent]);
 
-    useHotkeys('control+o', () => fileInputRef.current?.click(), { preventDefault: true }, [
-        fileInputRef,
-    ]);
+    useHotkeys(
+        'control+o',
+        () => fileInputRef.current?.click(),
+        { preventDefault: true },
+        [fileInputRef],
+    );
 
     return (
         <div className="file-selector">

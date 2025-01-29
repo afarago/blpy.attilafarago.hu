@@ -75,7 +75,7 @@ const AppContent: React.FC = () => {
                         : new Date(file.lastModified);
                     // directory picker adds webkitRelativePath, better visibility for dependency graph
                     const name = (file as any).webkitRelativePath || file.name;
-                    
+
                     inputs.push({
                         name,
                         buffer,
@@ -91,6 +91,8 @@ const AppContent: React.FC = () => {
                     },
                     output: {
                         'ev3b.decompiled': true,
+                        'blockly.slot': true,
+                        'blockly.svg': true,
                     },
                 };
                 const retval = await convertProjectToPython(inputs, options);

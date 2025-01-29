@@ -69,14 +69,17 @@ const TabContents: React.FC<TabContentsProps> = ({
         }
 
         return () => {
-            try { panzoom?.destroy(); } catch {}
+            try {
+                panzoom?.destroy();
+            } catch {}
         };
     }, [
         svgRef,
         graphRef,
         svgContentData,
         svgDependencyGraph,
-        genkey,gensubkey,
+        genkey,
+        gensubkey,
         selectedTabkey,
         REFMAP,
         isCopying,
@@ -127,21 +130,24 @@ const TabContents: React.FC<TabContentsProps> = ({
                     {/* Content */}
                     <Tab.Pane
                         eventKey={genkey}
-                        className={`p-4 content-${genkey}`+ (!elem.children || selectedSubTabkey === gensubkey ? '' : ' d-none')}
+                        className={
+                            `p-4 content-${genkey}` +
+                            (!elem.children || selectedSubTabkey === gensubkey
+                                ? ''
+                                : ' d-none')
+                        }
                         key={genkey}
                     >
                         {(genkey === TabKey.PYCODE ||
                             genkey === TabKey.PLAINCODE ||
                             genkey === TabKey.EV3BDECOMPILED) && (
-                                <SyntaxHighlighter
-                                    style={vs}
-                                    language={
-                                        genkey === TabKey.PYCODE ? 'python' : 'less'
-                                    }
-                                >
-                                    {code ?? ''}
-                                </SyntaxHighlighter>
-                            )}
+                            <SyntaxHighlighter
+                                style={vs}
+                                language={genkey === TabKey.PYCODE ? 'python' : 'less'}
+                            >
+                                {code ?? ''}
+                            </SyntaxHighlighter>
+                        )}
                         {genkey === TabKey.CALLGRAPH && <CallGraph ref={graphRef} />}
                         {genkey === TabKey.PREVIEW && (
                             <div

@@ -1,4 +1,4 @@
-const openDirectory = async (mode = 'read') => {
+async function pickDirectoryGetFiles(mode: string = 'read') {
     // Feature detection. The API needs to be supported
     // and the app not run in an iframe.
     const supportsFileSystemAccess =
@@ -31,7 +31,6 @@ const openDirectory = async (mode = 'read') => {
                     files.push(file);
                     // file.directoryHandle = dirHandle;
                     // file.handle = entry;
-                    console.log('file', file, nestedPath);
                     Object.defineProperty(file, 'webkitRelativePath', {
                         configurable: true,
                         enumerable: true,
@@ -62,6 +61,6 @@ const openDirectory = async (mode = 'read') => {
         }
         return directoryStructure;
     }
-};
+}
 
-export { openDirectory };
+export { pickDirectoryGetFiles };
