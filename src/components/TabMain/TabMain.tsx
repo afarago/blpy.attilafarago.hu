@@ -6,7 +6,7 @@ import {
     FiletypePy,
     Icon,
 } from 'react-bootstrap-icons';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import Col from 'react-bootstrap/Col';
 import { MyContext } from '../../contexts/MyContext';
@@ -106,12 +106,16 @@ const TabMain: React.FC = () => {
         setTabElems(tabElemValues);
     }, [conversionResult, rbfDecompileData, svgContentData]);
 
+    const handleSelectTab = useCallback((k: string | null) => {
+        if (k) setSelectedTabkey(k as TabKey);
+    }, []);
+
     return (
         !!conversionResult && (
             <div className="tab-main container-lg pt-2">
                 <Tab.Container
                     activeKey={selectedTabkey}
-                    onSelect={(k) => setSelectedTabkey(k as TabKey)}
+                    onSelect={handleSelectTab}
                     defaultActiveKey={TabKey.PYCODE}
                 >
                     <Col>

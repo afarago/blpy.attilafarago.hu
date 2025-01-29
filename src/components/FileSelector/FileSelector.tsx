@@ -1,5 +1,5 @@
 import { IFileContent, MyContext } from '../../contexts/MyContext';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 
 import { ACCEPTED_EXTENSIONS } from '../../utils/constants';
 import Badge from 'react-bootstrap/Badge';
@@ -8,7 +8,46 @@ import { CatIcon } from '../Icons/CatIcon';
 import { DevTypeIcon } from '../Icons/DevTypeIcon';
 import { Download } from 'react-bootstrap-icons';
 import Form from 'react-bootstrap/Form';
+import { openDirectory as pickDirectoryGetFiles } from './util';
 import { useHotkeys } from 'react-hotkeys-hook';
+
+const EXAMPLES = [
+    {
+        file: '/samples/demo_cityshaper_cranemission.llsp3',
+        label: 'SPIKE',
+        icon: 'spike',
+    },
+    {
+        file: '/samples/demo_iconblocks.llsp3',
+        label: 'SPIKE icon blocks',
+        icon: 'spike',
+    },
+    {
+        file: '/samples/demo_cityshaper_cranemission.lms',
+        label: 'RobotInventor',
+        icon: 'robotinventor',
+    },
+    {
+        file: '/samples/demo_cityshaper_cranemission.lmsp',
+        label: 'EV3Classroom',
+        icon: 'ev3classroom',
+    },
+    {
+        file: '/samples/demo_cityshaper_cranemission.ev3',
+        label: 'EV3Lab',
+        icon: 'ev3g',
+    },
+    {
+        file: '/samples/demo_cityshaper_cranemission.rbf',
+        label: 'EV3Lab binary',
+        icon: 'ev3b',
+    },
+    {
+        file: '/samples/demo_cityshaper_cranemission.py',
+        label: 'Pybricks Python',
+        icon: 'pybricks',
+    },
+]
 
 interface FileSelectorProps {
     selectedFileContent: IFileContent | undefined;
@@ -31,6 +70,15 @@ const FileSelector: React.FC<FileSelectorProps> = ({
             target.blur();
         } else {
             updateFileInput(selectedFileContent);
+        }
+    };
+
+    const handleFileBrowserClick = async (event: React.MouseEvent<HTMLInputElement>) => {
+        // shift-click: open a directory selector (if supported)
+        if (event.shiftKey) {
+            event.preventDefault();
+            const files = await pickDirectoryGetFiles();
+            if (files) setSelectedFileContent({ files, builtin: false });
         }
     };
 
@@ -86,44 +134,6 @@ const FileSelector: React.FC<FileSelectorProps> = ({
         fileInputRef,
     ]);
 
-    const examples = [
-        {
-            file: '/samples/demo_cityshaper_cranemission.llsp3',
-            label: 'SPIKE',
-            icon: 'spike',
-        },
-        {
-            file: '/samples/demo_iconblocks.llsp3',
-            label: 'SPIKE icon blocks',
-            icon: 'spike',
-        },
-        {
-            file: '/samples/demo_cityshaper_cranemission.lms',
-            label: 'RobotInventor',
-            icon: 'robotinventor',
-        },
-        {
-            file: '/samples/demo_cityshaper_cranemission.lmsp',
-            label: 'EV3Classroom',
-            icon: 'ev3classroom',
-        },
-        {
-            file: '/samples/demo_cityshaper_cranemission.ev3',
-            label: 'EV3Lab',
-            icon: 'ev3g',
-        },
-        {
-            file: '/samples/demo_cityshaper_cranemission.rbf',
-            label: 'EV3Lab binary',
-            icon: 'ev3b',
-        },
-        {
-            file: '/samples/demo_cityshaper_cranemission.py',
-            label: 'Pybricks Python',
-            icon: 'pybricks',
-        },
-    ];
-
     return (
         <div className="file-selector">
             <Form.Group controlId="file-selector" className="d-flex flex-row">
@@ -133,6 +143,7 @@ const FileSelector: React.FC<FileSelectorProps> = ({
                     multiple={true}
                     ref={fileInputRef}
                     onChange={handleFileOpen}
+                    onClick={handleFileBrowserClick}
                 />
                 {conversionResult && (
                     <div className="file-selector-icons">
@@ -162,7 +173,7 @@ const FileSelector: React.FC<FileSelectorProps> = ({
                         <b>Examples:</b>
                     </div>
                     <div className="flex-fill d-flex gap-1 flex-wrap">
-                        {examples.map((example, index) => (
+                        {EXAMPLES.map((example, index) => (
                             <div key={example.file}>
                                 <Badge
                                     pill

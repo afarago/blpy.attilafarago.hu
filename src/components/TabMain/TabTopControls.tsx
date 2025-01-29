@@ -6,7 +6,7 @@ import {
     FullscreenExit,
 } from 'react-bootstrap-icons';
 import { ITabElem, TabKey } from './TabMain';
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 
 import { Form } from 'react-bootstrap';
 import { MyContext } from '../../contexts/MyContext';
@@ -183,15 +183,15 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
         return baseName;
     };
 
-    const getCopyIcon = () => {
+    const getCopyIcon = useMemo(() => {
         if (isCopying) return <CheckLg />;
         if (([TabKey.PREVIEW, TabKey.CALLGRAPH] as string[]).includes(selectedTabkey))
             return <Download />;
         return <Copy />;
-    };
+    }, [isCopying, selectedTabkey]);
 
     useHotkeys(
-        'mod+e',
+        'control+e',
         () => toggleIsAdditionalCommentsChecked(),
         { preventDefault: true },
         [setIsAdditionalCommentsChecked, isAdditionalCommentsChecked],
@@ -226,7 +226,7 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
                     onClick={handleCopyButtonClick}
                     title="Copy code (ctrl/cmd+c)"
                 >
-                    {getCopyIcon()}
+                    {getCopyIcon}
                 </button>
                 <button
                     className="mini-button bg-white"

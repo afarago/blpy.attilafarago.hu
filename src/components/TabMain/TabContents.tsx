@@ -149,7 +149,7 @@ const TabContents: React.FC<TabContentsProps> = ({
                                 dangerouslySetInnerHTML={{
                                     __html: svgContentData ?? '',
                                 }}
-                            ></div>
+                            />
                         )}
                     </Tab.Pane>
                 </>

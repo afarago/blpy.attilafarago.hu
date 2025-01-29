@@ -1,5 +1,5 @@
 import { CaretRight, CloudArrowUpFill } from 'react-bootstrap-icons';
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 
 import { ACCEPTED_EXTENSIONS } from '../../utils/constants';
 import { DevTypeIcon } from '../Icons/DevTypeIcon';
@@ -21,30 +21,26 @@ const WelcomeTab: React.FC = () => {
     if (!context) throw new Error('MyComponent must be used within a MyProvider');
     const { conversionResult, fileInputRef } = context;
 
-    const handleCloudIconClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
+    const handleCloudIconClick = useCallback((event: React.MouseEvent<HTMLButtonElement>): void => {
         event.preventDefault();
         if (fileInputRef.current) {
             fileInputRef.current.click();
         }
-    };
+    }, [fileInputRef]);
 
     return (
         !conversionResult && (
             <div className="tab-welcome active">
                 <div className="justify-content-center">
                     <div className="text-center">
-                        <div>
-                            <button onClick={handleCloudIconClick}>
-                                <CloudArrowUpFill className="drop-cloud-icon" />
-                            </button>
+                        <button onClick={handleCloudIconClick}>
+                            <CloudArrowUpFill className="drop-cloud-icon" />
+                        </button>
+                        <div className="mb-4 d-flex flex-column align-items-center" style={{ maxWidth: '30em' }}>
+                            Imagine a world where magical unicorns transform your
+                            LEGO blockly programs into Python code!
                         </div>
-                        <div className="mb-4 d-flex flex-column align-items-center">
-                            <div style={{ maxWidth: '30em' }}>
-                                Imagine a world where magical unicorns transform your
-                                LEGO blockly programs into Python code!
-                            </div>
-                        </div>
-                        <div>
+                        <>
                             <small>
                                 <i>
                                     Yes, that means all{' '}
@@ -65,7 +61,7 @@ const WelcomeTab: React.FC = () => {
                                     );
                                 }
                             })}
-                        </div>
+                        </>
                     </div>
                 </div>
             </div>
