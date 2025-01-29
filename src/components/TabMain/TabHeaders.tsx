@@ -1,31 +1,67 @@
-import { Dropdown, NavDropdown } from 'react-bootstrap'; //!!
 import { ITabElem, TabKey } from './TabMain';
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
-import { Icon } from 'react-bootstrap-icons';
-import { MyContext } from '../../contexts/MyContext';
 import Nav from 'react-bootstrap/Nav';
+import ReactGA from 'react-ga4';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 interface TabHeadersProps {
-    tabkey: string;
-    setTabkey: (key: string) => void;
+    selectedTabkey: string;
+    setSelectedTabkey: (key: string) => void;
+    selectedSubTabkey: string;
+    setSelectedSubTabkey: (key: string) => void;
     tabElems: ITabElem[];
 }
 
-const TabHeaders: React.FC<TabHeadersProps> = ({ tabkey, setTabkey, tabElems }) => {
-    const context = useContext(MyContext);
-    if (!context) throw new Error('MyComponent must be used within a MyProvider');
-    const { conversionResult, selectedFileContent } = context;
+const TabHeaders: React.FC<TabHeadersProps> = ({
+    selectedTabkey,
+    setSelectedTabkey,
+    selectedSubTabkey,
+    setSelectedSubTabkey,
+    tabElems,
+}) => {
+    // const context = useContext(MyContext);
+    // if (!context) throw new Error('MyComponent must be used within a MyProvider');
+    // const { conversionResult, selectedFileContent } = context;
+
+    useHotkeys('control+1', () => setSelectedTabkey(TabKey.PYCODE));
+    useHotkeys('control+2', () => setSelectedTabkey(TabKey.PLAINCODE));
+    useHotkeys('control+3', () => setSelectedTabkey(TabKey.CALLGRAPH));
+    useHotkeys('control+4', () => setSelectedTabkey(TabKey.PREVIEW));
+
+    useEffect(() => {
+        ReactGA.send({
+            hitType: 'event',
+            eventCategory: 'navigation',
+            eventAction: 'select_tab',
+            eventLabel: selectedTabkey,
+            eventValue: selectedSubTabkey,
+        });
+    }, [selectedTabkey,selectedSubTabkey]);
 
     useEffect(() => {
         // if the selection changes, but the tab is not visible anymore - nav to the first visible tab (pycode)
-        if (
-            !tabkey.startsWith(TabKey.PYCODE) &&
-            !tabElems.find((elem) => elem.key === tabkey)?.condition
-        ) {
-            setTabkey(TabKey.PYCODE);
-        }
-    }, [tabElems, tabkey]);
+        // also if there are pycode children - nav to the first child
+        let targetkey: string | undefined = undefined;
+        const tabElem = tabElems.find((elem) => selectedTabkey === elem.key);
+        const tabSubElem = tabElem?.children?.find(
+            (elem) => selectedSubTabkey === elem.key,
+        );
+            if (
+                !tabElem ||
+                !tabElem?.condition ||
+                (tabElem.key === TabKey.PYCODE &&
+                    tabElem.children &&
+                    !tabSubElem)
+            ) {
+                targetkey = TabKey.PYCODE;
+                setSelectedTabkey(targetkey);
+
+                if (tabElem?.children && !tabSubElem) {
+                    setSelectedSubTabkey(tabElem.children[0].key);
+                }
+            }
+    }, [tabElems, selectedTabkey, selectedSubTabkey]);
 
     return (
         <>
@@ -42,14 +78,13 @@ const TabHeaders: React.FC<TabHeadersProps> = ({ tabkey, setTabkey, tabElems }) 
                                         key={elem.key}
                                         title={`${elem.title}`}
                                         className="icon-link icon-link-hover"
-                                        active={tabkey.startsWith(elem.key)}
+                                        active={selectedTabkey === elem.key}
                                     >
                                         {elem.icon && (
                                             <elem.icon className="d-none d-md-inline" />
                                         )}
                                         {elem.name}
                                     </Nav.Link>
-                                    {/* )} */}
 
                                     {/* Multi-file dropdown tab */}
                                     {/* {elem.children && (
@@ -64,7 +99,7 @@ const TabHeaders: React.FC<TabHeadersProps> = ({ tabkey, setTabkey, tabElems }) 
                                                     {elem.name}
                                                 </span>
                                             }
-                                            active={tabkey.startsWith(elem.key)}
+                                            active={tabkey === (elem.key)}
                                             onSelect={(eventkey) => {
                                                 if (eventkey) {
                                                     setTabkey(

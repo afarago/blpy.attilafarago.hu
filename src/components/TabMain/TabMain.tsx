@@ -10,13 +10,11 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 
 import Col from 'react-bootstrap/Col';
 import { MyContext } from '../../contexts/MyContext';
-import ReactGA from 'react-ga4';
 import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';
 import TabContents from './TabContents';
 import TabHeaders from './TabHeaders';
 import TabTopControls from './TabTopControls';
-import { useHotkeys } from 'react-hotkeys-hook';
 
 export enum TabKey {
     PYCODE = 'pycode',
@@ -36,31 +34,16 @@ export interface ITabElem {
     children?: ITabElem[];
 }
 
-const MainTab: React.FC = () => {
+const TabMain: React.FC = () => {
     const context = useContext(MyContext);
     if (!context) throw new Error('MyComponent must be used within a MyProvider');
     const { conversionResult, rbfDecompileData, svgContentData, svgDependencyGraph } =
         context;
-
-    const [tabkey, setTabkey] = useState<string>(TabKey.PYCODE);
+    const [selectedTabkey, setSelectedTabkey] = useState<string>('');
+    const [selectedSubTabkey, setSelectedSubTabkey] = useState<string>('');
     const [tabElems, setTabElems] = useState<ITabElem[]>([]);
     const svgRef = useRef<HTMLDivElement>(null);
     const graphRef = useRef<HTMLDivElement>(null);
-
-    useHotkeys('control+1', () => setTabkey(TabKey.PYCODE));
-    useHotkeys('control+2', () => setTabkey(TabKey.PLAINCODE));
-    useHotkeys('control+3', () => setTabkey(TabKey.CALLGRAPH));
-    useHotkeys('control+4', () => setTabkey(TabKey.PREVIEW));
-
-    useEffect(() => {
-        ReactGA.send({
-            hitType: 'event',
-            eventCategory: 'navigation',
-            eventAction: 'select_tab',
-            eventLabel: tabkey,
-            // eventValue: ,
-        });
-    }, [tabkey]);
 
     useEffect(() => {
         const tabElemValues: ITabElem[] = [
@@ -75,15 +58,15 @@ const MainTab: React.FC = () => {
                 condition: true,
                 children: Array.isArray(conversionResult?.name)
                     ? conversionResult?.name.map(
-                          (elem, index) =>
-                              ({
-                                  name: elem,
-                                  title: elem,
-                                  key: TabKey.PYCODE + (index === 0 ? '' : `:${index}`),
-                                  code: (conversionResult.pycode as string[])[index],
-                                  condition: true,
-                              } satisfies ITabElem),
-                      )
+                        (elem, index) =>
+                        ({
+                            name: elem,
+                            title: elem,
+                            key: elem,
+                            code: (conversionResult.pycode as string[])[index],
+                            condition: true,
+                        } satisfies ITabElem),
+                    )
                     : undefined,
             },
             {
@@ -127,15 +110,17 @@ const MainTab: React.FC = () => {
         !!conversionResult && (
             <div className="tab-main container-lg pt-2">
                 <Tab.Container
-                    activeKey={tabkey}
-                    onSelect={(k) => setTabkey(k as TabKey)}
+                    activeKey={selectedTabkey}
+                    onSelect={(k) => setSelectedTabkey(k as TabKey)}
                     defaultActiveKey={TabKey.PYCODE}
                 >
                     <Col>
                         <Row sm={9} className="tabheader">
                             <TabHeaders
-                                tabkey={tabkey}
-                                setTabkey={setTabkey}
+                                selectedTabkey={selectedTabkey}
+                                setSelectedTabkey={setSelectedTabkey}
+                                selectedSubTabkey={selectedSubTabkey}
+                                setSelectedSubTabkey={setSelectedSubTabkey}
                                 tabElems={tabElems}
                             />
                         </Row>
@@ -144,20 +129,48 @@ const MainTab: React.FC = () => {
                         <Row sm={9} className="tabcontent position-relative">
                             <Tab.Content className="border p-0 position-relative">
                                 <TabTopControls
-                                    tabkey={tabkey}
-                                    setTabkey={setTabkey}
+                                    key="topcontrols"
+                                    selectedTabkey={selectedTabkey}
+                                    setSelectedTabkey={setSelectedTabkey}
+                                    selectedSubTabkey={selectedSubTabkey}
+                                    setSelectedSubTabkey={setSelectedSubTabkey}
                                     svgRef={svgRef}
                                     graphRef={graphRef}
                                     tabElems={tabElems}
                                 />
 
-                                <TabContents
-                                    tabkey={tabkey}
-                                    setTabkey={setTabkey}
-                                    svgRef={svgRef}
-                                    graphRef={graphRef}
-                                    tabElems={tabElems}
-                                />
+                                {tabElems.map((ikey) => {
+                                    if (!ikey.children?.length) {
+                                        // show only if children is empty, pycode will show all codes under children
+                                        return <TabContents
+                                            key={ikey.key}
+                                            genkey={ikey.key}
+                                            selectedTabkey={selectedTabkey}
+                                            setSelectedTabkey={setSelectedTabkey}
+                                            selectedSubTabkey={selectedSubTabkey}
+                                            setSelectedSubTabkey={setSelectedSubTabkey}
+                                            svgRef={svgRef}
+                                            graphRef={graphRef}
+                                            tabElems={tabElems}
+                                        />
+                                    } else {
+                                        // show only if children, pycode will show all codes under children
+                                        return ikey.children?.map((elem, index) => (
+                                            <TabContents
+                                                key={ikey.key + '_' + elem.key}
+                                                genkey={ikey.key}
+                                                gensubkey={elem.key}
+                                                selectedTabkey={selectedTabkey}
+                                                setSelectedTabkey={setSelectedTabkey}
+                                                selectedSubTabkey={selectedSubTabkey}
+                                                setSelectedSubTabkey={setSelectedSubTabkey}
+                                                svgRef={svgRef}
+                                                graphRef={graphRef}
+                                                tabElems={tabElems}
+                                            />
+                                        ))
+                                    }
+                                })}
                             </Tab.Content>
                         </Row>
                     </Col>
@@ -167,4 +180,4 @@ const MainTab: React.FC = () => {
     );
 };
 
-export default MainTab;
+export default TabMain;

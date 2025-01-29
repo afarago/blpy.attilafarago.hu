@@ -14,16 +14,20 @@ import domtoimage from 'dom-to-image';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 interface TabTopControlsProps {
-    tabkey: string;
-    setTabkey: (key: string) => void;
+    selectedTabkey: string;
+    setSelectedTabkey: (key: string) => void;
+    selectedSubTabkey: string;
+    setSelectedSubTabkey: (key: string) => void;
     svgRef: React.RefObject<HTMLDivElement | null>;
     graphRef: React.RefObject<HTMLDivElement | null>;
     tabElems: ITabElem[];
 }
 
 const TabTopControls: React.FC<TabTopControlsProps> = ({
-    tabkey,
-    setTabkey,
+    selectedTabkey,
+    setSelectedTabkey,
+    selectedSubTabkey,
+    setSelectedSubTabkey,
     svgRef,
     graphRef,
     tabElems,
@@ -63,10 +67,15 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
 
                 setIsCopying(true);
                 let textcontent: string | undefined;
-                const tabelem = tabElems.find((elem) => elem.key === tabkey);
+                let tabelem = tabElems.find((elem) => elem.key === selectedTabkey);
+                if (tabelem?.children) {
+                    tabelem = tabelem.children.find(
+                        (elem) => elem.key === selectedSubTabkey,
+                    );
+                }
                 if (!tabelem) return;
 
-                switch (tabkey) {
+                switch (selectedTabkey) {
                     case TabKey.EV3BDECOMPILED:
                         textcontent = tabelem.code;
                         navigator.clipboard.writeText(textcontent ?? '');
@@ -78,10 +87,12 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
                             let ref:
                                 | React.RefObject<HTMLDivElement | null>
                                 | undefined = undefined;
-                            if (tabkey === TabKey.PREVIEW) ref = svgRef;
-                            else if (tabkey === TabKey.CALLGRAPH) ref = graphRef;
+                            if (selectedTabkey === TabKey.PREVIEW) ref = svgRef;
+                            else if (selectedTabkey === TabKey.CALLGRAPH)
+                                ref = graphRef;
                             if (!ref?.current) return;
-                            let ext = tabkey === TabKey.PREVIEW ? 'preview' : 'graph';
+                            let ext =
+                                selectedTabkey === TabKey.PREVIEW ? 'preview' : 'graph';
 
                             domtoimage
                                 .toBlob(ref.current, {})
@@ -136,8 +147,8 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
 
                     default: {
                         if (
-                            tabkey.startsWith(TabKey.PYCODE) ||
-                            tabkey === TabKey.PLAINCODE
+                            selectedTabkey === TabKey.PYCODE ||
+                            selectedTabkey === TabKey.PLAINCODE
                         ) {
                             if (tabelem) {
                                 textcontent = tabelem.code;
@@ -155,7 +166,15 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
 
             return false;
         },
-        [conversionResult, tabkey, svgRef, graphRef, selectedFileContent, tabElems],
+        [
+            conversionResult,
+            selectedTabkey,
+            selectedSubTabkey,
+            svgRef,
+            graphRef,
+            selectedFileContent,
+            tabElems,
+        ],
     );
 
     const getBaseName = (filename: string): string => {
@@ -166,7 +185,7 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
 
     const getCopyIcon = () => {
         if (isCopying) return <CheckLg />;
-        if (([TabKey.PREVIEW, TabKey.CALLGRAPH] as string[]).includes(tabkey))
+        if (([TabKey.PREVIEW, TabKey.CALLGRAPH] as string[]).includes(selectedTabkey))
             return <Download />;
         return <Copy />;
     };
@@ -183,13 +202,13 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
     useHotkeys('esc', () => toggleFullScreen(false), { preventDefault: true }, []);
     useHotkeys('mod+c', () => handleCopyButtonClick(), { preventDefault: true }, [
         conversionResult,
-        tabkey,
+        selectedTabkey,
     ]);
 
     return (
         <>
             <div className="code-top-container">
-                {tabkey.startsWith(TabKey.PYCODE) &&
+                {selectedTabkey === TabKey.PYCODE &&
                     conversionResult?.filetype !== 'python' && (
                         <Form.Check
                             type="switch"
@@ -201,7 +220,7 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
                         />
                     )}
                 <button
-                    className={`mini-button bg-white copy-button-${tabkey} ${
+                    className={`mini-button bg-white copy-button-${selectedTabkey} ${
                         isCopying ? 'success' : ''
                     }`}
                     onClick={handleCopyButtonClick}
@@ -221,13 +240,14 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
                 </button>
             </div>
             {svgContentData &&
-                (tabkey.startsWith(TabKey.PYCODE) || tabkey === TabKey.PLAINCODE) && (
+                (selectedTabkey === TabKey.PYCODE ||
+                    selectedTabkey === TabKey.PLAINCODE) && (
                     <div
                         className="svg-minimap mt-5 px-3 float-right"
                         dangerouslySetInnerHTML={{
                             __html: svgContentData || '',
                         }}
-                        onClick={() => setTabkey(TabKey.PREVIEW)}
+                        onClick={() => setSelectedTabkey(TabKey.PREVIEW)}
                         role="presentation"
                     ></div>
                 )}
