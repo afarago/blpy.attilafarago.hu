@@ -185,7 +185,7 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
 
     const getCopyIcon = useMemo(() => {
         if (isCopying) return <CheckLg />;
-        if (([TabKey.PREVIEW, TabKey.CALLGRAPH] as string[]).includes(selectedTabkey))
+        if ([TabKey.PREVIEW, TabKey.CALLGRAPH].includes(selectedTabkey as TabKey))
             return <Download />;
         return <Copy />;
     }, [isCopying, selectedTabkey]);
@@ -208,14 +208,14 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
     return (
         <>
             <div className="code-top-container">
-                {selectedTabkey === TabKey.PYCODE &&
+                {[TabKey.PYCODE, TabKey.PLAINCODE].includes(selectedTabkey as TabKey) &&
                     conversionResult?.filetype !== 'python' && (
                         <Form.Check
                             type="switch"
                             id="additionalCommentsCheck"
                             label="Explanatory&nbsp;Comments"
                             checked={isAdditionalCommentsChecked}
-                            title="Add explanatory comments to the source code (ctrl/cmd+e)"
+                            title="Add explanatory comments to the source code (ctrl+e)"
                             onChange={handleSetIsAdditionalCommentsChecked}
                         />
                     )}
@@ -224,7 +224,7 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
                         isCopying ? 'success' : ''
                     }`}
                     onClick={handleCopyButtonClick}
-                    title="Copy code (ctrl/cmd+c)"
+                    title="Copy code (ctrl+c)"
                 >
                     {getCopyIcon}
                 </button>
@@ -234,7 +234,7 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
                         evt.preventDefault();
                         toggleFullScreen();
                     }}
-                    title="Full screen (ctrl/cmd+f)"
+                    title="Full screen (ctrl+f)"
                 >
                     {fullScreen ? <FullscreenExit /> : <Fullscreen />}
                 </button>

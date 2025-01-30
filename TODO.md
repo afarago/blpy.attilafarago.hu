@@ -11,3 +11,7 @@ n/a
 ## LATER
 
 n/a
+
+## IDEA
+
+-   @storybook / https://storybook.js.org/

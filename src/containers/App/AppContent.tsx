@@ -90,7 +90,7 @@ const AppContent: React.FC = () => {
                             : {}),
                     },
                     output: {
-                        'ev3b.decompiled': true,
+                        'ev3b.source': true,
                         'blockly.slot': true,
                         'blockly.svg': true,
                     },

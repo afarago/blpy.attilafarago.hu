@@ -50,7 +50,7 @@ const MyProvider = ({ children }: { children: ReactNode }) => {
     useEffect(() => {
         if (conversionResult) {
             setSvgContentData(conversionResult.extra?.['blockly.svg']);
-            setRbfDecompileData(conversionResult.extra?.['ev3b.decompiled']);
+            setRbfDecompileData(conversionResult.extra?.['ev3b.source']?.['main']);
         } else {
             setSvgContentData(undefined);
             setRbfDecompileData(undefined);

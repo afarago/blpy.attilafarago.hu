@@ -1,6 +1,8 @@
 import { ITabElem, TabKey } from './TabMain';
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 
+import BrandLogo from '../Header/BrandLogo';
+import { MyContext } from '../../contexts/MyContext';
 import Nav from 'react-bootstrap/Nav';
 import ReactGA from 'react-ga4';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -20,9 +22,9 @@ const TabHeaders: React.FC<TabHeadersProps> = ({
     setSelectedSubTabkey,
     tabElems,
 }) => {
-    // const context = useContext(MyContext);
-    // if (!context) throw new Error('MyComponent must be used within a MyProvider');
-    // const { conversionResult, selectedFileContent } = context;
+    const context = useContext(MyContext);
+    if (!context) throw new Error('MyComponent must be used within a MyProvider');
+    const { fullScreen } = context;
 
     useHotkeys('control+1', () => setSelectedTabkey(TabKey.PYCODE));
     useHotkeys('control+2', () => setSelectedTabkey(TabKey.PLAINCODE));
@@ -37,7 +39,7 @@ const TabHeaders: React.FC<TabHeadersProps> = ({
             eventLabel: selectedTabkey,
             eventValue: selectedSubTabkey,
         });
-    }, [selectedTabkey,selectedSubTabkey]);
+    }, [selectedTabkey, selectedSubTabkey]);
 
     useEffect(() => {
         // if the selection changes, but the tab is not visible anymore - nav to the first visible tab (pycode)
@@ -47,20 +49,18 @@ const TabHeaders: React.FC<TabHeadersProps> = ({
         const tabSubElem = tabElem?.children?.find(
             (elem) => selectedSubTabkey === elem.key,
         );
-            if (
-                !tabElem ||
-                !tabElem?.condition ||
-                (tabElem.key === TabKey.PYCODE &&
-                    tabElem.children &&
-                    !tabSubElem)
-            ) {
-                targetkey = TabKey.PYCODE;
-                setSelectedTabkey(targetkey);
+        if (
+            !tabElem ||
+            !tabElem?.condition ||
+            (tabElem.key === TabKey.PYCODE && tabElem.children && !tabSubElem)
+        ) {
+            targetkey = TabKey.PYCODE;
+            setSelectedTabkey(targetkey);
 
-                if (tabElem?.children && !tabSubElem) {
-                    setSelectedSubTabkey(tabElem.children[0].key);
-                }
+            if (tabElem?.children && !tabSubElem) {
+                setSelectedSubTabkey(tabElem.children[0].key);
             }
+        }
     }, [tabElems, selectedTabkey, selectedSubTabkey]);
 
     return (
@@ -130,6 +130,12 @@ const TabHeaders: React.FC<TabHeadersProps> = ({
                                     )} */}
                                 </Nav.Item>
                             ),
+                    )}
+
+                    {fullScreen && (
+                        <Nav.Item className="brandlogo">
+                            <BrandLogo />
+                        </Nav.Item>
                     )}
                 </div>
             </Nav>

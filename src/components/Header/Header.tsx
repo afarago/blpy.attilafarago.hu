@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 
-import LogoFull from '../../assets/img/logo_full.svg?react';
+import BrandLogo from './BrandLogo';
 import { MyContext } from '../../contexts/MyContext';
 
 const Header: React.FC = () => {
@@ -8,7 +8,7 @@ const Header: React.FC = () => {
     if (!context) throw new Error('MyComponent must be used within a MyProvider');
     const { setSelectedFileContent, setConversionResult } = context;
 
-    const handleClickOnLogo = (event: React.MouseEvent<SVGSVGElement>): void => {
+    const handleClickOnLogo = (event: React.MouseEvent<HTMLDivElement>): void => {
         event.preventDefault();
 
         setSelectedFileContent(undefined);
@@ -19,16 +19,8 @@ const Header: React.FC = () => {
         <header>
             <nav className="navbar navbar-expand-sm border-bottom box-shadow mb-1">
                 <div className="container-lg">
-                    <div className="navbar-brand">
-                        <LogoFull
-                            height="1.5em"
-                            width="4em"
-                            className="brandlogo"
-                            onClick={handleClickOnLogo}
-                        />
-                        &nbsp;
-                        <b>BlocklyPy</b>
-                        <span className="d-none d-sm-inline">&nbsp;· LegoAppTools</span>
+                    <div className="navbar-brand brandlogo" onClick={handleClickOnLogo}>
+                        <BrandLogo />
                     </div>
                 </div>
             </nav>
