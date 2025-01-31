@@ -8,7 +8,6 @@ import { CatIcon } from '../Icons/CatIcon';
 import { DevTypeIcon } from '../Icons/DevTypeIcon';
 import { Download } from 'react-bootstrap-icons';
 import Form from 'react-bootstrap/Form';
-import { pickDirectoryGetFiles } from './util';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 const EXAMPLES = [
@@ -61,14 +60,18 @@ const FileSelector: React.FC<FileSelectorProps> = ({
     const context = useContext(MyContext);
     if (!context) throw new Error('MyComponent must be used within a MyProvider');
     const { fileInputRef, conversionResult } = context;
-    // const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const handleFileOpen = (event: React.ChangeEvent<HTMLInputElement>) => {
         const target = event.target as HTMLInputElement;
         if (target.files?.length) {
-            const files = [...target.files].sort((a, b) =>
-                a.name.localeCompare(b.name),
-            );
+            let files = [...target.files].sort((a, b) => a.name.localeCompare(b.name));
+            // filter files to only include supported extensions
+            if (files.length > 1) {
+                const files1 = files.filter((file) =>
+                    ACCEPTED_EXTENSIONS.includes(file.name.split('.').pop() || ''),
+                );
+                if (files1.length) files = files1;
+            }
             setSelectedFileContent({ files, builtin: false });
             target.blur();
         } else {
@@ -78,21 +81,8 @@ const FileSelector: React.FC<FileSelectorProps> = ({
 
     const handleFileBrowserClick = async (e: React.MouseEvent<HTMLInputElement>) => {
         // shift-click: open a directory selector (if supported)
-        if (e.shiftKey) {
-            // e.stopImmediatePropagation();
-            e.stopPropagation();
-            e.preventDefault();
-            const files = await pickDirectoryGetFiles();
-            if (files) {
-                // keep only supported files
-                const supportedFiles = files
-                    .filter((file) =>
-                        ACCEPTED_EXTENSIONS.includes(file.name.split('.').pop() || ''),
-                    )
-                    .sort((a, b) => a.name.localeCompare(b.name));
-
-                setSelectedFileContent({ files: supportedFiles, builtin: false });
-            }
+        if (e.shiftKey && fileInputRef.current) {
+            fileInputRef.current.webkitdirectory = true;
         }
     };
 
@@ -165,7 +155,11 @@ const FileSelector: React.FC<FileSelectorProps> = ({
                 {conversionResult && (
                     <div className="file-selector-icons">
                         {conversionResult?.extra?.['blockly.slot'] !== undefined && (
-                            <CatIcon slot={conversionResult?.extra?.['blockly.slot']} />
+                            <CatIcon
+                                slot={parseInt(
+                                    conversionResult?.extra?.['blockly.slot'],
+                                )}
+                            />
                         )}
                         {conversionResult?.filetype && (
                             <DevTypeIcon devtype={conversionResult?.filetype} />
