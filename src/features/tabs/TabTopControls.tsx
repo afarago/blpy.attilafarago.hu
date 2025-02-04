@@ -6,12 +6,25 @@ import {
     FullscreenExit,
 } from 'react-bootstrap-icons';
 import { ITabElem, TabKey } from './TabMain';
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
+import {
+    additionalCommentsCheckedSet,
+    copyingSet,
+    fullScreenSet,
+    fullScreenToggle,
+    selectTabs,
+} from '@/features/tabs/tabsSlice';
+import {
+    selectConversionResult,
+    selectSvgContentData,
+} from '@/features/conversion/conversionSlice';
 
 import { Form } from 'react-bootstrap';
-import { MyContext } from '../../contexts/MyContext';
 import domtoimage from 'dom-to-image';
+import { selectFileContent } from '@/features/fileContent/fileContentSlice';
+import { useAppDispatch } from '@/app/hooks';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { useSelector } from 'react-redux';
 
 interface TabTopControlsProps {
     selectedTabkey: string;
@@ -32,30 +45,22 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
     graphRef,
     tabElems,
 }) => {
-    const context = useContext(MyContext);
-    if (!context) throw new Error('MyComponent must be used within a MyProvider');
-    const {
-        selectedFileContent,
-        conversionResult,
-        isAdditionalCommentsChecked,
-        setIsAdditionalCommentsChecked,
-        fullScreen,
-        toggleFullScreen,
-        svgContentData,
-        rbfDecompileData,
-        isCopying,
-        setIsCopying,
-    } = context;
+    const dispatch = useAppDispatch();
+    const { fullScreen, copying, additionalCommentsChecked } = useSelector(selectTabs);
+    const conversionResult = useSelector(selectConversionResult);
+    const svgContentData = useSelector(selectSvgContentData);
+    const fileContent = useSelector(selectFileContent);
 
     const handleSetIsAdditionalCommentsChecked = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) =>
-            setIsAdditionalCommentsChecked(event.target.checked),
-        [setIsAdditionalCommentsChecked],
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            dispatch(additionalCommentsCheckedSet(event.target.checked));
+        },
+        [],
     );
 
     const toggleIsAdditionalCommentsChecked = useCallback(() => {
-        setIsAdditionalCommentsChecked(!isAdditionalCommentsChecked);
-    }, [setIsAdditionalCommentsChecked, isAdditionalCommentsChecked]);
+        dispatch(additionalCommentsCheckedSet(additionalCommentsChecked));
+    }, [additionalCommentsChecked]);
 
     const handleCopyButtonClick = useCallback(
         (event?: React.MouseEvent<HTMLButtonElement>) => {
@@ -63,9 +68,9 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
             event?.preventDefault();
 
             try {
-                if (!conversionResult || !selectedFileContent) return;
+                if (!conversionResult || !fileContent) return;
 
-                setIsCopying(true);
+                dispatch(copyingSet(true));
                 let textcontent: string | undefined;
                 let tabelem = tabElems.find((elem) => elem.key === selectedTabkey);
                 if (tabelem?.children) {
@@ -101,10 +106,10 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
 
                                     // Proceed with download using the temporary URL
                                     let filebase = getBaseName(
-                                        selectedFileContent.files[0].name,
+                                        fileContent.files[0].name,
                                     );
-                                    if (selectedFileContent.files.length > 1) {
-                                        filebase = `${filebase}_plus_${selectedFileContent.files.length}_files`;
+                                    if (fileContent.files.length > 1) {
+                                        filebase = `${filebase}_plus_${fileContent.files.length}_files`;
                                     }
                                     const link = document.createElement('a');
                                     link.href = dataUrl;
@@ -161,7 +166,7 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
             } catch (e) {
                 console.error('::ERROR::', e);
             } finally {
-                setTimeout(() => setIsCopying(false), 1000);
+                setTimeout(() => dispatch(copyingSet(false)), 1000);
             }
 
             return false;
@@ -172,7 +177,7 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
             selectedSubTabkey,
             svgRef,
             graphRef,
-            selectedFileContent,
+            fileContent,
             tabElems,
         ],
     );
@@ -184,22 +189,30 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
     };
 
     const getCopyIcon = useMemo(() => {
-        if (isCopying) return <CheckLg />;
+        if (copying) return <CheckLg />;
         if ([TabKey.PREVIEW, TabKey.CALLGRAPH].includes(selectedTabkey as TabKey))
             return <Download />;
         return <Copy />;
-    }, [isCopying, selectedTabkey]);
+    }, [copying, selectedTabkey]);
 
     useHotkeys(
         'control+e',
         () => toggleIsAdditionalCommentsChecked(),
         { preventDefault: true },
-        [setIsAdditionalCommentsChecked, isAdditionalCommentsChecked],
+        [additionalCommentsChecked],
     );
-    useHotkeys('control+f', () => toggleFullScreen(), { preventDefault: true }, [
-        fullScreen,
-    ]);
-    useHotkeys('esc', () => toggleFullScreen(false), { preventDefault: true }, []);
+    useHotkeys(
+        'control+f',
+        () => dispatch(fullScreenToggle()),
+        { preventDefault: true },
+        [fullScreen],
+    );
+    useHotkeys(
+        'esc',
+        () => dispatch(fullScreenSet(false)),
+        { preventDefault: true },
+        [],
+    );
     useHotkeys('control+c', () => handleCopyButtonClick(), { preventDefault: true }, [
         conversionResult,
         selectedTabkey,
@@ -214,14 +227,14 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
                             type="switch"
                             id="additionalCommentsCheck"
                             label="Explanatory&nbsp;Comments"
-                            checked={isAdditionalCommentsChecked}
+                            checked={additionalCommentsChecked}
                             title="Add explanatory comments to the source code (ctrl+e)"
                             onChange={handleSetIsAdditionalCommentsChecked}
                         />
                     )}
                 <button
                     className={`mini-button bg-white copy-button-${selectedTabkey} ${
-                        isCopying ? 'success' : ''
+                        copying ? 'success' : ''
                     }`}
                     onClick={handleCopyButtonClick}
                     title="Copy code (ctrl+c)"
@@ -232,7 +245,7 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
                     className="mini-button bg-white"
                     onClick={(evt) => {
                         evt.preventDefault();
-                        toggleFullScreen();
+                        dispatch(fullScreenToggle());
                     }}
                     title="Full screen (ctrl+f)"
                 >

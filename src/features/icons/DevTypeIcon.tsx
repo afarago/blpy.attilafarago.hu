@@ -1,10 +1,10 @@
-import DevtypeEV3B from '../../assets/img/devtype_ev3b.png';
-import DevtypeEV3C from '../../assets/img/devtype_ev3classroom.png';
-import DevtypeEV3G from '../../assets/img/devtype_ev3g.png';
-import DevtypePybricks from '../../assets/img/devtype_pybricks.png';
-import DevtypePython from '../../assets/img/devtype_python.png';
-import DevtypeRobotInventor from '../../assets/img/devtype_robotinventor.png';
-import DevtypeSpike from '../../assets/img/devtype_spike.png';
+import DevtypeEV3B from '@/assets/img/devtype_ev3b.png';
+import DevtypeEV3C from '@/assets/img/devtype_ev3classroom.png';
+import DevtypeEV3G from '@/assets/img/devtype_ev3g.png';
+import DevtypePybricks from '@/assets/img/devtype_pybricks.png';
+import DevtypePython from '@/assets/img/devtype_python.png';
+import DevtypeRobotInventor from '@/assets/img/devtype_robotinventor.png';
+import DevtypeSpike from '@/assets/img/devtype_spike.png';
 import React from 'react';
 
 interface DevTypeIconProps {

@@ -1,14 +1,15 @@
-import { forwardRef, useContext, useEffect, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 import { Graphviz } from '@hpcc-js/wasm-graphviz';
-import { MyContext } from '../../contexts/MyContext';
+import { selectConversionResult } from '@/features/conversion/conversionSlice';
+import { useSelector } from 'react-redux';
 
-const removeSvgDimensions = (svgString: string): string => {
-    const regex = /<svg[^>]*>/i;
-    return svgString.replace(regex, (match) => {
-        return match.replace(/width\s*=\s*"[^"]*"\s*|height\s*=\s*"[^"]*"\s*/g, '');
-    });
-};
+// const removeSvgDimensions = (svgString: string): string => {
+//     const regex = /<svg[^>]*>/i;
+//     return svgString.replace(regex, (match) => {
+//         return match.replace(/width\s*=\s*"[^"]*"\s*|height\s*=\s*"[^"]*"\s*/g, '');
+//     });
+// };
 
 type NodeRegistryEntry = {
     name: string;
@@ -30,12 +31,12 @@ const selSome = (
 };
 
 const CallGraph = forwardRef<HTMLDivElement>(({}, ref) => {
-    const context = useContext(MyContext);
-    if (!context) throw new Error('MyComponent must be used within a MyProvider');
-    const { conversionResult, svgDependencyGraph, setSvgDependencyGraph } = context;
+    const conversionResult = useSelector(selectConversionResult);
 
     const localRef = useRef<HTMLDivElement>(null);
     useImperativeHandle(ref, () => localRef.current as HTMLDivElement);
+
+    let [svgDependencyGraph, setSvgDependencyGraph] = useState('');
 
     const renderGraph = async () => {
         if (!conversionResult?.dependencygraph || !localRef?.current) return;
@@ -46,12 +47,12 @@ const CallGraph = forwardRef<HTMLDivElement>(({}, ref) => {
         // const graphviz = gv.Graphviz;
         const graphviz = await Graphviz.load();
         // console.log(graphviz.version());
-        conversionResult.dependencygraph = conversionResult.dependencygraph.replaceAll(
+        const dependencygraph2 = conversionResult.dependencygraph.replaceAll(
             'shape = box',
             'shape = box, style = rounded',
         );
-        // console.log(conversionResult.dependencygraph);
-        let svg = await graphviz.dot(conversionResult.dependencygraph);
+        // console.log(dependencygraph2);
+        let svg = await graphviz.dot(dependencygraph2);
         // need to remove width and height attributes from svg for successful download for domtoimage
         // svg = removeSvgDimensions(svg);
         setSvgDependencyGraph(svg);

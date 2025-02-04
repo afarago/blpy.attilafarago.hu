@@ -1,9 +1,6 @@
 import '@testing-library/jest-dom';
 
-import App from '../containers/App/App';
-// import App from '../App';
-// import React from 'react';
-// import ReactDOM from 'react-dom/client';
+import App from '@/containers/App/App';
 import { render } from '@testing-library/react';
 
 test('Renders the main page', () => {

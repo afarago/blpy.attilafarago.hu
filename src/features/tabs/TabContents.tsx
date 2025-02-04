@@ -1,14 +1,16 @@
 import { ITabElem, TabKey } from './TabMain';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import Button from 'react-bootstrap/Button';
-import CallGraph from '../../components/CallGraph/CallGraph';
-import { MyContext } from '../../contexts/MyContext';
+import CallGraph from '@/features/graph/CallGraph';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { Tab } from 'react-bootstrap';
 import less from 'react-syntax-highlighter/dist/esm/languages/hljs/less';
 import python from 'react-syntax-highlighter/dist/esm/languages/hljs/python';
+import { selectConversionResult } from '@/features/conversion/conversionSlice';
+import { selectTabs } from './tabsSlice';
 import svgPanZoom from 'svg-pan-zoom';
+import { useSelector } from 'react-redux';
 import { vs } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 // import SyntaxHighlighter from 'react-syntax-highlighter';
@@ -39,9 +41,8 @@ const TabContents: React.FC<TabContentsProps> = ({
     graphRef,
     tabElems,
 }) => {
-    const context = useContext(MyContext);
-    if (!context) throw new Error('MyComponent must be used within a MyProvider');
-    const { svgContentData, svgDependencyGraph, isCopying } = context;
+    const { copying } = useSelector(selectTabs);
+    const svgContentData = useSelector(selectConversionResult);
 
     const REFMAP = {
         [TabKey.PREVIEW]: { ref: svgRef, ext: 'preview' },
@@ -59,7 +60,7 @@ const TabContents: React.FC<TabContentsProps> = ({
         if (svgelement) {
             panzoom = svgPanZoom(svgelement, {
                 zoomScaleSensitivity: 0.5,
-                controlIconsEnabled: !isCopying,
+                controlIconsEnabled: !copying,
                 // mouseWheelZoomEnabled: true,
                 // panEnabled: true,
                 // zoomEnabled: true,
@@ -77,12 +78,12 @@ const TabContents: React.FC<TabContentsProps> = ({
         svgRef,
         graphRef,
         svgContentData,
-        svgDependencyGraph,
+        // svgDependencyGraph,
         genkey,
         gensubkey,
         selectedTabkey,
         REFMAP,
-        isCopying,
+        copying,
     ]);
 
     function createTabElemContent() {

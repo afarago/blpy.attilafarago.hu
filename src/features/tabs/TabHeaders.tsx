@@ -1,11 +1,12 @@
 import { ITabElem, TabKey } from './TabMain';
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
-import BrandLogo from '../Header/BrandLogo';
-import { MyContext } from '../../contexts/MyContext';
+import BrandLogo from '@/features/header/BrandLogo';
 import Nav from 'react-bootstrap/Nav';
 import ReactGA from 'react-ga4';
+import { selectTabs } from './tabsSlice';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { useSelector } from 'react-redux';
 
 interface TabHeadersProps {
     selectedTabkey: string;
@@ -22,9 +23,7 @@ const TabHeaders: React.FC<TabHeadersProps> = ({
     setSelectedSubTabkey,
     tabElems,
 }) => {
-    const context = useContext(MyContext);
-    if (!context) throw new Error('MyComponent must be used within a MyProvider');
-    const { fullScreen } = context;
+    const { fullScreen } = useSelector(selectTabs);
 
     useHotkeys('control+1', () => setSelectedTabkey(TabKey.PYCODE));
     useHotkeys('control+2', () => setSelectedTabkey(TabKey.PLAINCODE));

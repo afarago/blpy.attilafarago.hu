@@ -1,7 +1,6 @@
 import './App.scss';
 
 import AppContent from './AppContent';
-import { MyProvider } from '../../contexts/MyContext';
 import React from 'react';
 import ReactGA from 'react-ga4';
 
@@ -11,11 +10,9 @@ ReactGA.initialize(GA_TRACKING_ID);
 
 const App: React.FC = () => {
     return (
-        <MyProvider>
-            <div className="App">
-                <AppContent />
-            </div>
-        </MyProvider>
+        <div className="App">
+            <AppContent />
+        </div>
     );
 };
 

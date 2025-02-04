@@ -1,18 +1,16 @@
 import React, { useContext } from 'react';
 
 import BrandLogo from './BrandLogo';
-import { MyContext } from '../../contexts/MyContext';
+import { fileContentReset } from '@/features/fileContent/fileContentSlice';
+import { useAppDispatch } from '@/app/hooks';
 
 const Header: React.FC = () => {
-    const context = useContext(MyContext);
-    if (!context) throw new Error('MyComponent must be used within a MyProvider');
-    const { setSelectedFileContent, setConversionResult } = context;
+    const dispatch = useAppDispatch();
 
     const handleClickOnLogo = (event: React.MouseEvent<HTMLDivElement>): void => {
         event.preventDefault();
 
-        setSelectedFileContent(undefined);
-        setConversionResult(undefined);
+        dispatch(fileContentReset());
     };
 
     return (

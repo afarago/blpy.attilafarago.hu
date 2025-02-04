@@ -1,9 +1,10 @@
 import { CaretRight, CloudArrowUpFill } from 'react-bootstrap-icons';
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback } from 'react';
 
-import { ACCEPTED_EXTENSIONS } from '../../utils/constants';
-import { DevTypeIcon } from '../Icons/DevTypeIcon';
-import { MyContext } from '../../contexts/MyContext';
+import { ACCEPTED_EXTENSIONS } from '@/utils/constants';
+import { DevTypeIcon } from '@/features/icons/DevTypeIcon';
+import { selectConversionResult } from '@/features/conversion/conversionSlice';
+import { useSelector } from 'react-redux';
 
 const icons: (React.ReactElement | string)[] = [
     'spike',
@@ -16,17 +17,18 @@ const icons: (React.ReactElement | string)[] = [
     'pybricks',
 ];
 
-const WelcomeTab: React.FC = () => {
-    const context = useContext(MyContext);
-    if (!context) throw new Error('MyComponent must be used within a MyProvider');
-    const { conversionResult, fileInputRef } = context;
+const WelcomeTab: React.FC<{
+    fileInputRef: React.RefObject<HTMLInputElement | null>;
+}> = ({ fileInputRef }) => {
+    const conversionResult = useSelector(selectConversionResult);
 
-    const handleCloudIconClick = useCallback((event: React.MouseEvent<HTMLButtonElement>): void => {
-        event.preventDefault();
-        if (fileInputRef.current) {
-            fileInputRef.current.click();
-        }
-    }, [fileInputRef]);
+    const handleCloudIconClick = useCallback(
+        (event: React.MouseEvent<HTMLButtonElement>): void => {
+            event.preventDefault();
+            if (fileInputRef?.current) fileInputRef?.current.click();
+        },
+        [fileInputRef],
+    );
 
     return (
         !conversionResult && (
@@ -36,9 +38,12 @@ const WelcomeTab: React.FC = () => {
                         <button onClick={handleCloudIconClick}>
                             <CloudArrowUpFill className="drop-cloud-icon" />
                         </button>
-                        <div className="mb-4 d-flex flex-column align-items-center" style={{ maxWidth: '30em' }}>
-                            Imagine a world where magical unicorns transform your
-                            LEGO blockly programs into Python code!
+                        <div
+                            className="mb-4 d-flex flex-column align-items-center"
+                            style={{ maxWidth: '30em' }}
+                        >
+                            Imagine a world where magical unicorns transform your LEGO
+                            blockly programs into Python code!
                         </div>
                         <>
                             <small>

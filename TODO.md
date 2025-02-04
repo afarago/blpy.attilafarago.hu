@@ -10,7 +10,7 @@ n/a
 
 ## LATER
 
-n/a
+-   check Prism / 1.5-2 k only
 
 ## IDEA
 
