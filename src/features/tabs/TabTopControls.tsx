@@ -218,52 +218,58 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
         selectedTabkey,
     ]);
 
+    const renderTopContainer = () => (
+        <div className="code-top-container">
+            {[TabKey.PYCODE, TabKey.PLAINCODE].includes(selectedTabkey as TabKey) &&
+                conversionResult?.filetype !== 'python' && (
+                    <Form.Check
+                        type="switch"
+                        id="additionalCommentsCheck"
+                        label="Explanatory&nbsp;Comments"
+                        checked={additionalCommentsChecked}
+                        title="Add explanatory comments to the source code (ctrl+e)"
+                        onChange={handleSetIsAdditionalCommentsChecked}
+                    />
+                )}
+            <button
+                className={`mini-button bg-white copy-button-${selectedTabkey} ${
+                    copying ? 'success' : ''
+                }`}
+                onClick={handleCopyButtonClick}
+                title="Copy code (ctrl+c)"
+            >
+                {getCopyIcon}
+            </button>
+            <button
+                className="mini-button bg-white"
+                onClick={(evt) => {
+                    evt.preventDefault();
+                    dispatch(fullScreenToggle());
+                }}
+                title="Full screen (ctrl+f)"
+            >
+                {fullScreen ? <FullscreenExit /> : <Fullscreen />}
+            </button>
+        </div>
+    );
+
+    const renderSVGMinimap = () =>
+        svgContentData &&
+        (selectedTabkey === TabKey.PYCODE || selectedTabkey === TabKey.PLAINCODE) && (
+            <div
+                className="svg-minimap mt-5 px-3 float-right"
+                dangerouslySetInnerHTML={{
+                    __html: svgContentData || '',
+                }}
+                onClick={() => setSelectedTabkey(TabKey.PREVIEW)}
+                role="presentation"
+            ></div>
+        );
+
     return (
         <>
-            <div className="code-top-container">
-                {[TabKey.PYCODE, TabKey.PLAINCODE].includes(selectedTabkey as TabKey) &&
-                    conversionResult?.filetype !== 'python' && (
-                        <Form.Check
-                            type="switch"
-                            id="additionalCommentsCheck"
-                            label="Explanatory&nbsp;Comments"
-                            checked={additionalCommentsChecked}
-                            title="Add explanatory comments to the source code (ctrl+e)"
-                            onChange={handleSetIsAdditionalCommentsChecked}
-                        />
-                    )}
-                <button
-                    className={`mini-button bg-white copy-button-${selectedTabkey} ${
-                        copying ? 'success' : ''
-                    }`}
-                    onClick={handleCopyButtonClick}
-                    title="Copy code (ctrl+c)"
-                >
-                    {getCopyIcon}
-                </button>
-                <button
-                    className="mini-button bg-white"
-                    onClick={(evt) => {
-                        evt.preventDefault();
-                        dispatch(fullScreenToggle());
-                    }}
-                    title="Full screen (ctrl+f)"
-                >
-                    {fullScreen ? <FullscreenExit /> : <Fullscreen />}
-                </button>
-            </div>
-            {svgContentData &&
-                (selectedTabkey === TabKey.PYCODE ||
-                    selectedTabkey === TabKey.PLAINCODE) && (
-                    <div
-                        className="svg-minimap mt-5 px-3 float-right"
-                        dangerouslySetInnerHTML={{
-                            __html: svgContentData || '',
-                        }}
-                        onClick={() => setSelectedTabkey(TabKey.PREVIEW)}
-                        role="presentation"
-                    ></div>
-                )}
+            {renderTopContainer()}
+            {renderSVGMinimap()}
         </>
     );
 };
