@@ -1,7 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { RootState } from '@/app/store';
-import { useAppSelector } from '@/app/hooks';
 
 interface TabsState {
     fullScreen: boolean;
