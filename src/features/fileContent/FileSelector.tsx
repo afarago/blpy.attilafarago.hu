@@ -159,7 +159,7 @@ const FileSelector: React.FC<{
                         onClick={handleFileBrowserClick}
                     />
                     {conversionResult && (
-                        <div className="file-selector-icons position-absolute end-0 d-none d-lg-block">
+                        <div className="file-selector-icons position-absolute end-0 d-none d-lg-flex">
                             {conversionResult?.extra?.['blockly.slot'] !==
                                 undefined && (
                                 <CatIcon
