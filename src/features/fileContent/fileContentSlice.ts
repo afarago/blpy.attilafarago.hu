@@ -172,7 +172,9 @@ export const fetchRepoContents = createAsyncThunk(
                 if (!data) throw new Error('Failed to fetch repository contents');
 
                 const payload2: FileContentSetPayload = {
-                    files: data.map((item) => new File([item.content], item.name)),
+                    files: data
+                        .filter((file) => supportsExtension(file.name))
+                        .map((item) => new File([item.content], item.name)),
                     url,
                     builtin,
                 } satisfies FileContentSetPayload;

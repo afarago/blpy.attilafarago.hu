@@ -48,20 +48,18 @@ const FileSelector: React.FC<{
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const target = event.target as HTMLInputElement;
-        if (target.files?.length) {
-            let files = [...target.files].sort((a, b) => a.name.localeCompare(b.name));
-            // filter files to only include supported extensions
-            files = files.filter((file) => supportsExtension(file.name));
+        if (!target.files?.length) return;
 
-            const content = {
-                files,
-                builtin: false,
-            } satisfies FileContentSetPayload;
-            dispatch(fileContentSet(content));
-            target.blur();
-        } else {
-            dispatch(fileContentReset());
-        }
+        let files = [...target.files].sort((a, b) => a.name.localeCompare(b.name));
+        // filter files to only include supported extensions
+        files = files.filter((file) => supportsExtension(file.name));
+
+        const content = {
+            files,
+            builtin: false,
+        } satisfies FileContentSetPayload;
+        dispatch(fileContentSet(content));
+        target.blur();
     };
 
     const handleFileBrowserClick = async (e: React.MouseEvent<HTMLInputElement>) => {
