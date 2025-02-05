@@ -20,6 +20,7 @@ import TabContents from './TabContents';
 import TabHeaders from './TabHeaders';
 import TabTopControls from './TabTopControls';
 import { useSelector } from 'react-redux';
+import { selectTabs } from './tabsSlice';
 
 export enum TabKey {
     PYCODE = 'pycode',
@@ -43,6 +44,7 @@ const TabMain: React.FC = () => {
     const { conversionResult } = useSelector(selectConversion);
     const svgContentData = useSelector(selectSvgContentData);
     const rbfDecompileData = useSelector(selectRbfDecompileData);
+    const { additionalCommentsChecked } = useSelector(selectTabs);
 
     const [selectedTabkey, setSelectedTabkey] = useState<string>('');
     const [selectedSubTabkey, setSelectedSubTabkey] = useState<string>('');
@@ -80,7 +82,10 @@ const TabMain: React.FC = () => {
                 icon: CodeSlash,
                 name: 'Pseudocode',
                 condition: conversionResult?.plaincode !== undefined,
-                code: conversionResult?.plaincode,
+                code: !additionalCommentsChecked
+                    ? conversionResult?.plaincode
+                    : // replace @ .* ending with /* () */ for css formatter
+                      conversionResult?.plaincode?.replace(/@[ ]?(.*)$/gm, '/* $1 */'),
             },
             {
                 key: TabKey.EV3BDECOMPILED,

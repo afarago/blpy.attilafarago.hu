@@ -6,7 +6,7 @@ import CallGraph from '@/features/graph/CallGraph';
 // import SyntaxHighlighter from 'react-syntax-highlighter';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import Tab from 'react-bootstrap/Tab';
-import less from 'react-syntax-highlighter/dist/esm/languages/hljs/less';
+import css from 'react-syntax-highlighter/dist/esm/languages/hljs/css';
 import python from 'react-syntax-highlighter/dist/esm/languages/hljs/python';
 import { selectSvgContentData } from '@/features/conversion/conversionSlice';
 import { selectTabs } from './tabsSlice';
@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux';
 import { vs } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 SyntaxHighlighter.registerLanguage('python', python);
-SyntaxHighlighter.registerLanguage('less', less);
+SyntaxHighlighter.registerLanguage('css', css);
 
 interface TabContentsProps {
     genkey: string;
@@ -77,7 +77,6 @@ const TabContents: React.FC<TabContentsProps> = ({
         svgRef,
         graphRef,
         svgContentData,
-        // svgDependencyGraph,
         genkey,
         gensubkey,
         selectedTabkey,

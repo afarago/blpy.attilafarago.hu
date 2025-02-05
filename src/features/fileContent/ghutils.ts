@@ -1,4 +1,3 @@
-import Github from '@/assets/img/github.png';
 const GITHUB_API_URL = 'https://api.github.com';
 
 export async function getPublicGithubContents(

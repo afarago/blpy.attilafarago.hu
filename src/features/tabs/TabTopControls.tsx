@@ -59,7 +59,7 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
     );
 
     const toggleIsAdditionalCommentsChecked = useCallback(() => {
-        dispatch(additionalCommentsCheckedSet(additionalCommentsChecked));
+        dispatch(additionalCommentsCheckedSet(!additionalCommentsChecked));
     }, [additionalCommentsChecked]);
 
     const handleCopyButtonClick = useCallback(
