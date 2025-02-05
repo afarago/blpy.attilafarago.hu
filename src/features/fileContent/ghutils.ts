@@ -67,6 +67,7 @@ interface GithubFile {
     type: string;
     download_url: string;
     content: string;
+    path: string;
 }
 
 async function getPublicGithubRepoContents(
@@ -95,6 +96,17 @@ async function getPublicGithubRepoContents(
                 if (fileResponse.ok) {
                     const fileContent = await fileResponse.blob(); // Or .blob() for binary files
                     retval.push({ name: item.name, content: fileContent });
+                }
+            } else if (item.type === 'dir') {
+                // Recursively get the contents of the directory
+                const subdirContents = await getPublicGithubRepoContents(
+                    owner,
+                    repo,
+                    item.path,
+                    ref,
+                );
+                if (subdirContents) {
+                    retval = retval.concat(subdirContents);
                 }
             }
         }
