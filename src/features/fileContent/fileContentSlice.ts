@@ -156,20 +156,20 @@ export const fetchRepoContents = createAsyncThunk(
     ) => {
         try {
             await handleLoadingWithSpinner(dispatch, async () => {
-                let { owner, repo, path } =
+                let { owner, repo, ref, path } =
                     url.match(/gist\.github\.com\/(?<owner>[^\/]+)\/(?<path>[a-f0-9]+)/)
                         ?.groups || {};
 
                 if (path) {
                     repo = 'gist';
                 } else {
-                    ({ owner, repo, path } =
+                    ({ owner, repo, ref, path } =
                         url.match(
-                            /github\.com\/(?<owner>[^\/]+)\/(?<repo>[^\/]+)\/?(?:blob\/[^/]+\/?)?(?<path>.*)/,
+                            /github\.com\/(?<owner>[^\/]+)\/(?<repo>[^\/]+)(?:\/(?:tree|blob)\/(?<ref>[^\/]+)\/(?<path>.*))?/,
                         )?.groups || {});
                 }
 
-                let data = await getPublicGithubContents(owner, repo, path);
+                let data = await getPublicGithubContents(owner, repo, path, ref);
                 if (!data) throw new Error('Failed to fetch repository contents');
 
                 const payload2: FileContentSetPayload = {

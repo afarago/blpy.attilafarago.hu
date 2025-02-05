@@ -1,10 +1,28 @@
+import Github from '@/assets/img/github.png';
+const GITHUB_API_URL = 'https://api.github.com';
+
+export async function getPublicGithubContents(
+    owner: string,
+    repo: string,
+    path: string,
+    ref: string,
+): Promise<{ name: string; content: Blob }[] | null> {
+    try {
+        if (repo === 'gist') {
+            return getPublicGistContents(path);
+        } else {
+            return getPublicGithubRepoContents(owner, repo, path, ref);
+        }
+    } catch (error) {
+        throw new Error(`Error getting public GitHub contents: ${error}`);
+    }
+}
+
 interface GistFile {
     filename: string;
     type: string;
-    language: string;
     raw_url: string;
-    size: number;
-    content: string; // This will hold the file content
+    content: string;
 }
 
 interface Gist {
@@ -12,26 +30,10 @@ interface Gist {
     // ... other Gist properties if needed
 }
 
-export async function getPublicGithubContents(
-    owner: string,
-    repo: string,
-    path: string = '',
-): Promise<{ name: string; content: Blob }[] | null> {
-    try {
-        if (repo === 'gist') {
-            return getPublicGistContents(path);
-        } else {
-            return getPublicGithubRepoContents(owner, repo, path);
-        }
-    } catch (error) {
-        throw new Error(`Error getting public GitHub contents: ${error}`);
-    }
-}
-
 async function getPublicGistContents(
     gistId: string,
 ): Promise<{ name: string; content: Blob }[] | null> {
-    const url = `https://api.github.com/gists/${gistId}`;
+    const url = `${GITHUB_API_URL}/gists/${gistId}`;
 
     const response = await fetch(url);
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -61,16 +63,26 @@ async function getPublicGistContents(
     return retval;
 }
 
+interface GithubFile {
+    name: string;
+    type: string;
+    download_url: string;
+    content: string;
+}
+
 async function getPublicGithubRepoContents(
     owner: string,
     repo: string,
     path: string,
+    ref: string,
 ): Promise<{ name: string; content: Blob }[] | null> {
-    let url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+    let url = `${GITHUB_API_URL}/repos/${owner}/${repo}/contents/${path ?? ''}${
+        ref ? `?ref=${ref}` : ''
+    }`;
 
     const response = await fetch(url);
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    const data = await response.json();
+    const data = (await response.json()) as GithubFile | GithubFile[];
 
     // Handle the data.  If 'path' is a directory, 'data' will be an array of file/directory objects.
     // If 'path' is a file, 'data' will be the file content (depending on the 'Accept' header - see below).
