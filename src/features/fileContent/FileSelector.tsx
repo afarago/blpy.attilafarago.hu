@@ -154,7 +154,7 @@ const FileSelector: React.FC<{
     return (
         <div className="file-selector">
             <Form.Group controlId="file-selector" className="d-flex flex-row">
-                <div className="d-flex w-100 position-relative">
+                <div className="d-flex w-100 position-relative flex-grow-1">
                     <Form.Control
                         type="file"
                         accept={ACCEPTED_EXTENSIONS}
@@ -164,7 +164,7 @@ const FileSelector: React.FC<{
                         onClick={handleFileBrowserClick}
                     />
                     {conversionResult && (
-                        <div className="file-selector-icons position-absolute end-0">
+                        <div className="file-selector-icons position-absolute end-0 d-none d-lg-block">
                             {conversionResult?.extra?.['blockly.slot'] !==
                                 undefined && (
                                 <CatIcon
@@ -181,19 +181,20 @@ const FileSelector: React.FC<{
                 </div>
                 {fileContent?.builtin && (
                     <Button
-                        className="btn-light mini-button"
+                        className="btn-light mini-button flex-grow-0 d-none d-lg-block"
                         onClick={handleExampleButtonDownloadClick}
                         title="Download example file"
                     >
-                        <Download />
+                        <Download scale={2} />
                     </Button>
                 )}
                 <Button
-                    className="btn-light mini-button"
+                    className="btn-light mini-button github-icon flex-grow-0"
                     title="Enter GitHub Repository URL"
                     onClick={handleOpenModal}
                 >
-                    <img src={Github} /> Open from GitHub
+                    <img src={Github} />{' '}
+                    <span className="d-none d-lg-block">Open from GitHub</span>
                 </Button>
             </Form.Group>
 

@@ -1,4 +1,8 @@
+@use '~bootstrap/scss/bootstrap';
 @import 'animate.css';
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins/breakpoints';
 
 $drop-highlight-color: cornflowerblue;
 $success-color: rgba(144, 238, 144, 1);
@@ -89,10 +93,22 @@ form,
         display: flex;
         align-items: center;
         justify-content: center;
-        img {
-            vertical-align: baseline;
-            height: 100%;
-            padding-right: 0.2em;
+
+        &.github-icon {
+            padding-inline: 0px;
+            margin-left: 0.2em;
+            img {
+                vertical-align: baseline;
+                height: 100%;
+            }
+            @include media-breakpoint-down(lg) {
+                width: 3em;
+            }
+            @include media-breakpoint-up(lg) {
+                padding-right: 0.2em;
+                // $lg is the Bootstrap large breakpoint
+                // width: 500px; // Or your desired width below lg
+            }
         }
     }
 }
