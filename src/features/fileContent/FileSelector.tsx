@@ -21,7 +21,6 @@ import {
 import { selectConversion } from '@/features/conversion/conversionSlice';
 import { useSelector } from 'react-redux';
 import { supportsExtension } from 'blocklypy';
-import { getFileExtension } from '@/utils/utils';
 import Github from '@/assets/img/github.png';
 import GitHubOpenDialog from './GitHubOpenDialog';
 
@@ -52,9 +51,7 @@ const FileSelector: React.FC<{
         if (target.files?.length) {
             let files = [...target.files].sort((a, b) => a.name.localeCompare(b.name));
             // filter files to only include supported extensions
-            files = files.filter((file) =>
-                supportsExtension(getFileExtension(file.name)),
-            );
+            files = files.filter((file) => supportsExtension(file.name));
 
             const content = {
                 files,

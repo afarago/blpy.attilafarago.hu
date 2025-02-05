@@ -3,7 +3,6 @@ import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '@/app/store';
 import { getPublicGithubContents } from './ghutils';
 import { supportsExtension } from 'blocklypy';
-import { getFileExtension } from '@/utils/utils';
 
 interface UploadedFileInfo {
     name: string;
@@ -41,7 +40,7 @@ const fileContentSlice = createSlice({
     reducers: {
         fileContentSet: (state, action: PayloadAction<FileContentSetPayload>) => {
             state.files = action.payload.files
-                .filter((file) => supportsExtension(getFileExtension(file.name)))
+                .filter((file) => supportsExtension(file.name))
                 .map((file) => ({
                     name: file.name,
                     size: file.size,
@@ -173,11 +172,7 @@ export const fetchRepoContents = createAsyncThunk(
                 if (!data) throw new Error('Failed to fetch repository contents');
 
                 const payload2: FileContentSetPayload = {
-                    files: data
-                        .filter((file) =>
-                            supportsExtension(getFileExtension(file.name)),
-                        )
-                        .map((item) => new File([item.content], item.name)),
+                    files: data.map((item) => new File([item.content], item.name)),
                     url,
                     builtin,
                 } satisfies FileContentSetPayload;

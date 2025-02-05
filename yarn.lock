@@ -2448,10 +2448,10 @@ bl@^4.0.3:
     inherits "^2.0.4"
     readable-stream "^3.4.0"
 
-blocklypy@^0.0.82:
-  version "0.0.82"
-  resolved "https://registry.yarnpkg.com/blocklypy/-/blocklypy-0.0.82.tgz#405409cb894821b242df8457aeddda3eca99c96f"
-  integrity sha512-xy0pIA0yfuecp2FXw22wKO75xiQIIwvXon1cnYh9mjKK6rUCO70LrlKBcu3jN7+dHC+w4ILVo12TPuC17An1CA==
+blocklypy@^0.0.83:
+  version "0.0.83"
+  resolved "https://registry.yarnpkg.com/blocklypy/-/blocklypy-0.0.83.tgz#2bf8d788f830ce739c404d8602984fe1929bbebf"
+  integrity sha512-MxtGr8l+hnZXJ9F+ZCQrR5j5MvXM5JdU2gsCWFtbB96dXfRYDw5Csw8U4itTIgmyQDFnX6lSBtOZ7JAGn+eThQ==
   dependencies:
     "@hpcc-js/wasm-graphviz" "^1.7.0"
     buffer "^6.0.3"

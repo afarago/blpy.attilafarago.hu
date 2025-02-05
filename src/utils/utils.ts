@@ -21,12 +21,7 @@ export function getFileExtension(fileName?: string): string {
     const dotIndex = fileName?.lastIndexOf('.');
 
     /* If there's no dot or it's the first character (hidden file), return an empty string */
-    if (
-        fileName === undefined ||
-        dotIndex === -1 ||
-        dotIndex === 0 ||
-        dotIndex === undefined
-    ) {
+    if (fileName === undefined || dotIndex === -1 || dotIndex === undefined) {
         return '';
     }
 

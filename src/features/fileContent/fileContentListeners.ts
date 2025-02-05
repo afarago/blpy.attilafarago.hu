@@ -1,6 +1,5 @@
 import {
     FileContentSetPayload,
-    fetchRepoContents,
     fileContentReset,
     fileContentSet,
     selectFileContent,
@@ -12,13 +11,11 @@ import {
     supportsExtension,
 } from 'blocklypy';
 import { conversionReset, conversionSet } from '@/features/conversion/conversionSlice';
-import { createListenerMiddleware, isAnyOf } from '@reduxjs/toolkit';
 import { selectTabs, toastContentSet } from '@/features/tabs/tabsSlice';
 
 import ReactGA from 'react-ga4';
 import { RootState } from '@/app/store';
-import fileContentSlice from './fileContentSlice';
-import { getFileExtension } from '@/utils/utils';
+import { createListenerMiddleware } from '@reduxjs/toolkit';
 
 const fileContentListenerMiddleware = createListenerMiddleware();
 
@@ -27,7 +24,7 @@ fileContentListenerMiddleware.startListening({
     effect: async (action, listenerApi) => {
         // const builtin = action.payload.builtin;
         const files = action.payload.files.filter((file) =>
-            supportsExtension(getFileExtension(file.name)),
+            supportsExtension(file.name),
         );
         const { additionalCommentsChecked } = selectTabs(
             listenerApi.getState() as RootState,
