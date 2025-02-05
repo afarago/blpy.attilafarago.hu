@@ -96,7 +96,6 @@ form,
 
         &.github-icon {
             padding-inline: 0px;
-            margin-left: 0.2em;
             img {
                 vertical-align: baseline;
                 height: 100%;
@@ -105,9 +104,9 @@ form,
                 width: 3em;
             }
             @include media-breakpoint-up(lg) {
-                padding-right: 0.2em;
-                // $lg is the Bootstrap large breakpoint
-                // width: 500px; // Or your desired width below lg
+                img {
+                    padding-right: 0.4em;
+                }
             }
         }
     }
