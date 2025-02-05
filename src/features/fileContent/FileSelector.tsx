@@ -15,36 +15,50 @@ import {
     fileContentSet,
     fileContentReset,
     selectFileContent,
+    fetchRepoContents,
+    fetchFileContent,
 } from '@/features/fileContent/fileContentSlice';
-import { selectConversionResult } from '@/features/conversion/conversionSlice';
+import { selectConversion } from '@/features/conversion/conversionSlice';
 import { useSelector } from 'react-redux';
+import { supportsExtension } from 'blocklypy';
+import { getFileExtension } from '@/utils/utils';
+import Github from '@/assets/img/github.png';
+import GitHubOpenDialog from './GitHubOpenDialog';
 
 const FileSelector: React.FC<{
     fileInputRef: React.RefObject<HTMLInputElement | null>;
 }> = ({ fileInputRef }) => {
     const dispatch = useAppDispatch();
 
-    const [filesCached, setFilesCached] = useState<File[] | undefined>();
+    const [showModal, setShowModal] = useState(false);
 
+    const [filesCached, setFilesCached] = useState<File[] | undefined>();
     const { additionalCommentsChecked } = useSelector(selectTabs);
-    const conversionResult = useSelector(selectConversionResult);
+    const { conversionResult } = useSelector(selectConversion);
     const fileContent = useSelector(selectFileContent);
+
+    const handleOpenModal = () => setShowModal(true);
+    const handleCloseModal = (url?: string) => {
+        setShowModal(false);
+        if (url) {
+            dispatch(fetchRepoContents({ url, builtin: false }));
+        }
+        // e.g. https://github.com/afarago/2025educup-masters-attilafarago
+        // e.g. https://gist.github.com/afarago/4718cffcbea66ca88f99be64fd912cd8
+    };
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const target = event.target as HTMLInputElement;
         if (target.files?.length) {
             let files = [...target.files].sort((a, b) => a.name.localeCompare(b.name));
             // filter files to only include supported extensions
-            if (files.length > 1) {
-                const files1 = files.filter((file) =>
-                    ACCEPTED_EXTENSIONS.includes(file.name.split('.').pop() || ''),
-                );
-                if (files1.length) files = files1;
-            }
+            files = files.filter((file) =>
+                supportsExtension(getFileExtension(file.name)),
+            );
+
             const content = {
                 files,
                 builtin: false,
-                additionalCommentsChecked,
             } satisfies FileContentSetPayload;
             dispatch(fileContentSet(content));
             target.blur();
@@ -82,20 +96,11 @@ const FileSelector: React.FC<{
         if (!path) return;
 
         try {
-            const response = await fetch(path);
-            const blob = await response.blob();
-            const fileName = path.split('/').pop();
-            if (!fileName) return;
-
-            const file = new File([blob], fileName);
-            const fcontent = {
-                files: [file],
-                builtin: true,
-                additionalCommentsChecked,
-            } satisfies FileContentSetPayload;
-
-            // setFilesCached([file]);
-            dispatch(fileContentSet(fcontent));
+            if (path.match('://.*github.com')) {
+                dispatch(fetchRepoContents({ url: path, builtin: true }));
+            } else {
+                dispatch(fetchFileContent({ url: path }));
+            }
         } catch (error) {
             console.error('::ERROR::', error);
         }
@@ -121,8 +126,8 @@ const FileSelector: React.FC<{
         if (filesCached?.length) {
             const fcontent = {
                 files: filesCached,
-                builtin: false,
-                additionalCommentsChecked,
+                builtin: fileContent.builtin, // just take current value into account, but do not react on this
+                url: fileContent.url, // just take current value into account, but do not react on this
             } satisfies FileContentSetPayload;
             dispatch(fileContentSet(fcontent));
         } else {
@@ -149,28 +154,31 @@ const FileSelector: React.FC<{
     return (
         <div className="file-selector">
             <Form.Group controlId="file-selector" className="d-flex flex-row">
-                <Form.Control
-                    type="file"
-                    accept={ACCEPTED_EXTENSIONS}
-                    multiple={true}
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                    onClick={handleFileBrowserClick}
-                />
-                {conversionResult && (
-                    <div className="file-selector-icons">
-                        {conversionResult?.extra?.['blockly.slot'] !== undefined && (
-                            <CatIcon
-                                slot={parseInt(
-                                    conversionResult?.extra?.['blockly.slot'],
-                                )}
-                            />
-                        )}
-                        {conversionResult?.filetype && (
-                            <DevTypeIcon devtype={conversionResult?.filetype} />
-                        )}
-                    </div>
-                )}
+                <div className="d-flex w-100 position-relative">
+                    <Form.Control
+                        type="file"
+                        accept={ACCEPTED_EXTENSIONS}
+                        multiple={true}
+                        ref={fileInputRef}
+                        onChange={handleFileChange}
+                        onClick={handleFileBrowserClick}
+                    />
+                    {conversionResult && (
+                        <div className="file-selector-icons position-absolute end-0">
+                            {conversionResult?.extra?.['blockly.slot'] !==
+                                undefined && (
+                                <CatIcon
+                                    slot={parseInt(
+                                        conversionResult?.extra?.['blockly.slot'],
+                                    )}
+                                />
+                            )}
+                            {conversionResult?.filetype && (
+                                <DevTypeIcon devtype={conversionResult?.filetype} />
+                            )}
+                        </div>
+                    )}
+                </div>
                 {fileContent?.builtin && (
                     <Button
                         className="btn-light mini-button"
@@ -180,7 +188,23 @@ const FileSelector: React.FC<{
                         <Download />
                     </Button>
                 )}
+                <Button
+                    className="btn-light mini-button"
+                    title="Enter GitHub Repository URL"
+                    onClick={handleOpenModal}
+                >
+                    <img src={Github} /> Open from GitHub
+                </Button>
             </Form.Group>
+
+            {/* url as info */}
+            {fileContent.url && (
+                <div className="small">
+                    <a href={fileContent.url} target="_blank">
+                        {fileContent.url}
+                    </a>
+                </div>
+            )}
 
             {/* buttons for builtin example files */}
             <div className="file-examples col-sm-12 m-0 p-0 pt-1">
@@ -200,13 +224,23 @@ const FileSelector: React.FC<{
                                     className="example-content-button bg-light text-dark"
                                 >
                                     {example.label}
-                                    <DevTypeIcon devtype={example.icon} />
+                                    {typeof example.icon === 'string' ? (
+                                        <DevTypeIcon devtype={example.icon} />
+                                    ) : (
+                                        example.icon
+                                    )}
                                 </Badge>
                             </div>
                         ))}
                     </div>
                 </small>
             </div>
+
+            <GitHubOpenDialog
+                show={showModal}
+                handleClose={handleCloseModal}
+                initialUrl={fileContent.url}
+            />
         </div>
     );
 };
@@ -248,5 +282,15 @@ const EXAMPLES = [
         file: '/samples/demo_cityshaper_cranemission.py',
         label: 'Pybricks Python',
         icon: 'pybricks',
+    },
+    {
+        file: 'https://github.com/afarago/2025educup-masters-attilafarago',
+        label: 'Github Public Repo',
+        icon: <img src={Github} />,
+    },
+    {
+        file: 'https://gist.github.com/afarago/4718cffcbea66ca88f99be64fd912cd8',
+        label: 'Github Gist',
+        icon: <img src={Github} />,
     },
 ];

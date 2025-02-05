@@ -1,46 +1,51 @@
 import {
     FileContentSetPayload,
+    fetchRepoContents,
     fileContentReset,
     fileContentSet,
+    selectFileContent,
 } from '@/features/fileContent/fileContentSlice';
 import {
     IPyConverterFile,
     IPyConverterOptions,
     convertProjectToPython,
+    supportsExtension,
 } from 'blocklypy';
 import { conversionReset, conversionSet } from '@/features/conversion/conversionSlice';
+import { createListenerMiddleware, isAnyOf } from '@reduxjs/toolkit';
+import { selectTabs, toastContentSet } from '@/features/tabs/tabsSlice';
 
 import ReactGA from 'react-ga4';
-import { createListenerMiddleware } from '@reduxjs/toolkit';
-import { toastContentSet } from '@/features/tabs/tabsSlice';
+import { RootState } from '@/app/store';
+import fileContentSlice from './fileContentSlice';
+import { getFileExtension } from '@/utils/utils';
 
 const fileContentListenerMiddleware = createListenerMiddleware();
 
 fileContentListenerMiddleware.startListening({
     actionCreator: fileContentSet,
     effect: async (action, listenerApi) => {
-        const files = action.payload.files;
-        const builtin = action.payload.builtin;
-        const additionalCommentsChecked = action.payload.additionalCommentsChecked;
+        // const builtin = action.payload.builtin;
+        const files = action.payload.files.filter((file) =>
+            supportsExtension(getFileExtension(file.name)),
+        );
+        const { additionalCommentsChecked } = selectTabs(
+            listenerApi.getState() as RootState,
+        );
+        const { builtin } = selectFileContent(listenerApi.getState() as RootState);
 
         // allow components to cache files, to re-convert them
         notifyComponent(action.payload);
 
         try {
-            const inputs: IPyConverterFile[] = [];
-            for (const file of files) {
-                const buffer = await file.arrayBuffer();
-                const date = builtin ? undefined : new Date(file.lastModified);
-                // directory picker adds webkitRelativePath, better visibility for dependency graph
-                const name = (file as any).webkitRelativePath || file.name;
-
-                inputs.push({
-                    name,
-                    buffer,
+            const inputs: IPyConverterFile[] = await Promise.all(
+                files.map(async (file) => ({
+                    name: (file as any).webkitRelativePath || file.name,
+                    buffer: await file.arrayBuffer(),
                     size: file.size,
-                    date,
-                });
-            }
+                    date: builtin ? undefined : new Date(file.lastModified),
+                })),
+            );
 
             const options: IPyConverterOptions = {
                 debug: {
@@ -70,7 +75,7 @@ fileContentListenerMiddleware.startListening({
             delete (retval as unknown as any).lastModifiedDate;
 
             listenerApi.dispatch(toastContentSet(undefined));
-            listenerApi.dispatch(conversionSet({ content: retval }));
+            listenerApi.dispatch(conversionSet(retval));
         } catch (error) {
             ReactGA.send({
                 hitType: 'event',

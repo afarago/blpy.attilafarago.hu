@@ -1,13 +1,17 @@
 import React, { useCallback, useRef, useState } from 'react';
+import {
+    fileContentSet,
+    selectFileContent,
+} from '@/features/fileContent/fileContentSlice';
 import { selectTabs, toastContentSet } from '@/features/tabs/tabsSlice';
 
 import FileSelector from '@/features/fileContent/FileSelector';
 import Footer from '@/features/footer/Footer';
 import Header from '@/features/header/Header';
 import MainTab from '@/features/tabs/TabMain';
-import { Toast } from 'react-bootstrap';
+import TabLoading from './features/tabs/TabLoading';
+import Toast from 'react-bootstrap/Toast';
 import WelcomeTab from '@/features/welcome/TabWelcome';
-import { fileContentSet } from '@/features/fileContent/fileContentSlice';
 import { useAppDispatch } from '@/app/hooks';
 import { useSelector } from 'react-redux';
 
@@ -47,6 +51,7 @@ const AppContent: React.FC = () => {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const { additionalCommentsChecked, toastContent, fullScreen } =
         useSelector(selectTabs);
+    const fileContent = useSelector(selectFileContent);
 
     const { isDragging, handleDragOver, handleDragLeave, handleDrop } = useDragAndDrop(
         (files: File[]) => {
@@ -90,15 +95,17 @@ const AppContent: React.FC = () => {
                         onDragLeave={handleDragLeave}
                         onDrop={handleDrop}
                         className={
-                            'main-content dropzone pb-3' +
+                            'main-content dropzone pb-3 position-relative' +
                             (isDragging ? ' drop-active' : '')
                         }
                         aria-dropeffect="move"
                         role="presentation"
                     >
                         <FileSelector fileInputRef={fileInputRef}></FileSelector>
-                        <WelcomeTab fileInputRef={fileInputRef}></WelcomeTab>
-                        <MainTab></MainTab>
+
+                        {fileContent.showSpinner && <TabLoading />}
+                        <WelcomeTab fileInputRef={fileInputRef} />
+                        <MainTab />
                     </div>
                 </form>
             </div>

@@ -16,3 +16,19 @@ export function findLinesByBlockId(lines: string[], blockId: string): string[] {
 
     return result;
 }
+
+export function getFileExtension(fileName?: string): string {
+    const dotIndex = fileName?.lastIndexOf('.');
+
+    /* If there's no dot or it's the first character (hidden file), return an empty string */
+    if (
+        fileName === undefined ||
+        dotIndex === -1 ||
+        dotIndex === 0 ||
+        dotIndex === undefined
+    ) {
+        return '';
+    }
+
+    return fileName.substring(dotIndex); /* Extract extension with the dot */
+}

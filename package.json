@@ -30,6 +30,7 @@
         "react-ga4": "^2.1.0",
         "react-hotkeys-hook": "^4.6.1",
         "react-redux": "^9.2.0",
+        "react-router-dom": "^7.1.5",
         "react-syntax-highlighter": "^15.6.1",
         "svg-pan-zoom": "^3.6.2",
         "ts-graphviz": "^2.1.5",

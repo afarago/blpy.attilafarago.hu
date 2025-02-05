@@ -3,17 +3,16 @@ import React, { useEffect } from 'react';
 
 import Button from 'react-bootstrap/Button';
 import CallGraph from '@/features/graph/CallGraph';
+// import SyntaxHighlighter from 'react-syntax-highlighter';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { Tab } from 'react-bootstrap';
+import Tab from 'react-bootstrap/Tab';
 import less from 'react-syntax-highlighter/dist/esm/languages/hljs/less';
 import python from 'react-syntax-highlighter/dist/esm/languages/hljs/python';
-import { selectConversionResult } from '@/features/conversion/conversionSlice';
+import { selectSvgContentData } from '@/features/conversion/conversionSlice';
 import { selectTabs } from './tabsSlice';
 import svgPanZoom from 'svg-pan-zoom';
 import { useSelector } from 'react-redux';
 import { vs } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-
-// import SyntaxHighlighter from 'react-syntax-highlighter';
 
 SyntaxHighlighter.registerLanguage('python', python);
 SyntaxHighlighter.registerLanguage('less', less);
@@ -42,7 +41,7 @@ const TabContents: React.FC<TabContentsProps> = ({
     tabElems,
 }) => {
     const { copying } = useSelector(selectTabs);
-    const svgContentData = useSelector(selectConversionResult);
+    const svgContentData = useSelector(selectSvgContentData);
 
     const REFMAP = {
         [TabKey.PREVIEW]: { ref: svgRef, ext: 'preview' },
@@ -86,85 +85,81 @@ const TabContents: React.FC<TabContentsProps> = ({
         copying,
     ]);
 
-    function createTabElemContent() {
-        const elem = tabElems.find((elem) => genkey === elem.key);
-        if (!elem) return null;
-
-        {
-            let subelem: ITabElem | undefined = elem;
-            let code = elem.code;
-            let index = 0;
-            if (elem.children) {
-                index = elem.children.findIndex((elem) => elem.name === gensubkey);
-                subelem = elem.children[index];
-                code = subelem?.code;
-            }
-
-            return (
-                <>
-                    {/* Header for the multi-file setup - filename - show only when in PYCODE mode */}
-                    {genkey === TabKey.PYCODE && index === 0 && elem.children && (
-                        <div
-                            className={
-                                'multi-file-header bg-secondary text-white small' +
-                                (selectedTabkey === TabKey.PYCODE ? '' : ' d-none')
-                            }
-                        >
-                            {elem.children.map((child2, index2) => (
-                                <Button
-                                    size="sm"
-                                    className={
-                                        child2.key === selectedSubTabkey
-                                            ? 'active'
-                                            : 'border-end border-start'
-                                    }
-                                    variant="secondary"
-                                    key={child2.key}
-                                    onClick={() => setSelectedSubTabkey(child2.key)}
-                                >
-                                    {child2?.name}
-                                </Button>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Content */}
-                    <Tab.Pane
-                        eventKey={genkey}
-                        className={
-                            `p-4 content-${genkey}` +
-                            (!elem.children || selectedSubTabkey === gensubkey
-                                ? ''
-                                : ' d-none')
-                        }
-                        key={genkey}
-                    >
-                        {(genkey === TabKey.PYCODE ||
-                            genkey === TabKey.PLAINCODE ||
-                            genkey === TabKey.EV3BDECOMPILED) && (
-                            <SyntaxHighlighter
-                                style={vs}
-                                language={genkey === TabKey.PYCODE ? 'python' : 'less'}
-                            >
-                                {code ?? ''}
-                            </SyntaxHighlighter>
-                        )}
-                        {genkey === TabKey.CALLGRAPH && <CallGraph ref={graphRef} />}
-                        {genkey === TabKey.PREVIEW && (
-                            <div
-                                ref={svgRef}
-                                dangerouslySetInnerHTML={{
-                                    __html: svgContentData ?? '',
-                                }}
-                            />
-                        )}
-                    </Tab.Pane>
-                </>
-            );
+    const elem = tabElems.find((elem) => elem.key === selectedTabkey);
+    function createTabElemContent(elem: ITabElem) {
+        let subelem: ITabElem | undefined = elem;
+        let code = elem.code;
+        let index = 0;
+        if (elem.children) {
+            index = elem.children.findIndex((elem) => elem.name === gensubkey);
+            subelem = elem.children[index];
+            code = subelem?.code;
         }
+
+        return (
+            <>
+                {/* Header for the multi-file setup - filename - show only when in PYCODE mode */}
+                {genkey === TabKey.PYCODE && index === 0 && elem.children && (
+                    <div
+                        className={
+                            'multi-file-header bg-secondary text-white small' +
+                            (selectedTabkey === TabKey.PYCODE ? '' : ' d-none')
+                        }
+                    >
+                        {elem.children.map((child2, index2) => (
+                            <Button
+                                size="sm"
+                                className={
+                                    child2.key === selectedSubTabkey
+                                        ? 'active'
+                                        : 'border-end border-start'
+                                }
+                                variant="secondary"
+                                key={child2.key}
+                                onClick={() => setSelectedSubTabkey(child2.key)}
+                            >
+                                {child2?.name}
+                            </Button>
+                        ))}
+                    </div>
+                )}
+
+                {/* Content */}
+                <Tab.Pane
+                    eventKey={genkey}
+                    className={
+                        `p-4 content-${genkey}` +
+                        (!elem.children || selectedSubTabkey === gensubkey
+                            ? ''
+                            : ' d-none')
+                    }
+                    key={genkey}
+                >
+                    {(genkey === TabKey.PYCODE ||
+                        genkey === TabKey.PLAINCODE ||
+                        genkey === TabKey.EV3BDECOMPILED) && (
+                        <SyntaxHighlighter
+                            style={vs}
+                            language={genkey === TabKey.PYCODE ? 'python' : 'less'}
+                        >
+                            {code ?? ''}
+                        </SyntaxHighlighter>
+                    )}
+                    {genkey === TabKey.CALLGRAPH && <CallGraph ref={graphRef} />}
+                    {genkey === TabKey.PREVIEW && (
+                        <div
+                            ref={svgRef}
+                            dangerouslySetInnerHTML={{
+                                __html: svgContentData ?? '',
+                            }}
+                        />
+                    )}
+                </Tab.Pane>
+            </>
+        );
     }
 
-    return createTabElemContent();
+    if (elem) return createTabElemContent(elem);
 };
 
 export default TabContents;

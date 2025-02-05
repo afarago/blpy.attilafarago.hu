@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 
 import { ACCEPTED_EXTENSIONS } from '@/utils/constants';
 import { DevTypeIcon } from '@/features/icons/DevTypeIcon';
-import { selectConversionResult } from '@/features/conversion/conversionSlice';
+import { selectConversion } from '@/features/conversion/conversionSlice';
 import { useSelector } from 'react-redux';
 
 const icons: (React.ReactElement | string)[] = [
@@ -20,7 +20,7 @@ const icons: (React.ReactElement | string)[] = [
 const WelcomeTab: React.FC<{
     fileInputRef: React.RefObject<HTMLInputElement | null>;
 }> = ({ fileInputRef }) => {
-    const conversionResult = useSelector(selectConversionResult);
+    const { conversionResult } = useSelector(selectConversion);
 
     const handleCloudIconClick = useCallback(
         (event: React.MouseEvent<HTMLButtonElement>): void => {
@@ -38,10 +38,7 @@ const WelcomeTab: React.FC<{
                         <button onClick={handleCloudIconClick}>
                             <CloudArrowUpFill className="drop-cloud-icon" />
                         </button>
-                        <div
-                            className="mb-4 d-flex flex-column align-items-center"
-                            style={{ maxWidth: '30em' }}
-                        >
+                        <div className="mb-4 mx-auto" style={{ maxWidth: '30em' }}>
                             Imagine a world where magical unicorns transform your LEGO
                             blockly programs into Python code!
                         </div>
@@ -50,6 +47,7 @@ const WelcomeTab: React.FC<{
                                 <i>
                                     Yes, that means all{' '}
                                     {ACCEPTED_EXTENSIONS.replaceAll('.', ' ')} files{' '}
+                                    from your computer and from github
                                 </i>
                             </small>
                             <br />

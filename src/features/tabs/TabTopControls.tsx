@@ -15,11 +15,11 @@ import {
     selectTabs,
 } from '@/features/tabs/tabsSlice';
 import {
-    selectConversionResult,
+    selectConversion,
     selectSvgContentData,
 } from '@/features/conversion/conversionSlice';
 
-import { Form } from 'react-bootstrap';
+import Form from 'react-bootstrap/Form';
 import domtoimage from 'dom-to-image';
 import { selectFileContent } from '@/features/fileContent/fileContentSlice';
 import { useAppDispatch } from '@/app/hooks';
@@ -47,7 +47,7 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
 }) => {
     const dispatch = useAppDispatch();
     const { fullScreen, copying, additionalCommentsChecked } = useSelector(selectTabs);
-    const conversionResult = useSelector(selectConversionResult);
+    const { conversionResult } = useSelector(selectConversion);
     const svgContentData = useSelector(selectSvgContentData);
     const fileContent = useSelector(selectFileContent);
 

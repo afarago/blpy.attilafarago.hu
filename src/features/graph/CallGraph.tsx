@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 import { Graphviz } from '@hpcc-js/wasm-graphviz';
-import { selectConversionResult } from '@/features/conversion/conversionSlice';
+import { selectConversion } from '@/features/conversion/conversionSlice';
 import { useSelector } from 'react-redux';
 
 // const removeSvgDimensions = (svgString: string): string => {
@@ -31,7 +31,7 @@ const selSome = (
 };
 
 const CallGraph = forwardRef<HTMLDivElement>(({}, ref) => {
-    const conversionResult = useSelector(selectConversionResult);
+    const { conversionResult } = useSelector(selectConversion);
 
     const localRef = useRef<HTMLDivElement>(null);
     useImperativeHandle(ref, () => localRef.current as HTMLDivElement);

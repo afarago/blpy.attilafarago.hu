@@ -1,6 +1,8 @@
 import './App.scss';
 
-import AppContent from './AppContent';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+
+import Home from './pages/Home';
 import React from 'react';
 import ReactGA from 'react-ga4';
 
@@ -10,9 +12,11 @@ ReactGA.initialize(GA_TRACKING_ID);
 
 const App: React.FC = () => {
     return (
-        <div className="App">
-            <AppContent />
-        </div>
+        <Router>
+            <Routes>
+                <Route path="/" element={<Home />} />
+            </Routes>
+        </Router>
     );
 };
 

@@ -15,8 +15,9 @@ const store = configureStore({
             serializableCheck: {
                 ignoredActions: [
                     'fileContent/fileContentSet',
+                    'fileContent/fetchRepoContents/fulfilled',
                     'conversion/conversionSet',
-                ], //!! TODO later //TODO: recheck
+                ], //!! later //TODO: recheck
                 ignoredPaths: [
                     'fileContent.files',
                     'conversion.payload.content.topLevelStacks',

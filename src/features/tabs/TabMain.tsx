@@ -9,7 +9,7 @@ import {
 } from 'react-bootstrap-icons';
 
 import {
-    selectConversionResult,
+    selectConversion,
     selectRbfDecompileData,
     selectSvgContentData,
 } from '@/features/conversion/conversionSlice';
@@ -40,7 +40,7 @@ export interface ITabElem {
 }
 
 const TabMain: React.FC = () => {
-    const conversionResult = useSelector(selectConversionResult);
+    const { conversionResult } = useSelector(selectConversion);
     const svgContentData = useSelector(selectSvgContentData);
     const rbfDecompileData = useSelector(selectRbfDecompileData);
 
