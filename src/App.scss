@@ -115,15 +115,6 @@ form,
     }
 }
 
-.code pre {
-    // .flex-column
-    flex-direction: column !important;
-    // .flex-fill
-    flex: 1 1 auto !important;
-    // .d-flex
-    display: flex !important;
-}
-
 button {
     border: none;
     background: none;
@@ -383,15 +374,10 @@ button {
     overflow: hidden;
 }
 
-.code {
-    height: 100%;
-
-    pre {
-        width: 100%;
-        min-height: 100%;
-        border: none;
-        white-space: pre;
-        margin-bottom: 0;
+pre {
+    line-height: 1em;
+    code {
+        font-size: 0.8em !important;
     }
 }
 
