@@ -1,3 +1,5 @@
+import { supportsExtension } from 'blocklypy';
+
 const GITHUB_API_URL = 'https://api.github.com';
 
 export async function getPublicGithubContents(
@@ -39,23 +41,25 @@ async function getPublicGistContents(
     const data = await response.json();
 
     const data1 = await Promise.all(
-        Object.values((data as Gist).files).map(async (gistfile) => {
-            let content: Blob | null = null;
+        Object.values((data as Gist).files)
+            .filter((gistfile) => supportsExtension(gistfile.filename))
+            .map(async (gistfile) => {
+                let content: Blob | null = null;
 
-            if (gistfile.content) {
-                content = new Blob([gistfile.content]);
-            } else {
-                const contentResponse = await fetch(gistfile.raw_url);
-                if (contentResponse.ok) {
-                    content = await contentResponse.blob();
+                if (gistfile.content) {
+                    content = new Blob([gistfile.content]);
+                } else {
+                    const contentResponse = await fetch(gistfile.raw_url);
+                    if (contentResponse.ok) {
+                        content = await contentResponse.blob();
+                    }
                 }
-            }
 
-            if (content) {
-                const name = gistfile.filename;
-                return { name, content };
-            }
-        }),
+                if (content) {
+                    const name = gistfile.filename;
+                    return { name, content };
+                }
+            }),
     );
 
     const retval = data1.filter((item) => !!item);
@@ -91,6 +95,8 @@ async function getPublicGithubRepoContents(
     if (Array.isArray(data)) {
         for (const item of data) {
             if (item.type === 'file') {
+                if (!supportsExtension(item.name)) continue;
+
                 // To get the actual file content, you'd make another fetch to item.download_url
                 const fileResponse = await fetch(item.download_url);
                 if (fileResponse.ok) {
@@ -105,9 +111,7 @@ async function getPublicGithubRepoContents(
                     item.path,
                     ref,
                 );
-                if (subdirContents) {
-                    retval = retval.concat(subdirContents);
-                }
+                if (subdirContents) retval = retval.concat(subdirContents);
             }
         }
         return retval;
