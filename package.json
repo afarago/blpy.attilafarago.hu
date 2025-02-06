@@ -1,8 +1,9 @@
 {
     "name": "blocklypy-web",
     "private": true,
-    "version": "0.0.0",
+    "version": "1.0.0",
     "type": "module",
+    "description": "BlocklyPy: SPIKE to Pybricks - A web-app for converting LEGO blockly programs to Python code",
     "scripts": {
         "dev": "vite",
         "build": "vite build",
@@ -70,6 +71,7 @@
         "ts-node": "^10.9.2",
         "typescript": "^5.7.3",
         "vite": "^6.0.11",
+        "vite-plugin-pwa": "^0.21.1",
         "vite-plugin-svgr": "^4.3.0"
     }
 }

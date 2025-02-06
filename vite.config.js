@@ -1,5 +1,6 @@
 import * as path from 'path';
 
+import { VitePWA } from 'vite-plugin-pwa';
 import { defineConfig } from 'vite';
 import { fileURLToPath } from 'url';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
@@ -10,7 +11,6 @@ import svgr from 'vite-plugin-svgr';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -23,16 +23,17 @@ export default defineConfig({
         },
     },
     assetsInclude: [
+        '**/*.llsp',
         '**/*.llsp3',
         '**/*.lms',
-        '**/*.ev3',
-        '**/*.rbf',
         '**/*.lmsp',
+        '**/*.ev3',
+        '**/*.ev3m',
+        '**/*.rbf',
         '**/*.py',
         '**/*.zip',
     ],
     server: {
-        //   port: 8080,
         hot: true,
     },
     plugins: [
@@ -42,20 +43,45 @@ export default defineConfig({
         svgr({
             svgrOptions: {
                 plugins: ['@svgr/plugin-svgo', '@svgr/plugin-jsx'],
-                // esbuild options, to transform jsx to js
-                esbuildOptions: {
-                    // ...
-                },
                 svgoConfig: {
                     floatPrecision: 2,
                 },
-                // A minimatch pattern, or array of patterns, which specifies the files in the build the plugin should include.
                 include: '**/*.svg?react',
-
-                //  A minimatch pattern, or array of patterns, which specifies the files in the build the plugin should ignore. By default no files are ignored.
                 exclude: '',
             },
-            // ...
+        }),
+        VitePWA({
+            registerType: 'autoUpdate',
+            workbox: {
+                globPatterns: [
+                    '**/*.{js,css,html,ico,png,svg,llsp,llsp3,lms,lmsp,ev3,ev3m,rbf,py,zip}',
+                ],
+            },
+            devOptions: {
+                enabled: true,
+            },
+            includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
+            manifest: {
+                name: '',
+                short_name: 'BlocklyPy PWA',
+                description:
+                    'BlocklyPy: SPIKE to Pybricks - A web-app for converting LEGO blockly programs to Python code',
+                theme_color: '#ffffff',
+                background_color: '#ffffff',
+                display: 'standalone',
+                icons: [
+                    {
+                        src: '/favicon/android-chrome-192x192.png',
+                        sizes: '192x192',
+                        type: 'image/png',
+                    },
+                    {
+                        src: '/favicon/android-chrome-512x512.png',
+                        sizes: '512x512',
+                        type: 'image/png',
+                    },
+                ],
+            },
         }),
     ],
     build: {
