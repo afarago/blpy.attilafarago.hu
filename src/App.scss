@@ -154,6 +154,7 @@ button {
         right: 0;
         font-size: 1.3em;
         padding-right: 0.5em;
+        z-index: -1;
     }
 }
 
@@ -364,6 +365,12 @@ button {
     &:hover {
         opacity: 1;
         animation: fadeIn 0.5s ease-in-out forwards;
+    }
+
+    svg {
+        max-height: 80vh;
+        right: 1em;
+        position: absolute;
     }
 }
 

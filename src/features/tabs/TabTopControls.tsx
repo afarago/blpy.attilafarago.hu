@@ -257,7 +257,7 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
         svgContentData &&
         (selectedTabkey === TabKey.PYCODE || selectedTabkey === TabKey.PLAINCODE) && (
             <div
-                className="svg-minimap mt-5 px-3 float-right"
+                className="svg-minimap mt-5 px-3 float-right d-none d-lg-block"
                 dangerouslySetInnerHTML={{
                     __html: svgContentData || '',
                 }}
