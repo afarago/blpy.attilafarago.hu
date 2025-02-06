@@ -6,6 +6,8 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 
+// import { visualizer } from 'rollup-plugin-visualizer';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -35,6 +37,7 @@ export default defineConfig({
     },
     plugins: [
         react(),
+        // visualizer(),
         nodeResolve(),
         svgr({
             svgrOptions: {

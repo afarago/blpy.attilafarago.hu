@@ -1,8 +1,5 @@
-@use '~bootstrap/scss/bootstrap';
-@import 'animate.css';
-@import '~bootstrap/scss/functions';
-@import '~bootstrap/scss/variables';
-@import '~bootstrap/scss/mixins/breakpoints';
+@use '~bootstrap/scss/bootstrap' as *;
+@use 'animate.css';
 
 $drop-highlight-color: cornflowerblue;
 $success-color: rgba(144, 238, 144, 1);
