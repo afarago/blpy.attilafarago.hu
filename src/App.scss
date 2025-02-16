@@ -474,3 +474,25 @@ pre {
     z-index: 1000; /* Ensure it's above other content */
     backdrop-filter: blur(2px);
 }
+
+.autocomplete-dropdown {
+    position: 'absolute';
+    top: '100%';
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    max-height: '200px';
+    overflow-y: 'auto';
+    .dropdown-item {
+        font-size: small;
+        img {
+            height: 3em;
+            width: 3em;
+            vertical-align: baseline;
+            border-radius: 100%;
+        }
+        svg {
+            vertical-align: baseline;
+        }
+    }
+}

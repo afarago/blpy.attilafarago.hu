@@ -1,8 +1,9 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import { RootState } from '@/app/store';
-import { getPublicGithubContents } from './ghutils';
+import { getGithubContents } from '@/features/github/ghutils';
 import { supportsExtension } from 'blocklypy';
+import axios from 'axios';
 
 interface UploadedFileInfo {
     name: string;
@@ -130,8 +131,8 @@ export const fetchFileContent = createAsyncThunk(
             await handleLoadingWithSpinner(dispatch, async () => {
                 if (!url) throw new Error('No example file URL provided');
 
-                const response = await fetch(url);
-                const blob = await response.blob();
+                const response = await axios.get(url, { responseType: 'blob' });
+                const blob = response.data;
                 const fileName = url.split('/').pop() ?? url;
                 const files = [new File([blob], fileName)];
                 const payload: FileContentSetPayload = {
@@ -150,7 +151,11 @@ export const fetchFileContent = createAsyncThunk(
 export const fetchRepoContents = createAsyncThunk(
     'fileContent/fetchRepoContents',
     async (
-        { url, builtin }: { url: string; builtin: boolean },
+        {
+            url,
+            builtin,
+            token,
+        }: { url: string; builtin: boolean; token: string | null },
         { dispatch, rejectWithValue },
     ) => {
         try {
@@ -164,11 +169,11 @@ export const fetchRepoContents = createAsyncThunk(
                 } else {
                     ({ owner, repo, ref, path } =
                         url.match(
-                            /github\.com\/(?<owner>[^\/]+)\/(?<repo>[^\/]+)(?:\/(?:tree|blob)\/(?<ref>[^\/]+)\/(?<path>.*))?/,
+                            /github\.com\/(?:repos\/)?(?<owner>[^\/]+)\/(?<repo>[^\/]+)(?:\/(?:tree|blob)\/(?<ref>[^\/]+)\/(?<path>.*))?/,
                         )?.groups || {});
                 }
 
-                let data = await getPublicGithubContents(owner, repo, path, ref);
+                let data = await getGithubContents(owner, repo, path, ref, token);
                 if (!data) throw new Error('Failed to fetch repository contents');
 
                 const payload2: FileContentSetPayload = {

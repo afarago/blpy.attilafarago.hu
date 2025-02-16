@@ -1,0 +1,10 @@
+[build]
+  command = "yarn build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[dev]
+  framework = "vite"
+  command = "yarn dev"
+  port = 5174
+  

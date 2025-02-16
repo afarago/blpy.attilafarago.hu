@@ -6,20 +6,24 @@
     "description": "BlocklyPy: SPIKE to Pybricks - A web-app for converting LEGO blockly programs to Python code",
     "scripts": {
         "dev": "vite",
+        "dev2": "VITE_NETLIFY=true netlify dev",
         "build": "vite build",
         "lint": "eslint .",
         "preview": "vite preview",
         "test": "jest",
-        "blpy": "yarn add blocklypy@latest --force"
+        "blpy": "yarn add blocklypy@latest --force",
+        "deploy": "VITE_NETLIFY=true netlify build && netlify deploy --prod"
     },
     "dependencies": {
         "@hpcc-js/wasm-graphviz": "^1.7.0",
+        "@netlify/functions": "^3.0.0",
         "@popperjs/core": "^2.11.8",
         "@reduxjs/toolkit": "^2.5.1",
         "@svgr/core": "^8.1.0",
         "@svgr/plugin-jsx": "^8.1.0",
         "@svgr/plugin-svgo": "^8.1.0",
         "animate.css": "^4.1.1",
+        "axios": "^1.7.9",
         "blocklypy": "^0.0.85",
         "bootstrap": "^5.3.3",
         "bootstrap-icons": "^1.11.3",
@@ -67,6 +71,7 @@
         "identity-obj-proxy": "^3.0.0",
         "jest": "^29.7.0",
         "jest-environment-jsdom": "^29.7.0",
+        "netlify-cli": "^18.0.4",
         "sass": "^1.83.0",
         "sass-embedded": "^1.83.0",
         "ts-jest": "^29.2.5",

@@ -1,3 +1,4 @@
+import authReducer from '@/features/github/githubSlice';
 import { configureStore } from '@reduxjs/toolkit';
 import conversionReducer from '@/features/conversion/conversionSlice';
 import fileContentListenerMiddleware from '@/features/fileContent/fileContentListeners';
@@ -9,6 +10,7 @@ const store = configureStore({
         fileContent: fileContentReducer,
         conversion: conversionReducer,
         tabs: tabsReducer,
+        auth: authReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

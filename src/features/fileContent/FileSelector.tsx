@@ -22,7 +22,8 @@ import { selectConversion } from '@/features/conversion/conversionSlice';
 import { useSelector } from 'react-redux';
 import { supportsExtension } from 'blocklypy';
 import Github from '@/assets/img/github.png';
-import GitHubOpenDialog from './GitHubOpenDialog';
+import GitHubOpenDialog from '@/features/github/GitHubOpenDialog';
+import { selectGithubAuthToken } from '../github/githubSlice';
 
 const FileSelector: React.FC<{
     fileInputRef: React.RefObject<HTMLInputElement | null>;
@@ -35,12 +36,15 @@ const FileSelector: React.FC<{
     const { additionalCommentsChecked } = useSelector(selectTabs);
     const { conversionResult } = useSelector(selectConversion);
     const fileContent = useSelector(selectFileContent);
+    const githubAuthToken = useSelector(selectGithubAuthToken);
 
     const handleOpenModal = () => setShowModal(true);
     const handleCloseModal = (url?: string) => {
         setShowModal(false);
         if (url) {
-            dispatch(fetchRepoContents({ url, builtin: false }));
+            dispatch(
+                fetchRepoContents({ url, builtin: false, token: githubAuthToken }),
+            );
         }
         // e.g. https://github.com/afarago/2025educup-masters-attilafarago
         // e.g. https://gist.github.com/afarago/4718cffcbea66ca88f99be64fd912cd8
@@ -92,7 +96,13 @@ const FileSelector: React.FC<{
 
         try {
             if (path.match('://.*github.com')) {
-                dispatch(fetchRepoContents({ url: path, builtin: true }));
+                dispatch(
+                    fetchRepoContents({
+                        url: path,
+                        builtin: true,
+                        token: githubAuthToken,
+                    }),
+                );
             } else {
                 dispatch(fetchFileContent({ url: path }));
             }

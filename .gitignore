@@ -8,3 +8,7 @@ dev-dist/
 testdata/
 temp/
 * copy.json
+
+*.local
+# Local Netlify folder
+.netlify
