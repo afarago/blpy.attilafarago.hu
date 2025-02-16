@@ -173,7 +173,17 @@ export const fetchRepoContents = createAsyncThunk(
                         )?.groups || {});
                 }
 
-                let data = await getGithubContents(owner, repo, path, ref, token);
+                const isNetlify =
+                    (import.meta as any).env.VITE_NETLIFY?.toString() === 'true';
+                const useBackendProxy = isNetlify;
+                let data = await getGithubContents(
+                    owner,
+                    repo,
+                    path,
+                    ref,
+                    token,
+                    useBackendProxy,
+                );
                 if (!data) throw new Error('Failed to fetch repository contents');
 
                 const payload2: FileContentSetPayload = {

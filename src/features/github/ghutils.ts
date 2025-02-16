@@ -38,12 +38,20 @@ export async function getGithubContents(
     path: string,
     ref: string,
     token: string | null,
+    useBackendProxy: boolean,
 ): Promise<{ name: string; content: Blob }[] | null> {
     try {
         if (repo === 'gist') {
             return getGistContents(path, token);
         } else {
-            return getGithubRepoContents(owner, repo, path, ref, token);
+            return getGithubRepoContents(
+                owner,
+                repo,
+                path,
+                ref,
+                token,
+                useBackendProxy,
+            );
         }
     } catch (error) {
         throw new Error(`Error getting public GitHub contents: ${error}`);
@@ -100,6 +108,7 @@ async function getGithubRepoContents(
     path: string,
     ref: string,
     token: string | null,
+    useBackendProxy: boolean,
 ): Promise<{ name: string; content: Blob }[] | null> {
     let url = `${GITHUB_API_URL}/repos/${owner}/${repo}/contents/${path ?? ''}${
         ref ? `?ref=${ref}` : ''
@@ -128,7 +137,9 @@ async function getGithubRepoContents(
                 [owner, repo, ref, ...pathParts] = pathParts.slice(1);
                 path = pathParts.join('/');
 
-                const url2 = `/.netlify/functions/github-raw?owner=${owner}&repo=${repo}&path=${item.path}&branch=${ref}`;
+                const url2 = useBackendProxy
+                    ? `/.netlify/functions/github-raw?owner=${owner}&repo=${repo}&path=${item.path}&branch=${ref}`
+                    : item.download_url;
                 const fileResponse = await axios.get(url2, {
                     responseType: 'blob',
                     headers: token ? { Authorization: `Bearer ${token}` } : {},
@@ -145,6 +156,7 @@ async function getGithubRepoContents(
                     item.path,
                     ref,
                     token,
+                    useBackendProxy,
                 );
                 if (subdirContents) retval = retval.concat(subdirContents);
             }
