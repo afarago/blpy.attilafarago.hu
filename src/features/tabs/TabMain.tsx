@@ -85,7 +85,10 @@ const TabMain: React.FC = () => {
                 code: !additionalCommentsChecked
                     ? conversionResult?.plaincode
                     : // replace @ .* ending with /* () */ for css formatter
-                      conversionResult?.plaincode?.replace(/@ ?(.+)$/, '/* $1 */'),
+                      conversionResult?.plaincode?.replaceAll(
+                          /@ ?([^\r\n]{1,32})/g,
+                          '/* $1 */',
+                      ),
             },
             {
                 key: TabKey.EV3BDECOMPILED,
