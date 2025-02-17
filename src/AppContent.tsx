@@ -39,9 +39,10 @@ const useDragAndDrop = (setFilesFn: (files: File[]) => void) => {
             event.stopPropagation();
             event.preventDefault();
             setIsDragging(false);
-            const files = event.dataTransfer?.files
-                ? [...event.dataTransfer?.files]
-                : [];
+            const files =
+                event.dataTransfer && event.dataTransfer.files
+                    ? [...event.dataTransfer.files]
+                    : [];
             setFilesFn(files);
         },
         [setFilesFn],
