@@ -106,7 +106,7 @@ export const authenticateGithub = createAsyncThunk(
             const scope = 'user,repo,read:org,gist';
             // const scope = 'read:user,read:org,repo';
             // const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
-            const state = Math.random().toString(36).substring(3);
+            const state = crypto.randomUUID();
             const params = new URLSearchParams({
                 client_id: clientId,
                 redirect_uri: redirectUri,
