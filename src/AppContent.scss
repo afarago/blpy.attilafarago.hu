@@ -113,21 +113,12 @@
         }
     }
 
-    button {
-        border: none;
-        background: none;
-    }
-
     .mycontent {
         * {
             -webkit-user-drag: none;
             -moz-user-drag: none;
             -ms-user-drag: none;
             // user-drag: none;
-        }
-
-        .fullscreen & {
-            max-width: 100%;
         }
     }
 
@@ -148,28 +139,6 @@
         svg {
             position: relative;
             top: -0.1em;
-        }
-
-        .fullscreen .tabheader & {
-            position: absolute;
-            right: 0;
-            font-size: 1.3em;
-            padding-right: 0.5em;
-            z-index: -1;
-        }
-    }
-
-    & > .fullscreen {
-        & > :not(.mycontent) {
-            display: none !important;
-        }
-
-        .mycontent > :not(form) {
-            display: none !important;
-        }
-
-        .main-content > :not(.tab-main) {
-            display: none !important;
         }
     }
 
@@ -200,15 +169,6 @@
         .multi-file-header > button {
             --bs-btn-border-radius: 0;
         }
-
-        .fullscreen & {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            max-width: 100%;
-        }
     }
 
     .tab-content {
@@ -237,6 +197,11 @@
             font-size: calc($icon-size * 0.5);
             display: inline-block;
             vertical-align: middle;
+        }
+
+        button:has(.drop-cloud-icon) {
+            background: none;
+            border: none;
         }
 
         .drop-cloud-icon {
@@ -475,6 +440,43 @@
         z-index: 1000; /* Ensure it's above other content */
         backdrop-filter: blur(2px);
     }
+
+    &.fullscreen {
+        & > :not(.mycontent) {
+            display: none !important;
+        }
+
+        .mycontent > :not(form) {
+            display: none !important;
+        }
+
+        .main-content > :not(.tab-main) {
+            display: none !important;
+        }
+
+        .tab-main {
+            position: absolute;
+            top: 0;
+            left: 0;
+            // width: 100%;
+            height: 100%;
+            max-width: 100%;
+        }
+
+        .tabheader .brandlogo {
+            position: absolute;
+            right: 0;
+            font-size: 1.3em;
+            padding-right: 0.5em;
+            z-index: -1;
+        }
+
+        .mycontent {
+            max-width: 100%;
+            margin: 0px !important;
+            // width: 100%;
+        }
+    }
 }
 
 .GithubDialog {
@@ -488,9 +490,10 @@
         overflow-y: 'auto';
         .dropdown-item {
             font-size: small;
+            line-height: 1em;
             img {
-                height: 3em;
-                width: 3em;
+                height: 2em;
+                width: 2em;
                 vertical-align: baseline;
                 border-radius: 100%;
             }

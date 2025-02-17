@@ -256,7 +256,14 @@
   dependencies:
     "@babel/types" "^7.26.7"
 
-"@babel/parser@^7.21.8", "@babel/parser@^7.22.5", "@babel/parser@^7.25.9", "@babel/parser@^7.26.5", "@babel/parser@^7.26.7", "@babel/parser@^7.26.8":
+"@babel/parser@^7.21.8", "@babel/parser@^7.22.5":
+  version "7.26.9"
+  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.26.9.tgz#d9e78bee6dc80f9efd8f2349dcfbbcdace280fd5"
+  integrity sha512-81NWa1njQblgZbQHxWHpxxCzNsa3ZwvFqpUg7P+NNUU6f3UU2jBEg4OlF/J6rl8+PQGh1q6/zWScd001YwcA5A==
+  dependencies:
+    "@babel/types" "^7.26.9"
+
+"@babel/parser@^7.25.9", "@babel/parser@^7.26.5", "@babel/parser@^7.26.7", "@babel/parser@^7.26.8":
   version "7.26.8"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.26.8.tgz#deca2b4d99e5e1b1553843b99823f118da6107c2"
   integrity sha512-TZIQ25pkSoaKEYYaHbbxkfL36GNsQ6iFiBbeuzAkLnXayKR1yP1zFe+NxuZWWsUyvt8icPU9CCq0sgWGXR1GEw==
@@ -1126,6 +1133,14 @@
   version "7.26.8"
   resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.26.8.tgz#97dcdc190fab45be7f3dc073e3c11160d677c127"
   integrity sha512-eUuWapzEGWFEpHFxgEaBG8e3n6S8L3MSu0oda755rOfabWPnh0Our1AozNFVUxGFIhbKgd1ksprsoDGMinTOTA==
+  dependencies:
+    "@babel/helper-string-parser" "^7.25.9"
+    "@babel/helper-validator-identifier" "^7.25.9"
+
+"@babel/types@^7.26.9":
+  version "7.26.9"
+  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.26.9.tgz#08b43dec79ee8e682c2ac631c010bdcac54a21ce"
+  integrity sha512-Y3IR1cRnOxOCDvMmNiym7XpXQ93iGDDPHx+Zj+NM+rg0fBaShfQLkg+hKPaZCEvg5N/LeCo4+Rj/i3FuJsIQaw==
   dependencies:
     "@babel/helper-string-parser" "^7.25.9"
     "@babel/helper-validator-identifier" "^7.25.9"
@@ -2086,10 +2101,10 @@
   resolved "https://registry.yarnpkg.com/@netlify/binary-info/-/binary-info-1.0.0.tgz#cd0d86fb783fb03e52067f0cd284865e57be86c8"
   integrity sha512-4wMPu9iN3/HL97QblBsBay3E1etIciR84izI3U+4iALY+JHCrI+a2jO0qbAZ/nxKoegypYEaiiqWXylm+/zfrw==
 
-"@netlify/blobs@8.1.0":
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/@netlify/blobs/-/blobs-8.1.0.tgz#b870b7c90c731a787eab550704593222af8222af"
-  integrity sha512-9hIbusvAZjSGBJ42OyFC2AxsEph1LuKQahMWFcPGEIsOqIYHhMRkYA7wSUMhH7naydjNmllpcp3pJLOK4RhFaQ==
+"@netlify/blobs@8.1.1":
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/@netlify/blobs/-/blobs-8.1.1.tgz#f1f16a44f46274a13b2024c84fdd3939af894d0b"
+  integrity sha512-7Dg3PzArvQ0Owq4wpkLECC9iaDBOxuWUN2uwbQtUF6tZssyez2QN+eO0CjuIhhZUivbw+X9bwsyiEjWkdJnv/A==
 
 "@netlify/blobs@^7.4.0":
   version "7.4.0"
@@ -2507,32 +2522,32 @@
   integrity sha512-JcQDsBdg49Yky2w2ld20IHAlwr8d/d8N6NiOXbtuoPCqzbsiJgF633mVUw3x4mo0H5ypataQIX7SFu3yy44Mpw==
 
 "@octokit/core@^6.1.3":
-  version "6.1.3"
-  resolved "https://registry.yarnpkg.com/@octokit/core/-/core-6.1.3.tgz#280d3bb66c702297baac0a202219dd66611286e4"
-  integrity sha512-z+j7DixNnfpdToYsOutStDgeRzJSMnbj8T1C/oQjB6Aa+kRfNjs/Fn7W6c8bmlt6mfy3FkgeKBRnDjxQow5dow==
+  version "6.1.4"
+  resolved "https://registry.yarnpkg.com/@octokit/core/-/core-6.1.4.tgz#f5ccf911cc95b1ce9daf6de425d1664392f867db"
+  integrity sha512-lAS9k7d6I0MPN+gb9bKDt7X8SdxknYqAMh44S5L+lNqIN2NuV8nvv3g8rPp7MuRxcOpxpUIATWprO0C34a8Qmg==
   dependencies:
     "@octokit/auth-token" "^5.0.0"
     "@octokit/graphql" "^8.1.2"
-    "@octokit/request" "^9.1.4"
-    "@octokit/request-error" "^6.1.6"
+    "@octokit/request" "^9.2.1"
+    "@octokit/request-error" "^6.1.7"
     "@octokit/types" "^13.6.2"
     before-after-hook "^3.0.2"
     universal-user-agent "^7.0.0"
 
-"@octokit/endpoint@^10.0.0":
-  version "10.1.2"
-  resolved "https://registry.yarnpkg.com/@octokit/endpoint/-/endpoint-10.1.2.tgz#d38e727e2a64287114fdaa1eb9cd7c81c09460df"
-  integrity sha512-XybpFv9Ms4hX5OCHMZqyODYqGTZ3H6K6Vva+M9LR7ib/xr1y1ZnlChYv9H680y77Vd/i/k+thXApeRASBQkzhA==
+"@octokit/endpoint@^10.1.3":
+  version "10.1.3"
+  resolved "https://registry.yarnpkg.com/@octokit/endpoint/-/endpoint-10.1.3.tgz#bfe8ff2ec213eb4216065e77654bfbba0fc6d4de"
+  integrity sha512-nBRBMpKPhQUxCsQQeW+rCJ/OPSMcj3g0nfHn01zGYZXuNDvvXudF/TYY6APj5THlurerpFN4a/dQAIAaM6BYhA==
   dependencies:
     "@octokit/types" "^13.6.2"
     universal-user-agent "^7.0.2"
 
 "@octokit/graphql@^8.1.2":
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/@octokit/graphql/-/graphql-8.2.0.tgz#983a7ebc6479338d78921a1ca9b4095f85991e28"
-  integrity sha512-gejfDywEml/45SqbWTWrhfwvLBrcGYhOn50sPOjIeVvH6i7D16/9xcFA8dAJNp2HMcd+g4vru41g4E2RBiZvfQ==
+  version "8.2.1"
+  resolved "https://registry.yarnpkg.com/@octokit/graphql/-/graphql-8.2.1.tgz#0cb83600e6b4009805acc1c56ae8e07e6c991b78"
+  integrity sha512-n57hXtOoHrhwTWdvhVkdJHdhTv0JstjDbDRhJfwIRNfFqmSo1DaK/mD2syoNUoLCyqSjBpGAKOG0BuwF392slw==
   dependencies:
-    "@octokit/request" "^9.1.4"
+    "@octokit/request" "^9.2.2"
     "@octokit/types" "^13.8.0"
     universal-user-agent "^7.0.0"
 
@@ -2542,9 +2557,9 @@
   integrity sha512-izFjMJ1sir0jn0ldEKhZ7xegCTj/ObmEDlEfpFrx4k/JyZSMRHbO3/rBwgE7f3m2DHt+RrNGIVw4wSmwnm3t/g==
 
 "@octokit/plugin-paginate-rest@^11.4.0":
-  version "11.4.0"
-  resolved "https://registry.yarnpkg.com/@octokit/plugin-paginate-rest/-/plugin-paginate-rest-11.4.0.tgz#a9c3347113d793e48a014f0aa549eada00de7c9a"
-  integrity sha512-ttpGck5AYWkwMkMazNCZMqxKqIq1fJBNxBfsFwwfyYKTf914jKkLF0POMS3YkPBwp5g1c2Y4L79gDz01GhSr1g==
+  version "11.4.2"
+  resolved "https://registry.yarnpkg.com/@octokit/plugin-paginate-rest/-/plugin-paginate-rest-11.4.2.tgz#8f46a1de74c35e016c86701ef4ea0e8ef25a06e0"
+  integrity sha512-BXJ7XPCTDXFF+wxcg/zscfgw2O/iDPtNSkwwR1W1W5c4Mb3zav/M2XvxQ23nVmKj7jpweB4g8viMeCQdm7LMVA==
   dependencies:
     "@octokit/types" "^13.7.0"
 
@@ -2560,20 +2575,20 @@
   dependencies:
     "@octokit/types" "^13.8.0"
 
-"@octokit/request-error@^6.0.1", "@octokit/request-error@^6.1.6":
-  version "6.1.6"
-  resolved "https://registry.yarnpkg.com/@octokit/request-error/-/request-error-6.1.6.tgz#5f42c7894e7c3ab47c63aa3241f78cee8a826644"
-  integrity sha512-pqnVKYo/at0NuOjinrgcQYpEbv4snvP3bKMRqHaD9kIsk9u1LCpb2smHZi8/qJfgeNqLo5hNW4Z7FezNdEo0xg==
+"@octokit/request-error@^6.1.7":
+  version "6.1.7"
+  resolved "https://registry.yarnpkg.com/@octokit/request-error/-/request-error-6.1.7.tgz#44fc598f5cdf4593e0e58b5155fe2e77230ff6da"
+  integrity sha512-69NIppAwaauwZv6aOzb+VVLwt+0havz9GT5YplkeJv7fG7a40qpLt/yZKyiDxAhgz0EtgNdNcb96Z0u+Zyuy2g==
   dependencies:
     "@octokit/types" "^13.6.2"
 
-"@octokit/request@^9.1.4":
-  version "9.2.0"
-  resolved "https://registry.yarnpkg.com/@octokit/request/-/request-9.2.0.tgz#21aa1e72ff645f5b99ccf4a590cc33c4578bb356"
-  integrity sha512-kXLfcxhC4ozCnAXy2ff+cSxpcF0A1UqxjvYMqNuPIeOAzJbVWQ+dy5G2fTylofB/gTbObT8O6JORab+5XtA1Kw==
+"@octokit/request@^9.2.1", "@octokit/request@^9.2.2":
+  version "9.2.2"
+  resolved "https://registry.yarnpkg.com/@octokit/request/-/request-9.2.2.tgz#754452ec4692d7fdc32438a14e028eba0e6b2c09"
+  integrity sha512-dZl0ZHx6gOQGcffgm1/Sf6JfEpmh34v3Af2Uci02vzUYz6qEN6zepoRtmybWXIGXFIK8K9ylE3b+duCWqhArtg==
   dependencies:
-    "@octokit/endpoint" "^10.0.0"
-    "@octokit/request-error" "^6.0.1"
+    "@octokit/endpoint" "^10.1.3"
+    "@octokit/request-error" "^6.1.7"
     "@octokit/types" "^13.6.2"
     fast-content-type-parse "^2.0.0"
     universal-user-agent "^7.0.2"
@@ -9148,14 +9163,14 @@ nested-error-stacks@^2.0.0, nested-error-stacks@^2.1.0, nested-error-stacks@^2.1
   resolved "https://registry.yarnpkg.com/nested-error-stacks/-/nested-error-stacks-2.1.1.tgz#26c8a3cee6cc05fbcf1e333cd2fc3e003326c0b5"
   integrity sha512-9iN1ka/9zmX1ZvLV9ewJYEk9h7RyRRtqdK0woXcqohu8EWIerfPUjYJPg0ULy0UqP7cslmdGc8xKDJcojlKiaw==
 
-netlify-cli@^18.0.4:
-  version "18.0.4"
-  resolved "https://registry.yarnpkg.com/netlify-cli/-/netlify-cli-18.0.4.tgz#6bf63df87cbe76dbe22d2e92dda88b7c0019c7b0"
-  integrity sha512-4NGnJy2wUTquJm7YH4cbPgXqPqfO0KEWlbkX8XEaKI2fGe9gQCQRG628E5wYqfXsG+jJZfNF7O/r8OmgqxiHUw==
+netlify-cli@^18.1.0:
+  version "18.1.0"
+  resolved "https://registry.yarnpkg.com/netlify-cli/-/netlify-cli-18.1.0.tgz#6e13b1133edc315803d87a43dce257ce899d38cc"
+  integrity sha512-W0r5IqYAZJz8VjRes1D7358GyZxYmI5ODUlEcHr8tI58pks4Ybyw2D3VDITZp6/yjXtDhGTWdAQ6x7mg+68eKQ==
   dependencies:
     "@bugsnag/js" "8.2.0"
     "@fastify/static" "7.0.4"
-    "@netlify/blobs" "8.1.0"
+    "@netlify/blobs" "8.1.1"
     "@netlify/build" "29.58.9"
     "@netlify/build-info" "8.0.0"
     "@netlify/config" "20.21.7"
@@ -10550,11 +10565,10 @@ readable-stream@^4.0.0, readable-stream@^4.7.0:
     string_decoder "^1.3.0"
 
 readable-web-to-node-stream@^3.0.2:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/readable-web-to-node-stream/-/readable-web-to-node-stream-3.0.3.tgz#e8c1458c96cec358fcc5d8c0a8894c1df30932d0"
-  integrity sha512-In3boYjBnbGVrLuuRu/Ath/H6h1jgk30nAsk/71tCare1dTVoe1oMBGRn5LGf0n3c1BcHwwAqpraxX4AUAP5KA==
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/readable-web-to-node-stream/-/readable-web-to-node-stream-3.0.4.tgz#392ba37707af5bf62d725c36c1b5d6ef4119eefc"
+  integrity sha512-9nX56alTf5bwXQ3ZDipHJhusu9NTQJ/CVPtb/XHAJCXihZeitfJvIRS4GqQ/mfIoOE3IelHMrpayVrosdHBuLw==
   dependencies:
-    process "^0.11.10"
     readable-stream "^4.7.0"
 
 readdir-glob@^1.1.2:
@@ -12236,9 +12250,9 @@ type-fest@^2.0.0, type-fest@^2.11.2, type-fest@^2.12.2:
   integrity sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==
 
 type-fest@^4.18.2, type-fest@^4.21.0, type-fest@^4.6.0, type-fest@^4.7.1:
-  version "4.34.1"
-  resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-4.34.1.tgz#406a9c573cc51c3fbfee3c85742cf85c52860076"
-  integrity sha512-6kSc32kT0rbwxD6QL1CYe8IqdzN/J/ILMrNK+HMQCKH3insCDRY/3ITb0vcBss0a3t72fzh2YSzj8ko1HgwT3g==
+  version "4.35.0"
+  resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-4.35.0.tgz#007ed74d65c2ca0fb3b564b3dc8170d5c872d665"
+  integrity sha512-2/AwEFQDFEy30iOLjrvHDIH7e4HEWH+f1Yl1bI5XMqzuoCUqwYCdxachgsgv0og/JdVZUhbfjcJAoHj5L1753A==
 
 type-is@~1.6.18:
   version "1.6.18"

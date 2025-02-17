@@ -22,7 +22,7 @@ import { selectConversion } from '@/features/conversion/conversionSlice';
 import { useSelector } from 'react-redux';
 import { supportsExtension } from 'blocklypy';
 import Github from '@/assets/img/github.png';
-import GitHubOpenDialog from '@/features/github/GitHubOpenDialog';
+import GithubOpenDialog from '@/features/github/GithubOpenDialog';
 import { selectGithubAuthToken } from '../github/githubSlice';
 
 const FileSelector: React.FC<{
@@ -242,7 +242,7 @@ const FileSelector: React.FC<{
                 </small>
             </div>
 
-            <GitHubOpenDialog
+            <GithubOpenDialog
                 show={showModal}
                 handleClose={handleCloseModal}
                 initialUrl={fileContent.url}

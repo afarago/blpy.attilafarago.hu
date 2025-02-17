@@ -1,9 +1,10 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import { RootState } from '@/app/store';
-import { getGithubContents } from '@/features/github/ghutils';
-import { supportsExtension } from 'blocklypy';
+import { isGithubProxiedViaNetlify } from '@/features/github/githubSlice';
+import { extractGithubUrlInfo, getGithubContents } from '@/features/github/utils';
 import axios from 'axios';
+import { supportsExtension } from 'blocklypy';
 
 interface UploadedFileInfo {
     name: string;
@@ -160,30 +161,12 @@ export const fetchRepoContents = createAsyncThunk(
     ) => {
         try {
             await handleLoadingWithSpinner(dispatch, async () => {
-                let { owner, repo, ref, path } =
-                    url.match(/gist\.github\.com\/(?<owner>[^\/]+)\/(?<path>[a-f0-9]+)/)
-                        ?.groups || {};
+                const ghinfo = extractGithubUrlInfo(url);
+                if (!ghinfo) throw new Error('Invalid GitHub URL');
+                const { owner, repo, ref, path, type } = ghinfo;
 
-                if (path) {
-                    repo = 'gist';
-                } else {
-                    ({ owner, repo, ref, path } =
-                        url.match(
-                            /github\.com\/(?:repos\/)?(?<owner>[^\/]+)\/(?<repo>[^\/]+)(?:\/(?:tree|blob)\/(?<ref>[^\/]+)\/(?<path>.*))?/,
-                        )?.groups || {});
-                }
-
-                const isNetlify =
-                    (import.meta as any).env.VITE_NETLIFY?.toString() === 'true';
-                const useBackendProxy = isNetlify;
-                let data = await getGithubContents(
-                    owner,
-                    repo,
-                    path,
-                    ref,
-                    token,
-                    useBackendProxy,
-                );
+                const useBackendProxy = isGithubProxiedViaNetlify;
+                let data = await getGithubContents(ghinfo, token, useBackendProxy);
                 if (!data) throw new Error('Failed to fetch repository contents');
 
                 const payload2: FileContentSetPayload = {

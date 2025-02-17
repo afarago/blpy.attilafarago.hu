@@ -67,53 +67,51 @@ const AppContent: React.FC = () => {
     );
 
     return (
-        <div className="AppContent">
-            <div className={fullScreen ? 'fullscreen' : ''}>
-                <Header />
-                <Toast
-                    onClose={() => dispatch(toastContentSet(undefined))}
-                    show={toastContent !== undefined}
-                    delay={5000}
-                    autohide
-                    className="top-0 end-0"
-                >
-                    <Toast.Header>
-                        <span className="me-auto">Conversion Error</span>
-                    </Toast.Header>
-                    <Toast.Body>{toastContent}</Toast.Body>
-                </Toast>
+        <div className={'AppContent' + (fullScreen ? ' fullscreen' : '')}>
+            <Header />
+            <Toast
+                onClose={() => dispatch(toastContentSet(undefined))}
+                show={toastContent !== undefined}
+                delay={10000}
+                autohide
+                className="position-fixed top-0 end-0 mt-2 me-2"
+            >
+                <Toast.Header>
+                    <span className="me-auto">Conversion Error</span>
+                </Toast.Header>
+                <Toast.Body>{toastContent}</Toast.Body>
+            </Toast>
 
-                <div className="mycontent container-lg">
-                    <h3 className="pt-3">
-                        {' '}
-                        SPIKE and EV3 to Pybricks Wizard{' '}
-                        <small className="text-muted d-sm-block d-none d-lg-inline">
-                            block-code converter to Pybricks python code
-                        </small>
-                    </h3>
+            <div className="container-lg mycontent">
+                <h3 className="pt-3">
+                    {' '}
+                    SPIKE and EV3 to Pybricks Wizard{' '}
+                    <small className="text-muted d-sm-block d-none d-lg-inline">
+                        block-code converter to Pybricks python code
+                    </small>
+                </h3>
 
-                    <form method="post" encType="multipart/form-data">
-                        <div
-                            onDragOver={handleDragOver}
-                            onDragLeave={handleDragLeave}
-                            onDrop={handleDrop}
-                            className={
-                                'main-content dropzone pb-3 position-relative' +
-                                (isDragging ? ' drop-active' : '')
-                            }
-                            aria-dropeffect="move"
-                            role="presentation"
-                        >
-                            <FileSelector fileInputRef={fileInputRef}></FileSelector>
+                <form method="post" encType="multipart/form-data">
+                    <div
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                        className={
+                            'main-content dropzone pb-3 position-relative' +
+                            (isDragging ? ' drop-active' : '')
+                        }
+                        aria-dropeffect="move"
+                        role="presentation"
+                    >
+                        <FileSelector fileInputRef={fileInputRef}></FileSelector>
 
-                            {fileContent.showSpinner && <TabLoading />}
-                            <WelcomeTab fileInputRef={fileInputRef} />
-                            <MainTab />
-                        </div>
-                    </form>
-                </div>
-                <Footer />
+                        {fileContent.showSpinner && <TabLoading />}
+                        <WelcomeTab fileInputRef={fileInputRef} />
+                        <MainTab />
+                    </div>
+                </form>
             </div>
+            <Footer />
         </div>
     );
 };

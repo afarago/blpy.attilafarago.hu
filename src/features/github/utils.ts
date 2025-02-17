@@ -3,7 +3,7 @@ import { supportsExtension } from 'blocklypy';
 
 const GITHUB_API_URL = 'https://api.github.com';
 
-export interface GitHubRepository {
+export interface GithubRepository {
     full_name: string;
     url: string;
     stargazers_count?: number;
@@ -17,11 +17,26 @@ export interface GitHubRepository {
     };
 }
 
+export interface GithubGist {
+    id: string;
+    url: string;
+    public?: boolean;
+    description?: string;
+    owner: {
+        login: string;
+        avatar_url: string;
+    };
+    files: { [filename: string]: GistFile };
+}
+
+export type GithubEntry = GithubRepository | GithubGist;
+
 interface GistFile {
     filename: string;
     type: string;
+    language: string;
     raw_url: string;
-    content: string;
+    content: string; // will be added later
 }
 
 interface GithubFile {
@@ -32,50 +47,70 @@ interface GithubFile {
     path: string;
 }
 
+export interface GithubUrlInfo {
+    type: string;
+    owner: string;
+    repo: string;
+    path: string;
+    ref?: string;
+}
+
+export function extractGithubUrlInfo(url: string): GithubUrlInfo | undefined {
+    /** 1. Try to match gist path
+     * examples:
+     *      https://api.github.com/gists/4718cffcbea66ca88f99be64fd912cd8
+     *      https://gist.github.com/afarago/4718cffcbea66ca88f99be64fd912cd8
+     */
+    // const matchGist = url.match(
+    //     /gist\.github\.com\/(?<owner>[^\/]+)\/(?<path>[a-f0-9]+)|api\.github\.com\/gists\/(?<path>[a-f0-9]+)/,
+    // )?.groups;
+    const matchGist = url.match(
+        /((gist\.github\.com\/(?<owner>[^\/]+))|(api\.github\.com\/gists))\/(?<path>[a-f0-9]+)/,
+    )?.groups;
+    if (matchGist) return { ...matchGist, type: 'gist' } as GithubUrlInfo;
+
+    /** 2. Try to match git repo path
+     * examples:
+     *      https://github.com/afarago/2025educup-masters-attilafarago
+     *      https://api.github.com/repos/afarago/2025educup-masters-attilafarago
+     */
+    const matchRepo = url.match(
+        /github\.com\/(?:repos\/)?(?<owner>[^\/]+)\/(?<repo>[^\/]+)(?:\/(?:tree|blob)\/(?<ref>[^\/]+)\/(?<path>.*))?/,
+    )?.groups;
+    if (matchRepo) return { ...matchRepo, type: 'repo' } as GithubUrlInfo;
+}
+
 export async function getGithubContents(
-    owner: string,
-    repo: string,
-    path: string,
-    ref: string,
+    ghinfo: GithubUrlInfo,
     token: string | null,
     useBackendProxy: boolean,
 ): Promise<{ name: string; content: Blob }[] | null> {
     try {
-        if (repo === 'gist') {
-            return getGistContents(path, token);
+        if (ghinfo.type === 'gist') {
+            return getGistContents(ghinfo, token);
         } else {
-            return getGithubRepoContents(
-                owner,
-                repo,
-                path,
-                ref,
-                token,
-                useBackendProxy,
-            );
+            return getGithubRepoContents(ghinfo, token, useBackendProxy);
         }
     } catch (error) {
         throw new Error(`Error getting public GitHub contents: ${error}`);
     }
 }
 
-interface Gist {
-    files: { [filename: string]: GistFile };
-    // ... other Gist properties if needed
-}
-
 async function getGistContents(
-    gistId: string,
+    ghinfo: GithubUrlInfo,
     token: string | null,
 ): Promise<{ name: string; content: Blob }[] | null> {
-    const url = `${GITHUB_API_URL}/gists/${gistId}`;
+    const url = `${GITHUB_API_URL}/gists/${ghinfo.path}`;
 
     const response = await axios.get(url, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
     const data = response.data;
 
+    // TODO: use useBackendProxy for secret gists/all?
+
     const data1 = await Promise.all(
-        Object.values((data as Gist).files)
+        Object.values((data as GithubGist).files)
             .filter((gistfile) => supportsExtension(gistfile.filename))
             .map(async (gistfile) => {
                 let content: Blob | null = null;
@@ -103,16 +138,13 @@ async function getGistContents(
 }
 
 async function getGithubRepoContents(
-    owner: string,
-    repo: string,
-    path: string,
-    ref: string,
+    ghinfo: GithubUrlInfo,
     token: string | null,
     useBackendProxy: boolean,
 ): Promise<{ name: string; content: Blob }[] | null> {
-    let url = `${GITHUB_API_URL}/repos/${owner}/${repo}/contents/${path ?? ''}${
-        ref ? `?ref=${ref}` : ''
-    }`;
+    let url = `${GITHUB_API_URL}/repos/${ghinfo.owner}/${ghinfo.repo}/contents/${
+        ghinfo.path ?? ''
+    }${ghinfo.ref ? `?ref=${ghinfo.ref}` : ''}`;
 
     const response = await axios.get(url, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
@@ -134,6 +166,7 @@ async function getGithubRepoContents(
                 // parse download_url - https://raw.githubusercontent.com/afarago/2025educup-masters-attilafarago/master/erc25.py
                 const parsedUrl = new URL(item.download_url);
                 let pathParts = parsedUrl.pathname.split('/');
+                let { owner, repo, ref, path } = ghinfo;
                 [owner, repo, ref, ...pathParts] = pathParts.slice(1);
                 path = pathParts.join('/');
 
@@ -151,10 +184,7 @@ async function getGithubRepoContents(
             } else if (item.type === 'dir') {
                 // Recursively get the contents of the directory
                 const subdirContents = await getGithubRepoContents(
-                    owner,
-                    repo,
-                    item.path,
-                    ref,
+                    { ...ghinfo, path: item.path },
                     token,
                     useBackendProxy,
                 );
@@ -165,7 +195,7 @@ async function getGithubRepoContents(
     } else {
         const byteArray = Uint8Array.from(atob(data.content), (c) => c.charCodeAt(0));
         const fileContent = new Blob([byteArray]);
-        retval = [{ name: path, content: fileContent }];
+        retval = [{ name: ghinfo.path, content: fileContent }];
         return retval;
     }
 }

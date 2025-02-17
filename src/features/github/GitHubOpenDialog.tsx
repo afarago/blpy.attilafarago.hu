@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {
     authenticateGithub,
-    listReposGithub,
+    isGithubProxiedViaNetlify,
+    listReposAndGistsGithub,
     logout,
     selectGithubAuthToken,
     selectGithubIsAuthenticated,
@@ -12,68 +13,21 @@ import {
 import AutocompleteDropdown from './AutocompleteDropdown';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { github } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { RootState } from '@/app/store';
 import { useAppDispatch } from '@/app/hooks';
 import { useSelector } from 'react-redux';
 
-interface GitHubOpenDialogProps {
+interface GithubOpenDialogProps {
     show: boolean;
     initialUrl?: string;
     handleClose: (url?: string) => void;
 }
 
-const GitHubOpenDialog: React.FC<GitHubOpenDialogProps> = ({
+const GithubOpenDialog: React.FC<GithubOpenDialogProps> = ({
     show,
     initialUrl,
     handleClose,
 }) => {
-    // const data: GitHubRepository[] = [
-    //     {
-    //         full_name: 'facebook/react',
-    //         url: 'https://api.github.com/repos/facebook/react',
-    //         stargazers_count: 160000,
-    //         private: false,
-    //         description:
-    //             'A declarative, efficient, and flexible JavaScript library for building user interfaces.',
-    //         owner: {
-    //             login: 'facebook',
-    //             avatar_url: 'https://avatars.githubusercontent.com/u/69631?v=4',
-    //         },
-    //     },
-    //     {
-    //         full_name: 'facebook/react-native',
-    //         url: 'https://api.github.com/repos/facebook/react-native',
-    //         stargazers_count: 100000,
-    //         private: false,
-    //         description: 'A framework for building native apps with React.',
-    //         owner: {
-    //             login: 'facebook',
-    //             avatar_url: 'https://avatars.githubusercontent.com/u/69631?v=4',
-    //         },
-    //     },
-    //     {
-    //         full_name: 'afarago/2025educup-masters-attilafarago',
-    //         url: 'https://api.github.com/afarago/2025educup-masters-attilafarago',
-    //         stargazers_count: 2,
-    //         private: false,
-    //         description: 'asdfsdfsdf',
-    //         owner: {
-    //             login: 'afarago',
-    //             avatar_url: 'https://avatars.githubusercontent.com/u/6154722?v=4',
-    //         },
-    //     },
-    //     {
-    //         full_name: 'microsoft/vscode',
-    //         url: 'https://api.github.com/repos/microsoft/vscode',
-    //         stargazers_count: 120000,
-    //         private: false,
-    //         description: 'Visual Studio Code',
-    //         owner: {
-    //             login: 'microsoft',
-    //             avatar_url: 'https://avatars.githubusercontent.com/u/6154722?v=4',
-    //         },
-    //     },
-    // ];
     const dispatch = useAppDispatch();
     const [selectedItem, setSelectedItem] = useState<string | undefined>(undefined); // State to hold selected item
     const [autoCompleteDroppedDown, setAutoCompleteDroppedDown] = useState(false);
@@ -82,8 +36,7 @@ const GitHubOpenDialog: React.FC<GitHubOpenDialogProps> = ({
     const githubAuthToken = useSelector(selectGithubAuthToken);
     const githubRepositories = useSelector(selectGithubRepositories);
     const githubUser = useSelector(selectGithubUser);
-
-    const isNetlify = (import.meta as any).env.VITE_NETLIFY?.toString() === 'true';
+    const githubLoading = useSelector((state: RootState) => state.github.loading);
 
     const handleItemSelect = (item: string) => {
         setSelectedItem(item);
@@ -93,7 +46,7 @@ const GitHubOpenDialog: React.FC<GitHubOpenDialogProps> = ({
         handleClose(selectedItem);
     };
 
-    const handleGitHubAuthClick = async () => {
+    const handleGithubAuthClick = async () => {
         try {
             const resultAction = await dispatch(authenticateGithub());
         } catch (err) {
@@ -105,7 +58,7 @@ const GitHubOpenDialog: React.FC<GitHubOpenDialogProps> = ({
         setAutoCompleteDroppedDown(value);
     };
 
-    const handleGitHubLogoutClick = () => {
+    const handleGithubLogoutClick = () => {
         dispatch(logout());
     };
 
@@ -122,10 +75,10 @@ const GitHubOpenDialog: React.FC<GitHubOpenDialogProps> = ({
     };
 
     useEffect(() => {
-        if (githubAuthToken) {
-            dispatch(listReposGithub(githubAuthToken));
+        if (githubAuthToken && show) {
+            dispatch(listReposAndGistsGithub(githubAuthToken));
         }
-    }, [githubAuthToken]);
+    }, [githubAuthToken, show]);
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -169,16 +122,18 @@ const GitHubOpenDialog: React.FC<GitHubOpenDialogProps> = ({
                 {selectedItem && <div className="small text-muted">{selectedItem}</div>}
             </Modal.Body>
             <Modal.Footer>
-                {!githubIsAuthenticated && isNetlify && (
+                {/* {githubLoading && <div className="me-auto">Loading Github...</div>} */}
+                {!githubIsAuthenticated && isGithubProxiedViaNetlify && (
                     <Button
                         variant="secondary"
-                        onClick={handleGitHubAuthClick}
+                        onClick={handleGithubAuthClick}
                         className="me-auto"
+                        disabled={githubLoading}
                     >
-                        Authorize
+                        {!githubLoading ? 'Authorize' : 'In Progress...'}
                     </Button>
                 )}
-                {githubIsAuthenticated && isNetlify && (
+                {githubIsAuthenticated && isGithubProxiedViaNetlify && (
                     <>
                         <img
                             src={githubUser?.avatar_url}
@@ -189,13 +144,19 @@ const GitHubOpenDialog: React.FC<GitHubOpenDialogProps> = ({
                         />
                         <Button
                             variant="secondary"
-                            onClick={handleGitHubLogoutClick}
+                            onClick={handleGithubLogoutClick}
                             className="me-auto"
+                            disabled={githubLoading}
                         >
-                            Logout {githubUser?.login}
+                            {!githubLoading ? (
+                                <>Logout {githubUser?.login}</>
+                            ) : (
+                                'In Progress...'
+                            )}
                         </Button>
                     </>
                 )}
+
                 <Button variant="secondary" onClick={handleCloseClick}>
                     Close
                 </Button>
@@ -211,4 +172,4 @@ const GitHubOpenDialog: React.FC<GitHubOpenDialogProps> = ({
     );
 };
 
-export default GitHubOpenDialog;
+export default GithubOpenDialog;

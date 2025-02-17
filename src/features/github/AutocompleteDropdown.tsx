@@ -1,23 +1,51 @@
+import { GithubEntry, GithubGist, GithubRepository } from './utils';
 import { useEffect, useState } from 'react';
 
 import Dropdown from 'react-bootstrap/Dropdown';
 import FormControl from 'react-bootstrap/FormControl';
-import { GitHubRepository } from './ghutils';
 import React from 'react';
-import { StarFill } from 'react-bootstrap-icons';
 
+function getGithubEntryName(entry: GithubEntry): string {
+    const repo = entry as GithubRepository;
+    const gist = entry as GithubGist;
+
+    if (repo.full_name) return repo.full_name;
+    if (gist.id) return `gist_${gist.id}`;
+
+    return 'undefined';
+}
+
+function getGithubEntryDescription(entry: GithubEntry): string | undefined {
+    const repo = entry as GithubRepository;
+    const gist = entry as GithubGist;
+
+    if (gist.files && gist.id) {
+        const filenames = Object.keys(gist.files);
+        return [gist.description, filenames.join(', ')].filter(Boolean).join(' | ');
+    }
+
+    if (repo.description) return repo.description;
+}
+
+function getGithubIsPrivate(entry: GithubEntry): boolean {
+    return (
+        (entry as GithubRepository).private ??
+        ((entry as GithubGist).public !== undefined &&
+            (entry as GithubGist).public !== true)
+    );
+}
 const AutocompleteDropdown: React.FC<{
     show: boolean;
-    data: GitHubRepository[];
+    data: GithubEntry[];
     initialValue: string | undefined;
     onSelect: (item: string) => void;
     onDropdownToggle?: (isOpen: boolean) => void;
 }> = ({ show, data, initialValue, onDropdownToggle, onSelect }) => {
     const [inputValue, setInputValue] = useState(initialValue ?? '');
     const [inputRepoValue, setInputRepoValue] = useState(
-        undefined as GitHubRepository | undefined,
+        undefined as GithubEntry | undefined,
     );
-    const [suggestions, setSuggestions] = useState([] as GitHubRepository[]);
+    const [suggestions, setSuggestions] = useState([] as GithubEntry[]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const refDropdown = React.useRef<HTMLDivElement>(null);
 
@@ -26,7 +54,9 @@ const AutocompleteDropdown: React.FC<{
             ? data
                   .filter(
                       (item) =>
-                          item.full_name.toLowerCase().includes(value.toLowerCase()) ||
+                          getGithubEntryName(item)
+                              ?.toLowerCase()
+                              .includes(value.toLowerCase()) ||
                           item.url.toLowerCase().includes(value.toLowerCase()) ||
                           item.description?.toLowerCase().includes(value.toLowerCase()),
                   )
@@ -38,7 +68,7 @@ const AutocompleteDropdown: React.FC<{
         const suggestions = [
             ...(filteredSuggestions.length || !value?.length
                 ? filteredSuggestions
-                : [{ full_name: value, url: value } as GitHubRepository]),
+                : [{ full_name: value, url: value } as GithubRepository]),
             ...nonFilteredSuggestions,
         ];
         setSuggestions(suggestions);
@@ -64,10 +94,10 @@ const AutocompleteDropdown: React.FC<{
         if (show && data.length > 0) {
             setShowSuggestions(true);
         }
-    }, [show]);
+    }, [show, data]);
 
-    const handleSuggestionClick = (suggestion: GitHubRepository) => {
-        setInputValue(suggestion.full_name);
+    const handleSuggestionClick = (suggestion: GithubEntry) => {
+        setInputValue(getGithubEntryName(suggestion));
         setInputRepoValue(suggestion);
         setShowSuggestions(false);
         // onSelect(suggestion.url);
@@ -90,6 +120,7 @@ const AutocompleteDropdown: React.FC<{
                     filterexec(value);
                 }}
                 onClick={() => setShowSuggestions(true)}
+                onKeyDown={() => setShowSuggestions(true)}
                 className="form-control"
                 id="autocompleteInput"
                 placeholder={inputValue}
@@ -109,14 +140,19 @@ const AutocompleteDropdown: React.FC<{
                                     className="float-start me-2"
                                 />
                             )}
-                            {suggestion.full_name}{' '}
-                            {(suggestion.stargazers_count ?? 0) > 0 && (
+                            {getGithubIsPrivate(suggestion) && '🔒 '}
+                            {getGithubEntryName(suggestion)}{' '}
+                            {((suggestion as GithubRepository).stargazers_count ?? 0) >
+                                0 && (
                                 <>
-                                    <StarFill /> {suggestion.stargazers_count}
+                                    ★{' '}
+                                    {(suggestion as GithubRepository).stargazers_count}
                                 </>
                             )}
                             <br />
-                            <span className="text-muted">{suggestion.description}</span>
+                            <span className="text-muted small">
+                                {getGithubEntryDescription(suggestion)}
+                            </span>
                         </Dropdown.Item>
                     ))}
                 </Dropdown.Menu>

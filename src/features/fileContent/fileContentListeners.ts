@@ -26,6 +26,7 @@ fileContentListenerMiddleware.startListening({
         const files = action.payload.files.filter((file) =>
             supportsExtension(file.name),
         );
+
         const { additionalCommentsChecked } = selectTabs(
             listenerApi.getState() as RootState,
         );
@@ -35,6 +36,11 @@ fileContentListenerMiddleware.startListening({
         notifyComponent(action.payload);
 
         try {
+            if (files.length === 0)
+                throw new Error(
+                    'No files to convert. Possible cause is that either none were selected or none were supported.',
+                );
+
             const inputs: IPyConverterFile[] = await Promise.all(
                 files.map(async (file) => ({
                     name: (file as any).webkitRelativePath || file.name,

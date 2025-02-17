@@ -1,37 +1,42 @@
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { type GithubEntry, type GithubGist, type GithubRepository } from './utils';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import { GitHubRepository } from './ghutils';
 import { RootState } from '@/app/store';
 import axios from 'axios';
 
-interface AuthState {
-    githubToken: string | null;
-    githubUser: {
+interface GithubAuthState {
+    token: string | null;
+    user: {
         login: string;
         avatar_url: string;
     } | null;
-    githubRepositories: GitHubRepository[];
+    repositories: GithubEntry[];
+    loading: boolean;
 }
 
-const initialState: AuthState = {
-    githubToken: localStorage.getItem('github_access_token'),
-    githubRepositories: [],
-    githubUser: null,
+const initialState: GithubAuthState = {
+    token: localStorage.getItem('github_access_token'),
+    repositories: [],
+    user: null,
+    loading: false,
 };
+
+export const isGithubProxiedViaNetlify =
+    (import.meta as any).env.VITE_NETLIFY?.toString() === 'true';
 
 try {
     const token = localStorage.getItem('github_access_token');
-    if (token) initialState.githubToken = token;
+    if (token) initialState.token = token;
     const user = localStorage.getItem('github_user');
-    if (user) initialState.githubUser = JSON.parse(user);
+    if (user) initialState.user = JSON.parse(user);
 } catch (error) {
     console.error('Failed to load GitHub token/user from local storage:', error);
-    initialState.githubToken = null;
-    initialState.githubUser = null;
+    initialState.token = null;
+    initialState.user = null;
 }
 
-const authSlice = createSlice({
-    name: 'auth',
+const githubSlice = createSlice({
+    name: 'github',
     initialState,
     reducers: {
         // loginSuccess(state, action: PayloadAction<{ user: string; token: string }>) {
@@ -39,41 +44,51 @@ const authSlice = createSlice({
         //     state.token = action.payload.token;
         // },
         logout(state) {
-            state.githubToken = null;
-            state.githubUser = null;
-            state.githubRepositories = [];
+            state.token = null;
+            state.user = null;
+            state.repositories = [];
             localStorage.removeItem('github_access_token');
             localStorage.removeItem('github_user');
         },
     },
     extraReducers: (builder) => {
         builder
+            .addCase(authenticateGithub.pending, (state, action) => {
+                state.loading = true;
+            })
             .addCase(authenticateGithub.fulfilled, (state, action) => {
+                state.loading = false;
                 const { token, user } = action.payload;
-                state.githubToken = token;
-                state.githubUser = user;
-                state.githubRepositories = [];
+                state.token = token;
+                state.user = user;
+                state.repositories = [];
                 localStorage.setItem('github_access_token', token);
                 localStorage.setItem('github_user', JSON.stringify(user));
             })
             .addCase(authenticateGithub.rejected, (state) => {
-                state.githubToken = null;
-                state.githubUser = null;
-                state.githubRepositories = [];
+                state.loading = false;
+                state.token = null;
+                state.user = null;
+                state.repositories = [];
                 localStorage.removeItem('github_access_token');
                 localStorage.removeItem('github_user');
             })
-            .addCase(listReposGithub.fulfilled, (state, action) => {
-                state.githubRepositories = action.payload;
+            .addCase(listReposAndGistsGithub.pending, (state) => {
+                state.loading = true;
             })
-            .addCase(listReposGithub.rejected, (state) => {
+            .addCase(listReposAndGistsGithub.fulfilled, (state, action) => {
+                state.loading = false;
+                state.repositories = action.payload;
+            })
+            .addCase(listReposAndGistsGithub.rejected, (state) => {
+                state.loading = false;
                 console.error('Failed to list repositories');
             });
     },
 });
 
 export const authenticateGithub = createAsyncThunk(
-    'auth/authenticateGithub',
+    'github/authenticateGithub',
     async (_, { dispatch, rejectWithValue }) => {
         try {
             // 1. start the login process
@@ -83,9 +98,8 @@ export const authenticateGithub = createAsyncThunk(
             }
 
             const redirectUri = `${window.location.origin}/auth-callback`;
-            const scope = 'user,repo,read:org';
+            const scope = 'user,repo,read:org,gist';
             // const scope = 'read:user,read:org,repo';
-            // const scope = 'read:org'; // user and read repo is already included
             // const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
             const state = Math.random().toString(36).substring(3);
             const params = new URLSearchParams({
@@ -159,17 +173,32 @@ export const authenticateGithub = createAsyncThunk(
     },
 );
 
-export const listReposGithub = createAsyncThunk(
-    'auth/listReposGithub',
+export const listReposAndGistsGithub = createAsyncThunk(
+    'github/listReposGithub',
     async (token: string, { rejectWithValue }) => {
         try {
+            const result: GithubEntry[] = [];
             // 1. get the user repositories
-            const response = await axios.get(`https://api.github.com/user/repos`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            const personalRepos = response.data as GitHubRepository[];
+            {
+                const response = await axios.get(`https://api.github.com/user/repos`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const repos = response.data as GithubRepository[];
+                result.push(...repos);
+            }
+
+            // 1b. get the user gists
+            {
+                const response = await axios.get(`https://api.github.com/gists`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const gists = response.data as GithubGist[];
+                result.push(...gists);
+            }
 
             // 2. get the user orgs
             const orgsResponse = await axios.get(`https://api.github.com/user/orgs`, {
@@ -179,33 +208,37 @@ export const listReposGithub = createAsyncThunk(
             });
 
             // 3. get the org repositories
-            const orgReposPromise: GitHubRepository[][] = await Promise.all(
-                orgsResponse.data.map(async (org: any) => {
-                    const orgReposResponse = await axios.get(org.repos_url, {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    });
-                    return orgReposResponse.data as GitHubRepository[];
-                }),
-            );
-            const orgRepos = orgReposPromise.flat();
+            {
+                const orgReposPromise: GithubRepository[][] = await Promise.all(
+                    orgsResponse.data.map(async (org: any) => {
+                        const orgReposResponse = await axios.get(org.repos_url, {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        });
+                        return orgReposResponse.data as GithubRepository[];
+                    }),
+                );
+                const orgRepos = orgReposPromise.flat();
+                result.push(...orgRepos);
+            }
 
-            return [...personalRepos, ...orgRepos];
+            // NOTE: no org gists are available in github now
+
+            return result;
         } catch (error) {
             return rejectWithValue('Failed to list repositories');
         }
     },
 );
 
-export const { logout } = authSlice.actions;
+export const { logout } = githubSlice.actions;
 
-export default authSlice.reducer;
+export default githubSlice.reducer;
 
 // Selectors (for accessing state in components)
-export const selectGithubAuthToken = (state: RootState) => state.auth.githubToken;
+export const selectGithubAuthToken = (state: RootState) => state.github.token;
 export const selectGithubIsAuthenticated = (state: RootState) =>
-    state.auth.githubToken !== null;
-export const selectGithubRepositories = (state: RootState) =>
-    state.auth.githubRepositories;
-export const selectGithubUser = (state: RootState) => state.auth.githubUser;
+    state.github.token !== null;
+export const selectGithubRepositories = (state: RootState) => state.github.repositories;
+export const selectGithubUser = (state: RootState) => state.github.user;
