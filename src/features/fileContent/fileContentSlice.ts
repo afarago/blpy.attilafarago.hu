@@ -116,8 +116,6 @@ const handleLoadingWithSpinner = async (
 
         // await new Promise((resolve) => setTimeout(resolve, 4000));
         await asyncFunction();
-    } catch (error) {
-        throw error;
     } finally {
         if (timer) clearTimeout(timer);
         dispatch(setLoading(false));
@@ -163,7 +161,6 @@ export const fetchRepoContents = createAsyncThunk(
             await handleLoadingWithSpinner(dispatch, async () => {
                 const ghinfo = extractGithubUrlInfo(url);
                 if (!ghinfo) throw new Error('Invalid GitHub URL');
-                const { owner, repo, ref, path, type } = ghinfo;
 
                 const useBackendProxy = isGithubProxiedViaNetlify;
                 let data = await getGithubContents(ghinfo, token, useBackendProxy);

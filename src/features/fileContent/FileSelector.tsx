@@ -1,29 +1,30 @@
 import React, { useEffect, useState } from 'react';
 
-import { ACCEPTED_EXTENSIONS } from '@/utils/constants';
-import Badge from 'react-bootstrap/Badge';
-import Button from 'react-bootstrap/Button';
-import { CatIcon } from '@/features/icons/CatIcon';
-import { DevTypeIcon } from '@/features/icons/DevTypeIcon';
-import { Download } from 'react-bootstrap-icons';
-import Form from 'react-bootstrap/Form';
-import { useHotkeys } from 'react-hotkeys-hook';
 import { useAppDispatch } from '@/app/hooks';
-import { selectTabs } from '@/features/tabs/tabsSlice';
+import Github from '@/assets/img/github.png';
+import { selectConversion } from '@/features/conversion/conversionSlice';
 import {
     type FileContentSetPayload,
-    fileContentSet,
-    fileContentReset,
-    selectFileContent,
-    fetchRepoContents,
     fetchFileContent,
+    fetchRepoContents,
+    fileContentReset,
+    fileContentSet,
+    selectFileContent,
 } from '@/features/fileContent/fileContentSlice';
-import { selectConversion } from '@/features/conversion/conversionSlice';
-import { useSelector } from 'react-redux';
-import { supportsExtension } from 'blocklypy';
-import Github from '@/assets/img/github.png';
 import GithubOpenDialog from '@/features/github/GithubOpenDialog';
-import { selectGithubAuthToken } from '../github/githubSlice';
+import { selectGithubAuthToken } from '@/features/github/githubSlice';
+import { GITHUB_DOMAIN } from '@/features/github/utils';
+import { CatIcon } from '@/features/icons/CatIcon';
+import { DevTypeIcon } from '@/features/icons/DevTypeIcon';
+import { selectTabs } from '@/features/tabs/tabsSlice';
+import { ACCEPTED_EXTENSIONS } from '@/utils/constants';
+import { supportsExtension } from 'blocklypy';
+import { Download } from 'react-bootstrap-icons';
+import Badge from 'react-bootstrap/Badge';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { useSelector } from 'react-redux';
 
 const FileSelector: React.FC<{
     fileInputRef: React.RefObject<HTMLInputElement | null>;
@@ -95,7 +96,7 @@ const FileSelector: React.FC<{
         if (!path) return;
 
         try {
-            if (path.match('://.*github.com')) {
+            if (path.includes(GITHUB_DOMAIN)) {
                 dispatch(
                     fetchRepoContents({
                         url: path,
@@ -198,7 +199,7 @@ const FileSelector: React.FC<{
                     title="Enter GitHub Repository URL"
                     onClick={handleOpenModal}
                 >
-                    <img src={Github} />{' '}
+                    <img src={Github} alt="github" />{' '}
                     <span className="d-none d-lg-block">Open from GitHub</span>
                 </Button>
             </Form.Group>
@@ -292,11 +293,11 @@ const EXAMPLES = [
     {
         file: 'https://github.com/afarago/2025educup-masters-attilafarago',
         label: 'Github Public Repo',
-        icon: <img src={Github} />,
+        icon: <img src={Github} alt="github" />,
     },
     {
         file: 'https://gist.github.com/afarago/4718cffcbea66ca88f99be64fd912cd8',
         label: 'Github Gist',
-        icon: <img src={Github} />,
+        icon: <img src={Github} alt="github" />,
     },
 ];

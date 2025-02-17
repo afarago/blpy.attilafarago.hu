@@ -1,8 +1,7 @@
-import React, { useContext } from 'react';
-
-import BrandLogo from './BrandLogo';
-import { fileContentReset } from '@/features/fileContent/fileContentSlice';
 import { useAppDispatch } from '@/app/hooks';
+import { fileContentReset } from '@/features/fileContent/fileContentSlice';
+import React from 'react';
+import BrandLogo from './BrandLogo';
 
 const Header: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -17,7 +16,12 @@ const Header: React.FC = () => {
         <header>
             <nav className="navbar navbar-expand-sm border-bottom box-shadow mb-1">
                 <div className="container-lg">
-                    <div className="navbar-brand brandlogo" onClick={handleClickOnLogo}>
+                    <div
+                        className="navbar-brand brandlogo"
+                        onClick={handleClickOnLogo}
+                        role="button"
+                        aria-hidden="true"
+                    >
                         <BrandLogo />
                     </div>
                 </div>

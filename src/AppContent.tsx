@@ -1,21 +1,21 @@
 import './AppContent.scss';
 
-import React, { useCallback, useRef, useState } from 'react';
 import {
     fileContentSet,
     selectFileContent,
 } from '@/features/fileContent/fileContentSlice';
 import { selectTabs, toastContentSet } from '@/features/tabs/tabsSlice';
+import React, { useCallback, useRef, useState } from 'react';
 
+import { useAppDispatch } from '@/app/hooks';
 import FileSelector from '@/features/fileContent/FileSelector';
 import Footer from '@/features/footer/Footer';
 import Header from '@/features/header/Header';
 import MainTab from '@/features/tabs/TabMain';
-import TabLoading from './features/tabs/TabLoading';
-import Toast from 'react-bootstrap/Toast';
 import WelcomeTab from '@/features/welcome/TabWelcome';
-import { useAppDispatch } from '@/app/hooks';
+import Toast from 'react-bootstrap/Toast';
 import { useSelector } from 'react-redux';
+import TabLoading from './features/tabs/TabLoading';
 
 const useDragAndDrop = (setFilesFn: (files: File[]) => void) => {
     const [isDragging, setIsDragging] = useState(false);
@@ -39,7 +39,9 @@ const useDragAndDrop = (setFilesFn: (files: File[]) => void) => {
             event.stopPropagation();
             event.preventDefault();
             setIsDragging(false);
-            const files = [...event.dataTransfer?.files];
+            const files = event.dataTransfer?.files
+                ? [...event.dataTransfer?.files]
+                : [];
             setFilesFn(files);
         },
         [setFilesFn],

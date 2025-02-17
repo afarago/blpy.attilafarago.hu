@@ -1,9 +1,8 @@
+import React, { useEffect, useState } from 'react';
 import { GithubEntry, GithubGist, GithubRepository } from './utils';
-import { useEffect, useState } from 'react';
 
 import Dropdown from 'react-bootstrap/Dropdown';
 import FormControl from 'react-bootstrap/FormControl';
-import React from 'react';
 
 function getGithubEntryName(entry: GithubEntry): string {
     const repo = entry as GithubRepository;
@@ -129,7 +128,7 @@ const AutocompleteDropdown: React.FC<{
                 <Dropdown.Menu className="autocomplete-dropdown" autoFocus>
                     {suggestions.map((suggestion, index) => (
                         <Dropdown.Item
-                            key={index}
+                            key={suggestion.url}
                             eventKey={suggestion.url}
                             active={suggestion.url === inputRepoValue?.url}
                             onClick={() => handleSuggestionClick(suggestion)}
@@ -138,6 +137,7 @@ const AutocompleteDropdown: React.FC<{
                                 <img
                                     src={suggestion.owner.avatar_url}
                                     className="float-start me-2"
+                                    alt="avatar"
                                 />
                             )}
                             {getGithubIsPrivate(suggestion) && '🔒 '}

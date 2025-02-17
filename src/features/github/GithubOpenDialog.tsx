@@ -10,12 +10,12 @@ import {
     selectGithubUser,
 } from './githubSlice';
 
-import AutocompleteDropdown from './AutocompleteDropdown';
+import { useAppDispatch } from '@/app/hooks';
+import { RootState } from '@/app/store';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { RootState } from '@/app/store';
-import { useAppDispatch } from '@/app/hooks';
 import { useSelector } from 'react-redux';
+import AutocompleteDropdown from './AutocompleteDropdown';
 
 interface GithubOpenDialogProps {
     show: boolean;
@@ -48,7 +48,7 @@ const GithubOpenDialog: React.FC<GithubOpenDialogProps> = ({
 
     const handleGithubAuthClick = async () => {
         try {
-            const resultAction = await dispatch(authenticateGithub());
+            await dispatch(authenticateGithub());
         } catch (err) {
             console.error('Failed to authenticate:', err);
         }

@@ -1,8 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { IPyProjectResult } from 'blocklypy';
 import { RootState } from '@/app/store';
-import { useAppSelector } from '@/app/hooks';
+import { IPyProjectResult } from 'blocklypy';
 
 interface ConversionState {
     conversionResult?: IPyProjectResult;

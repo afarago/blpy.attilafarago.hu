@@ -1,21 +1,21 @@
+import { conversionReset, conversionSet } from '@/features/conversion/conversionSlice';
 import {
     FileContentSetPayload,
     fileContentReset,
     fileContentSet,
     selectFileContent,
 } from '@/features/fileContent/fileContentSlice';
+import { selectTabs, toastContentSet } from '@/features/tabs/tabsSlice';
 import {
     IPyConverterFile,
     IPyConverterOptions,
     convertProjectToPython,
     supportsExtension,
 } from 'blocklypy';
-import { conversionReset, conversionSet } from '@/features/conversion/conversionSlice';
-import { selectTabs, toastContentSet } from '@/features/tabs/tabsSlice';
 
-import ReactGA from 'react-ga4';
 import { RootState } from '@/app/store';
 import { createListenerMiddleware } from '@reduxjs/toolkit';
+import ReactGA from 'react-ga4';
 
 const fileContentListenerMiddleware = createListenerMiddleware();
 
@@ -43,7 +43,7 @@ fileContentListenerMiddleware.startListening({
 
             const inputs: IPyConverterFile[] = await Promise.all(
                 files.map(async (file) => ({
-                    name: (file as any).webkitRelativePath || file.name,
+                    name: file.webkitRelativePath || file.name,
                     buffer: await file.arrayBuffer(),
                     size: file.size,
                     date: builtin ? undefined : new Date(file.lastModified),

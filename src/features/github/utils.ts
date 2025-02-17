@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { supportsExtension } from 'blocklypy';
 
-const GITHUB_API_URL = 'https://api.github.com';
+export const GITHUB_API_URL = 'https://api.github.com';
+export const GITHUB_DOMAIN = 'github.com';
 
 export interface GithubRepository {
     full_name: string;
@@ -64,9 +65,9 @@ export function extractGithubUrlInfo(url: string): GithubUrlInfo | undefined {
     // const matchGist = url.match(
     //     /gist\.github\.com\/(?<owner>[^\/]+)\/(?<path>[a-f0-9]+)|api\.github\.com\/gists\/(?<path>[a-f0-9]+)/,
     // )?.groups;
-    const matchGist = url.match(
-        /((gist\.github\.com\/(?<owner>[^\/]+))|(api\.github\.com\/gists))\/(?<path>[a-f0-9]+)/,
-    )?.groups;
+    const gistRegex =
+        /((gist\.github\.com\/(?<owner>[^/]+))|(api\.github\.com\/gists))\/(?<path>[a-f0-9]+)/;
+    const matchGist = gistRegex.exec(url)?.groups;
     if (matchGist) return { ...matchGist, type: 'gist' } as GithubUrlInfo;
 
     /** 2. Try to match git repo path
@@ -74,9 +75,9 @@ export function extractGithubUrlInfo(url: string): GithubUrlInfo | undefined {
      *      https://github.com/afarago/2025educup-masters-attilafarago
      *      https://api.github.com/repos/afarago/2025educup-masters-attilafarago
      */
-    const matchRepo = url.match(
-        /github\.com\/(?:repos\/)?(?<owner>[^\/]+)\/(?<repo>[^\/]+)(?:\/(?:tree|blob)\/(?<ref>[^\/]+)\/(?<path>.*))?/,
-    )?.groups;
+    const repoRegex =
+        /github\.com\/(?:repos\/)?(?<owner>[^/]+)\/(?<repo>[^/]+)(?:\/(?:tree|blob)\/(?<ref>[^/]+)\/(?<path>.*))?/;
+    const matchRepo = repoRegex.exec(url)?.groups;
     if (matchRepo) return { ...matchRepo, type: 'repo' } as GithubUrlInfo;
 }
 
@@ -87,9 +88,9 @@ export async function getGithubContents(
 ): Promise<{ name: string; content: Blob }[] | null> {
     try {
         if (ghinfo.type === 'gist') {
-            return getGistContents(ghinfo, token);
+            return await getGistContents(ghinfo, token);
         } else {
-            return getGithubRepoContents(ghinfo, token, useBackendProxy);
+            return await getGithubRepoContents(ghinfo, token, useBackendProxy);
         }
     } catch (error) {
         throw new Error(`Error getting public GitHub contents: ${error}`);
@@ -142,9 +143,9 @@ async function getGithubRepoContents(
     token: string | null,
     useBackendProxy: boolean,
 ): Promise<{ name: string; content: Blob }[] | null> {
-    let url = `${GITHUB_API_URL}/repos/${ghinfo.owner}/${ghinfo.repo}/contents/${
+    const url = `${GITHUB_API_URL}/repos/${ghinfo.owner}/${ghinfo.repo}/contents/${
         ghinfo.path ?? ''
-    }${ghinfo.ref ? `?ref=${ghinfo.ref}` : ''}`;
+    }${ghinfo.ref ? '?ref=' + ghinfo.ref : ''}`;
 
     const response = await axios.get(url, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},

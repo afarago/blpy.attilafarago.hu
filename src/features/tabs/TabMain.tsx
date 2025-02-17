@@ -16,11 +16,11 @@ import {
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';
+import { useSelector } from 'react-redux';
 import TabContents from './TabContents';
 import TabHeaders from './TabHeaders';
-import TabTopControls from './TabTopControls';
-import { useSelector } from 'react-redux';
 import { selectTabs } from './tabsSlice';
+import TabTopControls from './TabTopControls';
 
 export enum TabKey {
     PYCODE = 'pycode',
@@ -85,7 +85,7 @@ const TabMain: React.FC = () => {
                 code: !additionalCommentsChecked
                     ? conversionResult?.plaincode
                     : // replace @ .* ending with /* () */ for css formatter
-                      conversionResult?.plaincode?.replace(/@[ ]?(.*)$/gm, '/* $1 */'),
+                      conversionResult?.plaincode?.replace(/@ ?(.*)$/gm, '/* $1 */'),
             },
             {
                 key: TabKey.EV3BDECOMPILED,

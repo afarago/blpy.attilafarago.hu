@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
-import { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { selectConversion } from '@/features/conversion/conversionSlice';
+import { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { useSelector } from 'react-redux';
 
 // const removeSvgDimensions = (svgString: string): string => {
@@ -52,7 +52,7 @@ const CallGraph = forwardRef<HTMLDivElement>(({}, ref) => {
             'shape = box, style = rounded',
         );
         // console.log(dependencygraph2);
-        let svg = await graphviz.dot(dependencygraph2);
+        let svg = graphviz.dot(dependencygraph2);
         // need to remove width and height attributes from svg for successful download for domtoimage
         // svg = removeSvgDimensions(svg);
         setSvgDependencyGraph(svg);

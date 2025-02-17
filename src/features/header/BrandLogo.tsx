@@ -1,6 +1,5 @@
-import React, { useContext } from 'react';
-
 import LogoFull from '@/assets/img/logo_full.svg?react';
+import React from 'react';
 
 const BrandLogo: React.FC = () => {
     return (

@@ -1,6 +1,5 @@
 import { Handler } from '@netlify/functions';
 import fetch from 'node-fetch';
-import https from 'https';
 
 const GITHUB_API_URL = 'https://raw.githubusercontent.com';
 

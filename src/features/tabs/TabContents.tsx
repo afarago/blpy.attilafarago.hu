@@ -1,18 +1,18 @@
-import { ITabElem, TabKey } from './TabMain';
 import React, { useEffect } from 'react';
+import { ITabElem, TabKey } from './TabMain';
 
-import Button from 'react-bootstrap/Button';
 import CallGraph from '@/features/graph/CallGraph';
+import Button from 'react-bootstrap/Button';
 // import SyntaxHighlighter from 'react-syntax-highlighter';
-import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { selectSvgContentData } from '@/features/conversion/conversionSlice';
 import Tab from 'react-bootstrap/Tab';
+import { useSelector } from 'react-redux';
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import less from 'react-syntax-highlighter/dist/esm/languages/hljs/less';
 import python from 'react-syntax-highlighter/dist/esm/languages/hljs/python';
-import { selectSvgContentData } from '@/features/conversion/conversionSlice';
-import { selectTabs } from './tabsSlice';
-import svgPanZoom from 'svg-pan-zoom';
-import { useSelector } from 'react-redux';
 import { vs } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import svgPanZoom from 'svg-pan-zoom';
+import { selectTabs } from './tabsSlice';
 
 SyntaxHighlighter.registerLanguage('python', python);
 SyntaxHighlighter.registerLanguage('less', less);
@@ -86,12 +86,11 @@ const TabContents: React.FC<TabContentsProps> = ({
 
     const elem = tabElems.find((elem) => elem.key === selectedTabkey);
     function createTabElemContent(elem: ITabElem) {
-        let subelem: ITabElem | undefined = elem;
         let code = elem.code;
         let index = 0;
         if (elem.children) {
             index = elem.children.findIndex((elem) => elem.name === gensubkey);
-            subelem = elem.children[index];
+            const subelem = elem.children[index];
             code = subelem?.code;
         }
 

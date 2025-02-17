@@ -1,12 +1,12 @@
-import { ITabElem, TabKey } from './TabMain';
 import React, { useEffect } from 'react';
+import { ITabElem, TabKey } from './TabMain';
 
 import BrandLogo from '@/features/header/BrandLogo';
 import Nav from 'react-bootstrap/Nav';
 import ReactGA from 'react-ga4';
-import { selectTabs } from './tabsSlice';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useSelector } from 'react-redux';
+import { selectTabs } from './tabsSlice';
 
 interface TabHeadersProps {
     selectedTabkey: string;
@@ -49,9 +49,8 @@ const TabHeaders: React.FC<TabHeadersProps> = ({
             (elem) => selectedSubTabkey === elem.key,
         );
         if (
-            !tabElem ||
             !tabElem?.condition ||
-            (tabElem.key === TabKey.PYCODE && tabElem.children && !tabSubElem)
+            (tabElem?.key === TabKey.PYCODE && tabElem?.children && !tabSubElem)
         ) {
             targetkey = TabKey.PYCODE;
             setSelectedTabkey(targetkey);
@@ -63,30 +62,29 @@ const TabHeaders: React.FC<TabHeadersProps> = ({
     }, [tabElems, selectedTabkey, selectedSubTabkey]);
 
     return (
-        <>
-            <Nav variant="tabs" className="px-0">
-                <div className="d-flex flex-row px-0">
-                    {tabElems.map(
-                        (elem) =>
-                            elem.condition !== false && (
-                                <Nav.Item key={elem.key}>
-                                    {/* Single file tab */}
-                                    {/* {!elem.children && ( */}
-                                    <Nav.Link
-                                        eventKey={elem.key}
-                                        key={elem.key}
-                                        title={`${elem.title}`}
-                                        className="icon-link icon-link-hover"
-                                        active={selectedTabkey === elem.key}
-                                    >
-                                        {elem.icon && (
-                                            <elem.icon className="d-none d-md-inline" />
-                                        )}
-                                        {elem.name}
-                                    </Nav.Link>
+        <Nav variant="tabs" className="px-0">
+            <div className="d-flex flex-row px-0">
+                {tabElems.map(
+                    (elem) =>
+                        elem.condition !== false && (
+                            <Nav.Item key={elem.key}>
+                                {/* Single file tab */}
+                                {/* {!elem.children && ( */}
+                                <Nav.Link
+                                    eventKey={elem.key}
+                                    key={elem.key}
+                                    title={`${elem.title}`}
+                                    className="icon-link icon-link-hover"
+                                    active={selectedTabkey === elem.key}
+                                >
+                                    {elem.icon && (
+                                        <elem.icon className="d-none d-md-inline" />
+                                    )}
+                                    {elem.name}
+                                </Nav.Link>
 
-                                    {/* Multi-file dropdown tab */}
-                                    {/* {elem.children && (
+                                {/* Multi-file dropdown tab */}
+                                {/* {elem.children && (
                                         <NavDropdown
                                             title={
                                                 <span
@@ -127,18 +125,17 @@ const TabHeaders: React.FC<TabHeadersProps> = ({
                                             ))}
                                         </NavDropdown>
                                     )} */}
-                                </Nav.Item>
-                            ),
-                    )}
+                            </Nav.Item>
+                        ),
+                )}
 
-                    {fullScreen && (
-                        <Nav.Item className="brandlogo">
-                            <BrandLogo />
-                        </Nav.Item>
-                    )}
-                </div>
-            </Nav>
-        </>
+                {fullScreen && (
+                    <Nav.Item className="brandlogo">
+                        <BrandLogo />
+                    </Nav.Item>
+                )}
+            </div>
+        </Nav>
     );
 };
 

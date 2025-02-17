@@ -1,5 +1,10 @@
-import { type GithubEntry, type GithubGist, type GithubRepository } from './utils';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+    GITHUB_API_URL,
+    type GithubEntry,
+    type GithubGist,
+    type GithubRepository,
+} from './utils';
 
 import { RootState } from '@/app/store';
 import axios from 'axios';
@@ -155,7 +160,7 @@ export const authenticateGithub = createAsyncThunk(
             const token = response.data.accessToken as string;
 
             // 5. get the user data
-            const userResponse = await axios.get('https://api.github.com/user', {
+            const userResponse = await axios.get(`${GITHUB_API_URL}/user`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -180,7 +185,7 @@ export const listReposAndGistsGithub = createAsyncThunk(
             const result: GithubEntry[] = [];
             // 1. get the user repositories
             {
-                const response = await axios.get(`https://api.github.com/user/repos`, {
+                const response = await axios.get(`${GITHUB_API_URL}/user/repos`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -191,7 +196,7 @@ export const listReposAndGistsGithub = createAsyncThunk(
 
             // 1b. get the user gists
             {
-                const response = await axios.get(`https://api.github.com/gists`, {
+                const response = await axios.get(`${GITHUB_API_URL}/gists`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -201,7 +206,7 @@ export const listReposAndGistsGithub = createAsyncThunk(
             }
 
             // 2. get the user orgs
-            const orgsResponse = await axios.get(`https://api.github.com/user/orgs`, {
+            const orgsResponse = await axios.get(`${GITHUB_API_URL}/user/orgs`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
