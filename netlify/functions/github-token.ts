@@ -28,6 +28,7 @@ const handler: Handler = async (
     // const redirectUri = process.env.GITHUB_REDIRECT_URI; // Should match your OAuth App setting
     const redirectUri = params.get('redirect_uri');
     const scope = params.get('scope');
+    const state = params.get('state');
 
     if (!clientId || !clientSecret || !redirectUri) {
         console.error(
@@ -48,6 +49,7 @@ const handler: Handler = async (
                 code: code,
                 scope: scope,
                 redirect_uri: redirectUri,
+                state: state,
             },
             {
                 headers: {

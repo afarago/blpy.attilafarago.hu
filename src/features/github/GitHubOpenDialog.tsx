@@ -6,11 +6,13 @@ import {
     selectGithubAuthToken,
     selectGithubIsAuthenticated,
     selectGithubRepositories,
+    selectGithubUser,
 } from './githubSlice';
 
 import AutocompleteDropdown from './AutocompleteDropdown';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import { github } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { useAppDispatch } from '@/app/hooks';
 import { useSelector } from 'react-redux';
 
@@ -76,9 +78,10 @@ const GitHubOpenDialog: React.FC<GitHubOpenDialogProps> = ({
     const [selectedItem, setSelectedItem] = useState<string | undefined>(undefined); // State to hold selected item
     const [autoCompleteDroppedDown, setAutoCompleteDroppedDown] = useState(false);
 
-    const isAuthenticated = useSelector(selectGithubIsAuthenticated);
+    const githubIsAuthenticated = useSelector(selectGithubIsAuthenticated);
     const githubAuthToken = useSelector(selectGithubAuthToken);
-    const repositories = useSelector(selectGithubRepositories);
+    const githubRepositories = useSelector(selectGithubRepositories);
+    const githubUser = useSelector(selectGithubUser);
 
     const isNetlify = (import.meta as any).env.VITE_NETLIFY?.toString() === 'true';
 
@@ -106,43 +109,26 @@ const GitHubOpenDialog: React.FC<GitHubOpenDialogProps> = ({
         dispatch(logout());
     };
 
+    const handleOnShow = () => {
+        setSelectedItem(initialUrl ?? '');
+        const inputElement = document.getElementById('autocompleteInput');
+        inputElement?.focus();
+    };
+
+    const handleEscapeKeyDown = (event: KeyboardEvent) => {
+        if (autoCompleteDroppedDown) {
+            event.preventDefault();
+        }
+    };
+
     useEffect(() => {
         if (githubAuthToken) {
             dispatch(listReposGithub(githubAuthToken));
         }
     }, [githubAuthToken]);
 
-    // const handleLogin = () => {
-    //     const clientId = (import.meta as any).env.GITHUB_CLIENT_ID;
-    //     const redirectUri = `${window.location.origin}`;
-    //     const scope = 'user,repo';
-
-    //     const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
-    //     window.location.href = authUrl;
-    // };
-
-    //   const handleLogout = () => {
-    //       setAccessToken(null);
-    //       setUserInfo(null);
-    //       localStorage.removeItem('github_access_token');
-    //   };
-
-    useEffect(() => {
-        // initial dialog show
-        if (show) {
-            setSelectedItem(initialUrl ?? '');
-            setTimeout(() => {
-                const inputElement = document.getElementById('autocompleteInput');
-                inputElement?.focus();
-            }, 0);
-        }
-    }, [show]);
-
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
-            // if (event.key === 'Escape' && show && !autoCompleteDroppedDown) {
-            //     handleClose();
-            // }
             if (event.key === 'Enter' && show && !autoCompleteDroppedDown) {
                 handleClose(selectedItem);
             }
@@ -155,7 +141,14 @@ const GitHubOpenDialog: React.FC<GitHubOpenDialogProps> = ({
     }, [show, selectedItem, autoCompleteDroppedDown]);
 
     return (
-        <Modal show={show} onHide={handleClose} size="lg">
+        <Modal
+            show={show}
+            onHide={handleClose}
+            size="lg"
+            onShow={handleOnShow}
+            onEscapeKeyDown={handleEscapeKeyDown}
+            className="GithubDialog"
+        >
             <Modal.Header closeButton>
                 <Modal.Title>Open from GitHub</Modal.Title>
             </Modal.Header>
@@ -167,7 +160,7 @@ const GitHubOpenDialog: React.FC<GitHubOpenDialogProps> = ({
                     </i>
                 </div>
                 <AutocompleteDropdown
-                    data={repositories}
+                    data={githubRepositories}
                     initialValue={initialUrl}
                     onSelect={handleItemSelect}
                     onDropdownToggle={handleDropDownToggle}
@@ -176,19 +169,36 @@ const GitHubOpenDialog: React.FC<GitHubOpenDialogProps> = ({
                 {selectedItem && <div className="small text-muted">{selectedItem}</div>}
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleCloseClick}>
-                    Close
-                </Button>
-                {!isAuthenticated && isNetlify && (
-                    <Button variant="secondary" onClick={handleGitHubAuthClick}>
+                {!githubIsAuthenticated && isNetlify && (
+                    <Button
+                        variant="secondary"
+                        onClick={handleGitHubAuthClick}
+                        className="me-auto"
+                    >
                         Authorize
                     </Button>
                 )}
-                {isAuthenticated && isNetlify && (
-                    <Button variant="secondary" onClick={handleGitHubLogoutClick}>
-                        Logout
-                    </Button>
+                {githubIsAuthenticated && isNetlify && (
+                    <>
+                        <img
+                            src={githubUser?.avatar_url}
+                            width="30"
+                            height="30"
+                            className="profile-avatar rounded-circle  ms-2"
+                            alt="avatar"
+                        />
+                        <Button
+                            variant="secondary"
+                            onClick={handleGitHubLogoutClick}
+                            className="me-auto"
+                        >
+                            Logout {githubUser?.login}
+                        </Button>
+                    </>
                 )}
+                <Button variant="secondary" onClick={handleCloseClick}>
+                    Close
+                </Button>
                 <Button
                     variant="primary"
                     onClick={handleCloseClick}
