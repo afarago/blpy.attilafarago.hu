@@ -20,6 +20,7 @@ export interface FileContentState {
     loading?: boolean;
     error?: string | null;
     showSpinner?: boolean;
+    disabledFiles: string[];
 }
 
 const initialState: FileContentState = {
@@ -29,11 +30,19 @@ const initialState: FileContentState = {
     loading: false,
     error: null,
     showSpinner: false,
+    disabledFiles: [],
 };
 
-export interface FileContentSetPayload extends Omit<FileContentState, 'files'> {
-    files: File[];
+export interface FileContentSetPayload {
+    files: File[]; // file type as payload will directly uses unserializable File type, but we only cache metadata only
+    builtin?: boolean;
     url?: string;
+    disabledFiles?: string[];
+}
+
+export interface FileContentSetEnabledPayload {
+    filename: string;
+    enabled?: boolean;
 }
 
 const fileContentSlice = createSlice({
@@ -41,21 +50,41 @@ const fileContentSlice = createSlice({
     initialState,
     reducers: {
         fileContentSet: (state, action: PayloadAction<FileContentSetPayload>) => {
-            state.files = action.payload.files
-                .filter((file) => supportsExtension(file.name))
-                .map((file) => ({
-                    name: file.name,
-                    size: file.size,
-                    type: file.type,
-                    lastModified: file.lastModified,
-                }));
+            state.files = action.payload.files.map((file) => ({
+                name: file.name,
+                size: file.size,
+                type: file.type,
+                lastModified: file.lastModified,
+            }));
             state.url = action.payload.url;
             state.builtin = action.payload.builtin;
+            state.disabledFiles = action.payload.disabledFiles ?? [];
         },
         fileContentReset: (state) => {
             state.files = [];
+            state.disabledFiles = [];
             state.builtin = undefined;
             state.url = undefined;
+        },
+        fileSetEnabled: (
+            state,
+            action: PayloadAction<FileContentSetEnabledPayload>,
+        ) => {
+            //-- let disable also work even if file does not exist on uploaded files (zip file)
+            // if (!state.files.find((file) => file.name === action.payload.filename))
+            //     return;
+
+            // params: action.payload.enabled - undefined means toggle file enabled/disabled, true/false means set value
+            if (action.payload.enabled === undefined) {
+                const index = state.disabledFiles.indexOf(action.payload.filename);
+                if (index >= 0) state.disabledFiles.splice(index, 1);
+                else state.disabledFiles.push(action.payload.filename);
+            } else {
+                if (action.payload.enabled) {
+                    const index = state.disabledFiles.indexOf(action.payload.filename);
+                    if (index >= 0) state.disabledFiles.splice(index, 1);
+                } else state.disabledFiles.push(action.payload.filename);
+            }
         },
         setLoading: (state, action: PayloadAction<boolean>) => {
             state.loading = action.payload;
@@ -94,7 +123,8 @@ const fileContentSlice = createSlice({
 });
 
 // Export the generated action creators for use in components
-export const { fileContentSet, fileContentReset } = fileContentSlice.actions;
+export const { fileContentSet, fileContentReset, fileSetEnabled } =
+    fileContentSlice.actions;
 const { setLoading, setShowSpinner } = fileContentSlice.actions;
 
 // Selectors (for accessing state in components)

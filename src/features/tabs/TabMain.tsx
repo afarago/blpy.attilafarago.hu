@@ -17,6 +17,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';
 import { useSelector } from 'react-redux';
+import { selectFileContent } from '../fileContent/fileContentSlice';
 import TabContents from './TabContents';
 import TabHeaders from './TabHeaders';
 import { selectTabs } from './tabsSlice';
@@ -38,9 +39,11 @@ export interface ITabElem {
     condition: boolean;
     code?: string;
     children?: ITabElem[];
+    disabled?: boolean;
 }
 
 const TabMain: React.FC = () => {
+    const { disabledFiles } = useSelector(selectFileContent);
     const { conversionResult } = useSelector(selectConversion);
     const svgContentData = useSelector(selectSvgContentData);
     const rbfDecompileData = useSelector(selectRbfDecompileData);
@@ -72,6 +75,7 @@ const TabMain: React.FC = () => {
                                   key: elem,
                                   code: (conversionResult?.pycode as string[])[index],
                                   condition: true,
+                                  disabled: disabledFiles.includes(elem),
                               } satisfies ITabElem),
                       )
                     : undefined,
@@ -117,7 +121,7 @@ const TabMain: React.FC = () => {
         ];
 
         setTabElems(tabElemValues);
-    }, [conversionResult, rbfDecompileData, svgContentData]);
+    }, [conversionResult, rbfDecompileData, svgContentData, disabledFiles]);
 
     const handleSelectTab = useCallback((k: string | null) => {
         if (k) setSelectedTabkey(k as TabKey);

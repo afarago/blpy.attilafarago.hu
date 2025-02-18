@@ -166,8 +166,18 @@
             white-space: nowrap;
         }
 
-        .multi-file-header > button {
-            --bs-btn-border-radius: 0;
+        .multi-file-header {
+            & > button {
+                --bs-btn-border-radius: 0;
+                border-inline: 1px solid var(--bs-btn-border-color);
+                font-size: small;
+                border-bottom: none;
+            }
+            & > button.active {
+                --bs-btn-active-bg: rgb(241, 239, 239);
+                border-top: rgb(16, 121, 200) 2px solid;
+                border-inline: 1px solid lightgray;
+            }
         }
     }
 

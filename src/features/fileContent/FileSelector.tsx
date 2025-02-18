@@ -129,17 +129,17 @@ const FileSelector: React.FC<{
     }, []);
 
     useEffect(() => {
+        // reload based on cached files, when additionalCommentsChecked/disabledFiles changed
         if (filesCached?.length) {
             const fcontent = {
                 files: filesCached,
                 builtin: fileContent.builtin, // just take current value into account, but do not react on this
                 url: fileContent.url, // just take current value into account, but do not react on this
+                disabledFiles: fileContent.disabledFiles, // refresh based on current data
             } satisfies FileContentSetPayload;
             dispatch(fileContentSet(fcontent));
-        } else {
-            dispatch(fileContentReset());
         }
-    }, [additionalCommentsChecked, filesCached]);
+    }, [additionalCommentsChecked, fileContent.disabledFiles, filesCached]);
 
     useEffect(() => {
         // sync local cached files with file selector (especially when not picked from there), apart handleFileOpen
@@ -147,6 +147,9 @@ const FileSelector: React.FC<{
             const dataTransfer = new DataTransfer();
             filesCached?.forEach((fc) => dataTransfer.items.add(fc));
             fileInputRef.current.files = dataTransfer.files;
+        }
+        if (!filesCached?.length) {
+            dispatch(fileContentReset());
         }
     }, [filesCached]);
 

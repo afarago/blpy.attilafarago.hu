@@ -4267,17 +4267,18 @@ bl@^4.0.3:
     inherits "^2.0.4"
     readable-stream "^3.4.0"
 
-blocklypy@^0.0.85:
-  version "0.0.85"
-  resolved "https://registry.yarnpkg.com/blocklypy/-/blocklypy-0.0.85.tgz#ead904367e9406d60610de66cbe35364e4828762"
-  integrity sha512-AU8M/7T2MkAAgDvQwF8fxrb4uPRgR/Zt6yLm43JARAEQxyqPeTPg3pbd0dcpw23hxJLWsYkguM7ffU4wXFGZYQ==
+blocklypy@^0.0.88:
+  version "0.0.88"
+  resolved "https://registry.yarnpkg.com/blocklypy/-/blocklypy-0.0.88.tgz#7f6a45e0e4f0629e53efe9392da9826f03d3e64d"
+  integrity sha512-m9948+ady93+Mw33Oai7TjJ6TWcwwNXoivaOD12YEzK1tpc0lnw5aMEL993Oi5I7MjzBdxzOKcsliMymCu/xiQ==
   dependencies:
-    "@hpcc-js/wasm-graphviz" "^1.7.0"
     buffer "^6.0.3"
     canvas "^3.1.0"
     commander "^13.1.0"
     fast-xml-parser "^4.5.0"
     jszip "^3.10.1"
+  optionalDependencies:
+    "@hpcc-js/wasm-graphviz" "^1.7.0"
 
 body-parser@1.20.3:
   version "1.20.3"

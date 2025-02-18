@@ -1,18 +1,20 @@
 import React, { useEffect } from 'react';
 import { ITabElem, TabKey } from './TabMain';
 
+import { selectSvgContentData } from '@/features/conversion/conversionSlice';
 import CallGraph from '@/features/graph/CallGraph';
 import Button from 'react-bootstrap/Button';
-// import SyntaxHighlighter from 'react-syntax-highlighter';
-import { selectSvgContentData } from '@/features/conversion/conversionSlice';
 import Tab from 'react-bootstrap/Tab';
-import { useSelector } from 'react-redux';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import less from 'react-syntax-highlighter/dist/esm/languages/hljs/less';
 import python from 'react-syntax-highlighter/dist/esm/languages/hljs/python';
-import { vs } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import svgPanZoom from 'svg-pan-zoom';
+import { fileSetEnabled } from '../fileContent/fileContentSlice';
 import { selectTabs } from './tabsSlice';
+// import SyntaxHighlighter from 'react-syntax-highlighter';
+import { useAppDispatch } from '@/app/hooks';
+import { useSelector } from 'react-redux';
+import { vs } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 SyntaxHighlighter.registerLanguage('python', python);
 SyntaxHighlighter.registerLanguage('less', less);
@@ -42,6 +44,7 @@ const TabContents: React.FC<TabContentsProps> = ({
 }) => {
     const { copying } = useSelector(selectTabs);
     const svgContentData = useSelector(selectSvgContentData);
+    const dispatch = useAppDispatch();
 
     const REFMAP = {
         [TabKey.PREVIEW]: { ref: svgRef, ext: 'preview' },
@@ -84,6 +87,11 @@ const TabContents: React.FC<TabContentsProps> = ({
         copying,
     ]);
 
+    const handleToggleFileDisabled = (e: React.MouseEvent, filename: string) => {
+        e.preventDefault();
+        dispatch(fileSetEnabled({ filename, enabled: undefined }));
+    };
+
     const elem = tabElems.find((elem) => elem.key === selectedTabkey);
     function createTabElemContent(elem: ITabElem) {
         let code = elem.code;
@@ -91,7 +99,7 @@ const TabContents: React.FC<TabContentsProps> = ({
         if (elem.children) {
             index = elem.children.findIndex((elem) => elem.name === gensubkey);
             const subelem = elem.children[index];
-            code = subelem?.code;
+            code = subelem?.disabled ? '[tab disabled]' : subelem?.code;
         }
 
         return (
@@ -100,21 +108,23 @@ const TabContents: React.FC<TabContentsProps> = ({
                 {genkey === TabKey.PYCODE && index === 0 && elem.children && (
                     <div
                         className={
-                            'multi-file-header bg-secondary text-white small' +
+                            'multi-file-header bg-light text-white small' +
                             (selectedTabkey === TabKey.PYCODE ? '' : ' d-none')
                         }
                     >
-                        {elem.children.map((child2, index2) => (
+                        {elem.children.map((child2) => (
                             <Button
                                 size="sm"
                                 className={
-                                    child2.key === selectedSubTabkey
-                                        ? 'active'
-                                        : 'border-end border-start'
+                                    (child2.key === selectedSubTabkey ? 'active' : '') +
+                                    (child2.disabled ? ' text-body-tertiary' : '')
                                 }
-                                variant="secondary"
+                                variant="light"
                                 key={child2.key}
                                 onClick={() => setSelectedSubTabkey(child2.key)}
+                                onContextMenu={(e) =>
+                                    handleToggleFileDisabled(e, child2.key)
+                                }
                             >
                                 {child2?.name}
                             </Button>
@@ -135,14 +145,15 @@ const TabContents: React.FC<TabContentsProps> = ({
                 >
                     {(genkey === TabKey.PYCODE ||
                         genkey === TabKey.PLAINCODE ||
-                        genkey === TabKey.EV3BDECOMPILED) && (
-                        <SyntaxHighlighter
-                            style={vs}
-                            language={genkey === TabKey.PYCODE ? 'python' : 'less'}
-                        >
-                            {code ?? ''}
-                        </SyntaxHighlighter>
-                    )}
+                        genkey === TabKey.EV3BDECOMPILED) &&
+                        code !== undefined && (
+                            <SyntaxHighlighter
+                                style={vs}
+                                language={genkey === TabKey.PYCODE ? 'python' : 'less'}
+                            >
+                                {code}
+                            </SyntaxHighlighter>
+                        )}
                     {genkey === TabKey.CALLGRAPH && <CallGraph ref={graphRef} />}
                     {genkey === TabKey.PREVIEW && (
                         <div

@@ -1,10 +1,10 @@
 import * as path from 'path';
 
-import { VitePWA } from 'vite-plugin-pwa';
-import { defineConfig } from 'vite';
-import { fileURLToPath } from 'url';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import react from '@vitejs/plugin-react';
+import { fileURLToPath } from 'url';
+import { defineConfig } from 'vite';
+import { VitePWA } from 'vite-plugin-pwa';
 import svgr from 'vite-plugin-svgr';
 
 // import { visualizer } from 'rollup-plugin-visualizer';
@@ -14,7 +14,7 @@ const __dirname = path.dirname(__filename);
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => {
-    const isDebug = command === 'serve';
+    const isDebug = command === 'serve'; // vite dev
     const isProd = command === 'build';
     // const isNetlify = process.env.NETLIFY === 'true';
     return {
@@ -62,6 +62,7 @@ export default defineConfig(({ command }) => {
             }),
             isProd && VitePWA({
                 registerType: 'autoUpdate',
+                injectRegister: 'auto',
                 workbox: {
                     globPatterns: [
                         '**/*.{js,css,html,ico,png,svg,llsp,llsp3,lms,lmsp,ev3,ev3m,rbf,py,zip}',
@@ -85,6 +86,7 @@ export default defineConfig(({ command }) => {
                         'BlocklyPy: SPIKE to Pybricks - A web-app for converting LEGO blockly programs to Python code',
                     theme_color: '#ffffff',
                     background_color: '#ffffff',
+                    start_url: '/',
                     display: 'standalone',
                     icons: [
                         {

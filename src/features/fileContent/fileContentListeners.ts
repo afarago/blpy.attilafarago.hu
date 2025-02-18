@@ -22,7 +22,6 @@ const fileContentListenerMiddleware = createListenerMiddleware();
 fileContentListenerMiddleware.startListening({
     actionCreator: fileContentSet,
     effect: async (action, listenerApi) => {
-        // const builtin = action.payload.builtin;
         const files = action.payload.files.filter((file) =>
             supportsExtension(file.name),
         );
@@ -30,7 +29,9 @@ fileContentListenerMiddleware.startListening({
         const { additionalCommentsChecked } = selectTabs(
             listenerApi.getState() as RootState,
         );
-        const { builtin } = selectFileContent(listenerApi.getState() as RootState);
+        const { builtin, disabledFiles } = selectFileContent(
+            listenerApi.getState() as RootState,
+        );
 
         // allow components to cache files, to re-convert them
         notifyComponent(action.payload);
@@ -44,7 +45,9 @@ fileContentListenerMiddleware.startListening({
             const inputs: IPyConverterFile[] = await Promise.all(
                 files.map(async (file) => ({
                     name: file.webkitRelativePath || file.name,
-                    buffer: await file.arrayBuffer(),
+                    buffer: disabledFiles.includes(file.name)
+                        ? new ArrayBuffer(0)
+                        : await file.arrayBuffer(),
                     size: file.size,
                     date: builtin ? undefined : new Date(file.lastModified),
                 })),
@@ -53,15 +56,19 @@ fileContentListenerMiddleware.startListening({
             const options: IPyConverterOptions = {
                 debug: {
                     ...(additionalCommentsChecked
-                        ? { showExplainingComments: true, showBlockIds: true }
+                        ? {
+                              showExplainingComments: true,
+                              showBlockIds: true,
+                          }
                         : {}),
+                    ...(disabledFiles ? { skipFiles: disabledFiles } : {}),
                 },
                 output: {
                     'ev3b.source': true,
                     'blockly.slot': true,
                     'blockly.svg': true,
                 },
-            };
+            } satisfies IPyConverterOptions;
             const retval = await convertProjectToPython(inputs, options);
 
             ReactGA.send({
