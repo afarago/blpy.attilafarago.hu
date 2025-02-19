@@ -1,8 +1,8 @@
 import * as path from 'path';
 
-import { fileURLToPath } from 'url';
-import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
+import { defineConfig } from 'vite';
+import { fileURLToPath } from 'url';
 // import https from 'vite-plugin-https'; // local PWA testing, yarn add -D vite-plugin-https
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import react from '@vitejs/plugin-react';
@@ -63,7 +63,7 @@ export default defineConfig(({ command }) => {
                     exclude: '',
                 },
             }),
-            // isProd &&
+            isProd && // only include in production
             VitePWA({
                 registerType: 'autoUpdate',
                 injectRegister: 'auto',
@@ -117,8 +117,8 @@ export default defineConfig(({ command }) => {
                     '*.ico',
                 ],
                 manifest: {
-                    name: 'BlocklyPy web-app',
-                    short_name: 'BlocklyPy web-app',
+                    name: 'BlocklyPy',
+                    short_name: 'BlocklyPy',
                     description:
                         'BlocklyPy: SPIKE to Pybricks - A web-app for converting LEGO blockly programs to Python code',
                     theme_color: '#ffffff',
@@ -181,8 +181,14 @@ export default defineConfig(({ command }) => {
                         {
                             action: '/',
                             accept: {
-                                'text/llsp3': ['.llsp3'],
-                                //TODO: add more file types
+                                'application/vnd.lego.spike': ['.llsp3', '.llsp'],
+                                'application/vnd.lego.robotinventor': ['.lms'],
+                                'application/vnd.lego.ev3classroom': ['.lmsp'],
+                                'application/vnd.lego.ev3lab': ['.ev3'],
+                                'application/vnd.lego.ev3labmobile': ['.ev3m'],
+                                'application/vnd.lego.compiled': ['.rbf'],
+                                'application/zip': ['.zip'],
+                                'text/x-python': ['.py'],
                             },
                         },
                     ],

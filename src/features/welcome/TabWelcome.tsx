@@ -1,9 +1,9 @@
-import React, { useCallback } from 'react';
 import { CaretRight, CloudArrowUpFill } from 'react-bootstrap-icons';
+import React, { useCallback } from 'react';
 
-import { selectConversion } from '@/features/conversion/conversionSlice';
+import { ACCEPTED_EXTENSIONS } from '@/features/conversion/blpyutil';
 import { DevTypeIcon } from '@/features/icons/DevTypeIcon';
-import { ACCEPTED_EXTENSIONS } from '@/utils/constants';
+import { selectConversion } from '@/features/conversion/conversionSlice';
 import { useSelector } from 'react-redux';
 
 const icons: (React.ReactElement | string)[] = [

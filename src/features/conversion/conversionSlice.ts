@@ -1,7 +1,12 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { RootState } from '@/app/store';
-import { IPyProjectResult } from 'blocklypy';
+import {
+    convertProjectToPython,
+    IPyConverterFile,
+    IPyConverterOptions,
+    IPyProjectResult,
+} from 'blocklypy';
 
 interface ConversionState {
     conversionResult?: IPyProjectResult;
@@ -38,3 +43,49 @@ export const selectSvgContentData = (state: RootState) =>
 
 // Export the slice reducer for use in the store configuration
 export default conversionSlice.reducer;
+
+export async function handleFileInputConversion(
+    files: File[],
+    disabledFiles: string[],
+    builtin: boolean | undefined,
+    additionalCommentsChecked: boolean,
+) {
+    if (files.length === 0)
+        throw new Error(
+            'No files to convert. Possible cause is that either none were selected or none were supported.',
+        );
+
+    const inputs: IPyConverterFile[] = await Promise.all(
+        files.map(async (file) => ({
+            name: file.webkitRelativePath || file.name,
+            buffer: disabledFiles.includes(file.name)
+                ? new ArrayBuffer(0)
+                : await file.arrayBuffer(),
+            size: file.size,
+            date: builtin ? undefined : new Date(file.lastModified),
+        })),
+    );
+
+    const options: IPyConverterOptions = {
+        debug: {
+            ...(additionalCommentsChecked
+                ? {
+                      showExplainingComments: true,
+                      showBlockIds: true,
+                  }
+                : {}),
+            ...(disabledFiles ? { skipFiles: disabledFiles } : {}),
+        },
+        output: {
+            'ev3b.source': true,
+            'blockly.slot': true,
+            'blockly.svg': true,
+        },
+    } satisfies IPyConverterOptions;
+    const retval = await convertProjectToPython(inputs, options);
+
+    delete retval.topblocks;
+    delete (retval as unknown as any).topLevelStacks;
+    delete (retval as unknown as any).lastModifiedDate;
+    return retval;
+}

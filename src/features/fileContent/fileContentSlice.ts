@@ -1,10 +1,10 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import { RootState } from '@/app/store';
+import { supportsExtension } from '@/features/conversion/blpyutil';
 import { isGithubProxiedViaNetlify } from '@/features/github/githubSlice';
 import { extractGithubUrlInfo, getGithubContents } from '@/features/github/utils';
 import axios from 'axios';
-import { supportsExtension } from 'blocklypy';
 
 interface UploadedFileInfo {
     name: string;

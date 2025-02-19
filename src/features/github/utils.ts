@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { supportsExtension } from 'blocklypy';
+import { supportsExtension } from '@/features/conversion/blpyutil';
 
 export const GITHUB_API_URL = 'https://api.github.com';
 export const GITHUB_DOMAIN = 'github.com';

@@ -1,16 +1,16 @@
-import React, { useEffect } from 'react';
 import { ITabElem, TabKey } from './TabMain';
+import React, { useEffect } from 'react';
 
-import { selectSvgContentData } from '@/features/conversion/conversionSlice';
-import CallGraph from '@/features/graph/CallGraph';
 import Button from 'react-bootstrap/Button';
-import Tab from 'react-bootstrap/Tab';
+import CallGraph from '@/features/graph/CallGraph';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+import Tab from 'react-bootstrap/Tab';
+import { fileSetEnabled } from '@/features/fileContent/fileContentSlice';
 import less from 'react-syntax-highlighter/dist/esm/languages/hljs/less';
 import python from 'react-syntax-highlighter/dist/esm/languages/hljs/python';
-import svgPanZoom from 'svg-pan-zoom';
-import { fileSetEnabled } from '../fileContent/fileContentSlice';
+import { selectSvgContentData } from '@/features/conversion/conversionSlice';
 import { selectTabs } from './tabsSlice';
+import svgPanZoom from 'svg-pan-zoom';
 // import SyntaxHighlighter from 'react-syntax-highlighter';
 import { useAppDispatch } from '@/app/hooks';
 import { useSelector } from 'react-redux';

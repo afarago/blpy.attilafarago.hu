@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { useAppDispatch } from '@/app/hooks';
 import Github from '@/assets/img/github.png';
+import { ACCEPTED_EXTENSIONS, supportsExtension } from '@/features/conversion/blpyutil';
 import { selectConversion } from '@/features/conversion/conversionSlice';
 import {
     type FileContentSetPayload,
@@ -17,8 +18,6 @@ import { GITHUB_DOMAIN } from '@/features/github/utils';
 import { CatIcon } from '@/features/icons/CatIcon';
 import { DevTypeIcon } from '@/features/icons/DevTypeIcon';
 import { selectTabs } from '@/features/tabs/tabsSlice';
-import { ACCEPTED_EXTENSIONS } from '@/utils/constants';
-import { supportsExtension } from 'blocklypy';
 import { Download } from 'react-bootstrap-icons';
 import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
@@ -77,8 +76,8 @@ const FileSelector: React.FC<{
         // PWA open file support
         if ('launchQueue' in window) {
             (window as any).launchQueue.setConsumer(
-                async (launchParams: { files: FileSystemFileHandle[] }) => {
-                    if (!launchParams.files.length) return;
+                async (launchParams: { files: FileSystemFileHandle[] | undefined }) => {
+                    if (!launchParams.files?.length) return;
 
                     const files1 = launchParams.files.map((fileHandle) =>
                         fileHandle.getFile(),
