@@ -6,7 +6,8 @@ export const GITHUB_DOMAIN = 'github.com';
 
 export interface GithubRepository {
     full_name: string;
-    url: string;
+    // url: string;
+    html_url: string;
     stargazers_count?: number;
     private?: boolean;
     // visibility: 'public' | 'private';
@@ -20,7 +21,8 @@ export interface GithubRepository {
 
 export interface GithubGist {
     id: string;
-    url: string;
+    // url: string;
+    html_url: string;
     public?: boolean;
     description?: string;
     owner: {
@@ -138,6 +140,35 @@ async function getGistContents(
     return retval;
 }
 
+async function fetchGitHubFile(
+    ghinfo: GithubUrlInfo,
+    token: string | null,
+    useBackendProxy: boolean,
+    item: GithubFile,
+): Promise<{ name: string; content: Blob } | undefined> {
+    // To get the actual file content, you'd make another fetch to item.download_url
+    //?? However, for binary files, you need to set the 'Accept' header to 'application/vnd.github.v3.raw'
+
+    // parse download_url - https://raw.githubusercontent.com/afarago/2025educup-masters-attilafarago/master/erc25.py
+    const parsedUrl = new URL(item.download_url);
+    let pathParts = parsedUrl.pathname.split('/');
+    let { owner, repo, ref, path } = ghinfo;
+    [owner, repo, ref, ...pathParts] = pathParts.slice(1);
+    path = pathParts.join('/');
+
+    const url2 = useBackendProxy
+        ? `/.netlify/functions/github-raw?owner=${owner}&repo=${repo}&path=${item.path}&branch=${ref}`
+        : item.download_url;
+    const fileResponse = await axios.get(url2, {
+        responseType: 'blob',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (fileResponse.status === 200) {
+        const fileContent = fileResponse.data;
+        return { name: item.name, content: fileContent };
+    }
+}
+
 async function getGithubRepoContents(
     ghinfo: GithubUrlInfo,
     token: string | null,
@@ -157,31 +188,16 @@ async function getGithubRepoContents(
 
     let retval: { name: string; content: Blob }[] = [];
     if (Array.isArray(data)) {
-        for (const item of data) {
+        const filePromises = data.map(async (item) => {
             if (item.type === 'file') {
-                if (!supportsExtension(item.name)) continue;
-
-                // To get the actual file content, you'd make another fetch to item.download_url
-                //?? However, for binary files, you need to set the 'Accept' header to 'application/vnd.github.v3.raw'
-
-                // parse download_url - https://raw.githubusercontent.com/afarago/2025educup-masters-attilafarago/master/erc25.py
-                const parsedUrl = new URL(item.download_url);
-                let pathParts = parsedUrl.pathname.split('/');
-                let { owner, repo, ref, path } = ghinfo;
-                [owner, repo, ref, ...pathParts] = pathParts.slice(1);
-                path = pathParts.join('/');
-
-                const url2 = useBackendProxy
-                    ? `/.netlify/functions/github-raw?owner=${owner}&repo=${repo}&path=${item.path}&branch=${ref}`
-                    : item.download_url;
-                const fileResponse = await axios.get(url2, {
-                    responseType: 'blob',
-                    headers: token ? { Authorization: `Bearer ${token}` } : {},
-                });
-                if (fileResponse.status === 200) {
-                    const fileContent = fileResponse.data;
-                    retval.push({ name: item.name, content: fileContent });
-                }
+                if (!supportsExtension(item.name)) return null;
+                const fileContent = await fetchGitHubFile(
+                    ghinfo,
+                    token,
+                    useBackendProxy,
+                    item,
+                );
+                return fileContent;
             } else if (item.type === 'dir') {
                 // Recursively get the contents of the directory
                 const subdirContents = await getGithubRepoContents(
@@ -189,9 +205,17 @@ async function getGithubRepoContents(
                     token,
                     useBackendProxy,
                 );
-                if (subdirContents) retval = retval.concat(subdirContents);
+                return subdirContents;
             }
-        }
+        });
+
+        const results = await Promise.all(filePromises);
+        results.forEach((result) => {
+            if (result) {
+                if (Array.isArray(result)) retval.push(...result);
+                else retval.push(result);
+            }
+        });
         return retval;
     } else {
         const byteArray = Uint8Array.from(atob(data.content), (c) => c.charCodeAt(0));

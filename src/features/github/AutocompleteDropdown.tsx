@@ -1,5 +1,11 @@
-import React, { useEffect, useState } from 'react';
 import { GithubEntry, GithubGist, GithubRepository } from './utils';
+import React, { useEffect, useState } from 'react';
+import {
+    listReposAndGistsGithub,
+    searchPublicReposGithub,
+    selectGithub,
+} from './githubSlice';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
 
 import Dropdown from 'react-bootstrap/Dropdown';
 import FormControl from 'react-bootstrap/FormControl';
@@ -33,67 +39,158 @@ function getGithubIsPrivate(entry: GithubEntry): boolean {
             (entry as GithubGist).public !== true)
     );
 }
+
+function getSuggestionEntryKey(entry: SuggestonEntry): string {
+    const ghentry = entry as GithubEntry;
+    const diventry = entry as DividerEntry;
+
+    return ghentry.html_url ?? diventry.key ?? 'undefined';
+}
+
+interface DividerEntry {
+    type: 'divider';
+    key: string;
+}
+
+type SuggestonEntry = GithubEntry | DividerEntry;
+
 const AutocompleteDropdown: React.FC<{
-    show: boolean;
-    data: GithubEntry[];
     initialValue: string | undefined;
-    onSelect: (item: string) => void;
-    onDropdownToggle?: (isOpen: boolean) => void;
-}> = ({ show, data, initialValue, onDropdownToggle, onSelect }) => {
+    handleItemSelect: (item: string) => void;
+    setAutoCompleteDroppedDown: (value: boolean) => void;
+}> = ({ initialValue, setAutoCompleteDroppedDown, handleItemSelect }) => {
+    const dispatch = useAppDispatch();
+
+    const github = useAppSelector(selectGithub);
+
     const [inputValue, setInputValue] = useState(initialValue ?? '');
     const [inputRepoValue, setInputRepoValue] = useState(
         undefined as GithubEntry | undefined,
     );
-    const [suggestions, setSuggestions] = useState([] as GithubEntry[]);
+    // const [selectedItem, setSelectedItem] = useState<SuggestonEntry | null>(null);
+    const [suggestions, setSuggestions] = useState([] as SuggestonEntry[]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const refDropdown = React.useRef<HTMLDivElement>(null);
 
-    const filterexec = (value?: string) => {
-        const filteredSuggestions = value
-            ? data
+    const executeFiltering = (value?: string) => {
+        const results: SuggestonEntry[] = [];
+
+        // 1. start with search results
+        if (github.repositoriesSearch.length) {
+            results.push({
+                type: 'divider',
+                key: 'Public Repositories',
+            } as DividerEntry);
+            results.push(...github.repositoriesSearch);
+        }
+        // 2. append search as raw if there is no repositoriesSearch
+        else {
+            if (value?.length)
+                results.push({ full_name: value, html_url: value } as GithubRepository);
+        }
+
+        // 3. append filtered results
+        const filteredOwn = value
+            ? github.repositories
                   .filter(
                       (item) =>
                           getGithubEntryName(item)
                               ?.toLowerCase()
                               .includes(value.toLowerCase()) ||
-                          item.url.toLowerCase().includes(value.toLowerCase()) ||
+                          item.html_url.toLowerCase().includes(value.toLowerCase()) ||
                           item.description?.toLowerCase().includes(value.toLowerCase()),
                   )
                   .toSorted()
             : [];
-        const nonFilteredSuggestions = data
-            .filter((item) => !filteredSuggestions.includes(item))
-            .toSorted();
-        const suggestions = [
-            ...(filteredSuggestions.length || !value?.length
-                ? filteredSuggestions
-                : [{ full_name: value, url: value } as GithubRepository]),
-            ...nonFilteredSuggestions,
-        ];
-        setSuggestions(suggestions);
+        if (results.length > 0 && filteredOwn.length > 0) {
+            results.push({
+                type: 'divider',
+                key: 'Matching User Repositories',
+            } as DividerEntry);
+            results.push(
+                ...filteredOwn.filter(
+                    (item) =>
+                        !results.some(
+                            (result) =>
+                                (result as GithubEntry).html_url === item.html_url,
+                        ),
+                ),
+            );
+        }
 
-        if (suggestions.length > 0 && value?.length) {
-            setInputRepoValue(suggestions[0]);
+        // 4. append non-filtered own results
+        const nonFilteredOwn = github.repositories
+            .filter((item) => !results.includes(item))
+            .toSorted();
+        if (results.length > 0 && nonFilteredOwn.length > 0) {
+            results.push({
+                type: 'divider',
+                key: 'User Repositories',
+            } as DividerEntry);
+            results.push(
+                ...nonFilteredOwn.filter(
+                    (item) =>
+                        !results.some(
+                            (result) =>
+                                (result as GithubEntry).html_url === item.html_url,
+                        ),
+                ),
+            );
+        }
+
+        setSuggestions(results);
+        if (results.length > 0 && value?.length) {
+            // will not be able to select dividers, safe to cast
+            setInputRepoValue(results[0] as GithubEntry);
         }
     };
 
     useEffect(() => {
-        filterexec(inputValue);
-    }, [inputValue, data]);
+        const handler = setTimeout(() => {
+            // only perform search if url is not found in the suggestions
+            if (
+                suggestions.some(
+                    (s) =>
+                        getGithubEntryName(s as GithubEntry) === inputValue &&
+                        (s as GithubRepository).full_name !== inputValue, // non-manual entry
+                )
+            ) {
+                return;
+            }
+
+            dispatch(searchPublicReposGithub(inputValue));
+        }, 1000);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [inputValue]);
 
     useEffect(() => {
-        if (onSelect && inputRepoValue) onSelect(inputRepoValue.url);
+        // do it on startup
+        if (github.token && github.repositories.length === 0) {
+            dispatch(listReposAndGistsGithub(github.token));
+        }
+    }, [github.token, github.repositories]);
+
+    useEffect(() => {
+        executeFiltering(inputValue);
+    }, [inputValue, github.repositories, github.repositoriesSearch]);
+
+    useEffect(() => {
+        if (handleItemSelect && inputRepoValue)
+            handleItemSelect(inputRepoValue.html_url);
     }, [inputRepoValue]);
 
     useEffect(() => {
-        if (onDropdownToggle) onDropdownToggle(showSuggestions);
+        if (setAutoCompleteDroppedDown) setAutoCompleteDroppedDown(showSuggestions);
     }, [showSuggestions]);
 
     useEffect(() => {
-        if (show && data.length > 0) {
+        if (suggestions.length > 0) {
             setShowSuggestions(true);
         }
-    }, [show, data]);
+    }, [suggestions]);
 
     const handleSuggestionClick = (suggestion: GithubEntry) => {
         setInputValue(getGithubEntryName(suggestion));
@@ -102,12 +199,51 @@ const AutocompleteDropdown: React.FC<{
         // onSelect(suggestion.url);
     };
 
+    const getDropDownItem = (suggestion: SuggestonEntry, index: number) => {
+        if ((suggestion as unknown as any)?.type === 'divider') {
+            return (
+                <Dropdown.Header key={(suggestion as DividerEntry).key}>
+                    {(suggestion as DividerEntry).key}
+                </Dropdown.Header>
+            );
+        } else {
+            const suggestion1 = suggestion as GithubEntry;
+            return (
+                <Dropdown.Item
+                    key={suggestion1.html_url}
+                    eventKey={suggestion1.html_url}
+                    active={suggestion1.html_url === inputRepoValue?.html_url}
+                    onClick={() => handleSuggestionClick(suggestion1)}
+                    onSelect={() => handleSuggestionClick(suggestion1)}
+                    // onSelect={() => setSelectedItem(suggestion1)}
+                >
+                    {suggestion1.owner?.avatar_url && (
+                        <img
+                            src={suggestion1.owner.avatar_url}
+                            className="float-start me-2"
+                            alt="avatar"
+                        />
+                    )}
+                    {getGithubIsPrivate(suggestion1) && '🔒 '}
+                    {getGithubEntryName(suggestion1)}{' '}
+                    {((suggestion as GithubRepository).stargazers_count ?? 0) > 0 && (
+                        <>★ {(suggestion as GithubRepository).stargazers_count}</>
+                    )}
+                    <br />
+                    <span className="text-muted small">
+                        {getGithubEntryDescription(suggestion1)}
+                    </span>
+                </Dropdown.Item>
+            );
+        }
+    };
+
     return (
         <Dropdown
-            autoClose={true}
-            onToggle={setShowSuggestions}
             ref={refDropdown}
             show={showSuggestions}
+            onToggle={setShowSuggestions}
+            // autoClose={true}
         >
             <Dropdown.Toggle
                 as={FormControl}
@@ -116,45 +252,31 @@ const AutocompleteDropdown: React.FC<{
                 onChange={(v) => {
                     const value = (v.target as HTMLInputElement).value;
                     setInputValue(value);
-                    filterexec(value);
+                    executeFiltering(value);
                 }}
                 onClick={() => setShowSuggestions(true)}
-                onKeyDown={() => setShowSuggestions(true)}
+                onKeyDown={(e) => {
+                    if (e.key === 'ArrowDown') {
+                        setShowSuggestions(true);
+                        // e.preventDefault();
+                    } else if (e.key === 'Enter') {
+                        // if (selectedItem)
+                        //     handleItemSelect((selectedItem as GithubEntry).html_url);
+                        // setShowSuggestions(false);
+                        // e.preventDefault();
+                    } else if (e.key !== 'Escape') {
+                        setShowSuggestions(true);
+                    }
+                }}
                 className="form-control"
                 id="autocompleteInput"
                 placeholder={inputValue}
             />
             {suggestions.length > 0 && (
                 <Dropdown.Menu className="autocomplete-dropdown" autoFocus>
-                    {suggestions.map((suggestion, index) => (
-                        <Dropdown.Item
-                            key={suggestion.url}
-                            eventKey={suggestion.url}
-                            active={suggestion.url === inputRepoValue?.url}
-                            onClick={() => handleSuggestionClick(suggestion)}
-                        >
-                            {suggestion.owner?.avatar_url && (
-                                <img
-                                    src={suggestion.owner.avatar_url}
-                                    className="float-start me-2"
-                                    alt="avatar"
-                                />
-                            )}
-                            {getGithubIsPrivate(suggestion) && '🔒 '}
-                            {getGithubEntryName(suggestion)}{' '}
-                            {((suggestion as GithubRepository).stargazers_count ?? 0) >
-                                0 && (
-                                <>
-                                    ★{' '}
-                                    {(suggestion as GithubRepository).stargazers_count}
-                                </>
-                            )}
-                            <br />
-                            <span className="text-muted small">
-                                {getGithubEntryDescription(suggestion)}
-                            </span>
-                        </Dropdown.Item>
-                    ))}
+                    {suggestions.map((suggestion, index) =>
+                        getDropDownItem(suggestion, index),
+                    )}
                 </Dropdown.Menu>
             )}
         </Dropdown>

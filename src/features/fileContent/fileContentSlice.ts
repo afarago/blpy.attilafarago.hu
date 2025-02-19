@@ -2,7 +2,6 @@ import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import { RootState } from '@/app/store';
 import { supportsExtension } from '@/features/conversion/blpyutil';
-import { isGithubProxiedViaNetlify } from '@/features/github/githubSlice';
 import { extractGithubUrlInfo, getGithubContents } from '@/features/github/utils';
 import axios from 'axios';
 
@@ -184,7 +183,13 @@ export const fetchRepoContents = createAsyncThunk(
             url,
             builtin,
             token,
-        }: { url: string; builtin: boolean; token: string | null },
+            useBackendProxy,
+        }: {
+            url: string;
+            builtin: boolean;
+            token: string | null;
+            useBackendProxy: boolean;
+        },
         { dispatch, rejectWithValue },
     ) => {
         try {
@@ -192,7 +197,6 @@ export const fetchRepoContents = createAsyncThunk(
                 const ghinfo = extractGithubUrlInfo(url);
                 if (!ghinfo) throw new Error('Invalid GitHub URL');
 
-                const useBackendProxy = isGithubProxiedViaNetlify;
                 let data = await getGithubContents(ghinfo, token, useBackendProxy);
                 if (!data) throw new Error('Failed to fetch repository contents');
 

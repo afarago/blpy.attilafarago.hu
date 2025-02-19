@@ -16,18 +16,19 @@ interface GithubAuthState {
         avatar_url: string;
     } | null;
     repositories: GithubEntry[];
+    repositoriesSearch: GithubEntry[];
     loading: boolean;
+    hasAuthProxy: boolean;
 }
 
 const initialState: GithubAuthState = {
-    token: localStorage.getItem('github_access_token'),
+    token: null,
     repositories: [],
+    repositoriesSearch: [],
     user: null,
     loading: false,
+    hasAuthProxy: (import.meta as any).env.VITE_NETLIFY?.toString() === 'true',
 };
-
-export const isGithubProxiedViaNetlify =
-    (import.meta as any).env.VITE_NETLIFY?.toString() === 'true';
 
 try {
     const token = localStorage.getItem('github_access_token');
@@ -88,6 +89,17 @@ const githubSlice = createSlice({
             .addCase(listReposAndGistsGithub.rejected, (state) => {
                 state.loading = false;
                 console.error('Failed to list repositories');
+            })
+            .addCase(searchPublicReposGithub.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(searchPublicReposGithub.fulfilled, (state, action) => {
+                state.loading = false;
+                state.repositoriesSearch = action.payload;
+            })
+            .addCase(searchPublicReposGithub.rejected, (state) => {
+                state.loading = false;
+                console.error('Failed to search repositories');
             });
     },
 });
@@ -150,11 +162,11 @@ export const authenticateGithub = createAsyncThunk(
             // 3. exchange the authorization code for an access token
             const response = await axios.post(
                 '/.netlify/functions/github-token',
-                new URLSearchParams({
+                {
                     code: code,
                     scope: scope,
                     redirect_uri: redirectUri,
-                }),
+                },
                 {
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 },
@@ -241,11 +253,38 @@ export const listReposAndGistsGithub = createAsyncThunk(
     },
 );
 
+export const searchPublicReposGithub = createAsyncThunk(
+    'github/searchPublicReposGithub',
+    async (query: string, { rejectWithValue }) => {
+        try {
+            console.log('searchPublicReposGithub', query);
+            if (query.length === 0) return [];
+
+            const token = localStorage.getItem('github_access_token');
+            const response = await axios.get(`${GITHUB_API_URL}/search/repositories`, {
+                params: {
+                    q: query,
+                    per_page: 5,
+                    page: 1,
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const repos = response.data.items as GithubRepository[];
+            return repos;
+        } catch (error) {
+            return rejectWithValue('Failed to search repositories');
+        }
+    },
+);
+
 export const { logout } = githubSlice.actions;
 
 export default githubSlice.reducer;
 
 // Selectors (for accessing state in components)
+export const selectGithub = (state: RootState) => state.github;
 export const selectGithubAuthToken = (state: RootState) => state.github.token;
 export const selectGithubIsAuthenticated = (state: RootState) =>
     state.github.token !== null;

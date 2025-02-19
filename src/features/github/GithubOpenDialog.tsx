@@ -1,30 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import {
-    authenticateGithub,
-    isGithubProxiedViaNetlify,
-    listReposAndGistsGithub,
-    logout,
-    selectGithubAuthToken,
-    selectGithubIsAuthenticated,
-    selectGithubRepositories,
-    selectGithubUser,
-} from './githubSlice';
+import { authenticateGithub, logout, selectGithub } from './githubSlice';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
 
-import { useAppDispatch } from '@/app/hooks';
-import { RootState } from '@/app/store';
+import AutocompleteDropdown from './AutocompleteDropdown';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { useSelector } from 'react-redux';
-import AutocompleteDropdown from './AutocompleteDropdown';
 
 interface GithubOpenDialogProps {
-    show: boolean;
     initialUrl?: string;
     handleClose: (url?: string) => void;
 }
 
 const GithubOpenDialog: React.FC<GithubOpenDialogProps> = ({
-    show,
     initialUrl,
     handleClose,
 }) => {
@@ -32,18 +19,14 @@ const GithubOpenDialog: React.FC<GithubOpenDialogProps> = ({
     const [selectedItem, setSelectedItem] = useState<string | undefined>(undefined); // State to hold selected item
     const [autoCompleteDroppedDown, setAutoCompleteDroppedDown] = useState(false);
 
-    const githubIsAuthenticated = useSelector(selectGithubIsAuthenticated);
-    const githubAuthToken = useSelector(selectGithubAuthToken);
-    const githubRepositories = useSelector(selectGithubRepositories);
-    const githubUser = useSelector(selectGithubUser);
-    const githubLoading = useSelector((state: RootState) => state.github.loading);
-
-    const handleItemSelect = (item: string) => {
-        setSelectedItem(item);
-    };
+    const github = useAppSelector(selectGithub);
 
     const handleCloseClick = () => {
         handleClose(selectedItem);
+    };
+
+    const handleItemSelect = (item: string) => {
+        setSelectedItem(item);
     };
 
     const handleGithubAuthClick = async () => {
@@ -52,10 +35,6 @@ const GithubOpenDialog: React.FC<GithubOpenDialogProps> = ({
         } catch (err) {
             console.error('Failed to authenticate:', err);
         }
-    };
-
-    const handleDropDownToggle = (value: boolean) => {
-        setAutoCompleteDroppedDown(value);
     };
 
     const handleGithubLogoutClick = () => {
@@ -68,22 +47,23 @@ const GithubOpenDialog: React.FC<GithubOpenDialogProps> = ({
         inputElement?.focus();
     };
 
-    const handleEscapeKeyDown = (event: KeyboardEvent) => {
-        if (autoCompleteDroppedDown) {
-            event.preventDefault();
-        }
-    };
-
-    useEffect(() => {
-        if (githubAuthToken && show) {
-            dispatch(listReposAndGistsGithub(githubAuthToken));
-        }
-    }, [githubAuthToken, show]);
+    // const handleEscapeKeyDown = (event: KeyboardEvent) => {
+    //     if (autoCompleteDroppedDown) event.preventDefault();
+    // };
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === 'Enter' && show && !autoCompleteDroppedDown) {
+            if (event.key === 'Enter' && !autoCompleteDroppedDown) {
                 handleClose(selectedItem);
+                event.preventDefault();
+            }
+            if (event.key === 'Escape') {
+                if (autoCompleteDroppedDown) {
+                    setAutoCompleteDroppedDown(false);
+                } else {
+                    handleClose();
+                }
+                event.preventDefault();
             }
         };
 
@@ -91,15 +71,15 @@ const GithubOpenDialog: React.FC<GithubOpenDialogProps> = ({
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
         };
-    }, [show, selectedItem, autoCompleteDroppedDown]);
+    }, [selectedItem, autoCompleteDroppedDown]);
 
     return (
         <Modal
-            show={show}
+            show={true}
             onHide={handleClose}
             size="lg"
             onShow={handleOnShow}
-            onEscapeKeyDown={handleEscapeKeyDown}
+            // onEscapeKeyDown={handleEscapeKeyDown}
             className="GithubDialog"
         >
             <Modal.Header closeButton>
@@ -113,30 +93,28 @@ const GithubOpenDialog: React.FC<GithubOpenDialogProps> = ({
                     </i>
                 </div>
                 <AutocompleteDropdown
-                    data={githubRepositories}
                     initialValue={initialUrl}
-                    onSelect={handleItemSelect}
-                    onDropdownToggle={handleDropDownToggle}
-                    show={show}
+                    handleItemSelect={handleItemSelect}
+                    setAutoCompleteDroppedDown={setAutoCompleteDroppedDown}
                 />
                 {selectedItem && <div className="small text-muted">{selectedItem}</div>}
             </Modal.Body>
             <Modal.Footer>
                 {/* {githubLoading && <div className="me-auto">Loading Github...</div>} */}
-                {!githubIsAuthenticated && isGithubProxiedViaNetlify && (
+                {!github.token && github.hasAuthProxy && (
                     <Button
                         variant="secondary"
                         onClick={handleGithubAuthClick}
                         className="me-auto"
-                        disabled={githubLoading}
+                        disabled={github.loading}
                     >
-                        {!githubLoading ? 'Authorize' : 'In Progress...'}
+                        {!github.loading ? 'Authorize' : 'In Progress...'}
                     </Button>
                 )}
-                {githubIsAuthenticated && isGithubProxiedViaNetlify && (
+                {github.token && github.hasAuthProxy && (
                     <>
                         <img
-                            src={githubUser?.avatar_url}
+                            src={github.user?.avatar_url}
                             width="30"
                             height="30"
                             className="profile-avatar rounded-circle  ms-2"
@@ -146,10 +124,10 @@ const GithubOpenDialog: React.FC<GithubOpenDialogProps> = ({
                             variant="secondary"
                             onClick={handleGithubLogoutClick}
                             className="me-auto"
-                            disabled={githubLoading}
+                            disabled={github.loading}
                         >
-                            {!githubLoading ? (
-                                <>Logout {githubUser?.login}</>
+                            {!github.loading ? (
+                                <>Logout {github.user?.login}</>
                             ) : (
                                 'In Progress...'
                             )}

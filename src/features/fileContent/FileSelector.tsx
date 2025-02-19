@@ -13,7 +13,7 @@ import {
     selectFileContent,
 } from '@/features/fileContent/fileContentSlice';
 import GithubOpenDialog from '@/features/github/GithubOpenDialog';
-import { selectGithubAuthToken } from '@/features/github/githubSlice';
+import { selectGithub } from '@/features/github/githubSlice';
 import { GITHUB_DOMAIN } from '@/features/github/utils';
 import { CatIcon } from '@/features/icons/CatIcon';
 import { DevTypeIcon } from '@/features/icons/DevTypeIcon';
@@ -30,20 +30,24 @@ const FileSelector: React.FC<{
 }> = ({ fileInputRef }) => {
     const dispatch = useAppDispatch();
 
-    const [showModal, setShowModal] = useState(false);
+    const [showGithubDialog, setShowGithubDialog] = useState(false);
 
     const [filesCached, setFilesCached] = useState<File[] | undefined>();
     const { additionalCommentsChecked } = useSelector(selectTabs);
     const { conversionResult } = useSelector(selectConversion);
     const fileContent = useSelector(selectFileContent);
-    const githubAuthToken = useSelector(selectGithubAuthToken);
+    const github = useSelector(selectGithub);
 
-    const handleOpenModal = () => setShowModal(true);
     const handleCloseModal = (url?: string) => {
-        setShowModal(false);
+        setShowGithubDialog(false);
         if (url) {
             dispatch(
-                fetchRepoContents({ url, builtin: false, token: githubAuthToken }),
+                fetchRepoContents({
+                    url,
+                    builtin: false,
+                    token: github.token,
+                    useBackendProxy: github.hasAuthProxy,
+                }),
             );
         }
         // e.g. https://github.com/afarago/2025educup-masters-attilafarago
@@ -125,7 +129,8 @@ const FileSelector: React.FC<{
                     fetchRepoContents({
                         url: path,
                         builtin: true,
-                        token: githubAuthToken,
+                        token: github.token,
+                        useBackendProxy: github.hasAuthProxy,
                     }),
                 );
             } else {
@@ -224,7 +229,7 @@ const FileSelector: React.FC<{
                 <Button
                     className="btn-light mini-button github-icon flex-grow-0"
                     title="Enter GitHub Repository URL"
-                    onClick={handleOpenModal}
+                    onClick={() => setShowGithubDialog(true)}
                 >
                     <img src={Github} alt="github" />{' '}
                     <span className="d-none d-lg-block">Open from GitHub</span>
@@ -270,11 +275,12 @@ const FileSelector: React.FC<{
                 </small>
             </div>
 
-            <GithubOpenDialog
-                show={showModal}
-                handleClose={handleCloseModal}
-                initialUrl={fileContent.url}
-            />
+            {showGithubDialog && (
+                <GithubOpenDialog
+                    handleClose={handleCloseModal}
+                    initialUrl={fileContent.url}
+                />
+            )}
         </div>
     );
 };
