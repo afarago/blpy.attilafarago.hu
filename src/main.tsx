@@ -1,12 +1,12 @@
 import './scss/styles.scss';
 
-import App from './App';
-import { Provider } from 'react-redux';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
+import App from './App';
 // import { registerSW } from 'virtual:pwa-register';
-import reportWebVitals from './reportWebVitals';
 import store from './app/store';
+import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(

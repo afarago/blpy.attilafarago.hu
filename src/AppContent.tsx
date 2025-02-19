@@ -5,7 +5,7 @@ import {
     selectFileContent,
 } from '@/features/fileContent/fileContentSlice';
 import { selectTabs, toastContentSet } from '@/features/tabs/tabsSlice';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 
 import { useAppDispatch } from '@/app/hooks';
 import FileSelector from '@/features/fileContent/FileSelector';
@@ -16,40 +16,7 @@ import WelcomeTab from '@/features/welcome/TabWelcome';
 import Toast from 'react-bootstrap/Toast';
 import { useSelector } from 'react-redux';
 import TabLoading from './features/tabs/TabLoading';
-
-const useDragAndDrop = (setFilesFn: (files: File[]) => void) => {
-    const [isDragging, setIsDragging] = useState(false);
-
-    const handleDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
-        event.stopPropagation();
-        event.preventDefault();
-        setIsDragging(true);
-        if (event.dataTransfer) event.dataTransfer.dropEffect = 'copy';
-    }, []);
-
-    const handleDragLeave = useCallback((event: React.DragEvent<HTMLDivElement>) => {
-        event.stopPropagation();
-        event.preventDefault();
-        setIsDragging(false);
-        if (event.dataTransfer) event.dataTransfer.dropEffect = 'copy';
-    }, []);
-
-    const handleDrop = useCallback(
-        (event: React.DragEvent<HTMLDivElement>) => {
-            event.stopPropagation();
-            event.preventDefault();
-            setIsDragging(false);
-            const files =
-                event.dataTransfer && event.dataTransfer.files
-                    ? [...event.dataTransfer.files]
-                    : [];
-            setFilesFn(files);
-        },
-        [setFilesFn],
-    );
-
-    return { isDragging, handleDragOver, handleDragLeave, handleDrop };
-};
+import { useDragAndDrop } from './utils/dragndrop-hook';
 
 const AppContent: React.FC = () => {
     const dispatch = useAppDispatch();

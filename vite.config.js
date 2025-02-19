@@ -4,6 +4,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import react from '@vitejs/plugin-react';
 import { fileURLToPath } from 'url';
 import { defineConfig } from 'vite';
+import https from 'vite-plugin-https';
 import { VitePWA } from 'vite-plugin-pwa';
 import svgr from 'vite-plugin-svgr';
 
@@ -45,9 +46,11 @@ export default defineConfig(({ command }) => {
         ],
         server: {
             hot: true,
+            https: true,
         },
         plugins: [
             react(),
+            https(), // debug only
             // visualizer(),
             nodeResolve(),
             svgr({
@@ -60,9 +63,10 @@ export default defineConfig(({ command }) => {
                     exclude: '',
                 },
             }),
-            isProd && VitePWA({
+            // isProd &&
+            VitePWA({
                 registerType: 'autoUpdate',
-                injectRegister: 'auto',
+                injectRegister: 'script',
                 workbox: {
                     globPatterns: [
                         '**/*.{js,css,html,ico,png,svg,llsp,llsp3,lms,lmsp,ev3,ev3m,rbf,py,zip}',
@@ -80,8 +84,8 @@ export default defineConfig(({ command }) => {
                     '*.ico',
                 ],
                 manifest: {
-                    name: '',
-                    short_name: 'BlocklyPy PWA',
+                    name: 'BlocklyPy web-app',
+                    short_name: 'BlocklyPy web-app',
                     description:
                         'BlocklyPy: SPIKE to Pybricks - A web-app for converting LEGO blockly programs to Python code',
                     theme_color: '#ffffff',
@@ -99,8 +103,56 @@ export default defineConfig(({ command }) => {
                             sizes: '512x512',
                             type: 'image/png',
                         },
+
+                        {
+                            src: '/favicon/apple-touch-icon.png',
+                            sizes: '180x180',
+                            type: 'image/png',
+                            // purpose: 'any maskable',
+                        },
+                        {
+                            src: '/favicon/safari-pinned-tab.svg',
+                            sizes: '768x768',
+                            type: 'image/svg+xml',
+                            // purpose: 'any maskable',
+                        },
                     ],
-                    // start_url: '/index.html',
+                    screenshots: [
+                        {
+                            src: '/screenshots/screenshot-1024x768.png',
+                            sizes: '1024x768',
+                            type: 'image/png',
+                        },
+                        {
+                            src: '/screenshots/screenshot-1280x720.png',
+                            sizes: '1280x720',
+                            type: 'image/png',
+                            form_factor: 'wide',
+                        },
+                        {
+                            src: '/screenshots/screenshot-1920x1080.png',
+                            sizes: '1920x1080',
+                            type: 'image/png',
+                            form_factor: 'wide',
+                        },
+                        {
+                            src: '/screenshots/screenshot-mobile-375x812.png',
+                            sizes: '375x812',
+                            type: 'image/png',
+                            form_factor: 'narrow',
+                            label: 'mobile',
+                        },
+                    ],
+                    // https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/How_to/Associate_files_with_your_PWA
+                    // file_handlers: [
+                    //     {
+                    //         action: '/',
+                    //         accept: {
+                    //             'image/jpeg': ['.jpg', '.jpeg'],
+                    //             'image/png': ['.png'],
+                    //         },
+                    //     },
+                    // ],
                     // protocol_handlers: [
                     //     {
                     //         protocol: 'web+tea',

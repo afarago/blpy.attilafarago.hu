@@ -36,7 +36,10 @@ const WelcomeTab: React.FC<{
                 <div className="justify-content-center">
                     <div className="text-center">
                         <button onClick={handleCloudIconClick}>
-                            <CloudArrowUpFill className="drop-cloud-icon" />
+                            <CloudArrowUpFill
+                                className="drop-cloud-icon"
+                                aria-label="upload file"
+                            />
                         </button>
                         <div className="mb-4 mx-auto" style={{ maxWidth: '30em' }}>
                             Imagine a world where magical unicorns transform your LEGO
