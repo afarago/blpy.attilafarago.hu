@@ -1,11 +1,11 @@
 import * as path from 'path';
 
-import { nodeResolve } from '@rollup/plugin-node-resolve';
-import react from '@vitejs/plugin-react';
 import { fileURLToPath } from 'url';
 import { defineConfig } from 'vite';
-import https from 'vite-plugin-https';
 import { VitePWA } from 'vite-plugin-pwa';
+// import https from 'vite-plugin-https'; // local PWA testing, yarn add -D vite-plugin-https
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 
 // import { visualizer } from 'rollup-plugin-visualizer';
@@ -46,11 +46,11 @@ export default defineConfig(({ command }) => {
         ],
         server: {
             hot: true,
-            https: isDebug,
+            // https: isDebug,
         },
         plugins: [
             react(),
-            isDebug && https(), // debug only
+            // isDebug && https(), // debug only
             // visualizer(),
             nodeResolve(),
             svgr({
