@@ -51,21 +51,46 @@ const FileSelector: React.FC<{
         // e.g. https://gist.github.com/afarago/4718cffcbea66ca88f99be64fd912cd8
     };
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const target = event.target as HTMLInputElement;
-        if (!target.files?.length) return;
+    const openFiles = (files1: File[]) => {
+        if (!files1?.length) return;
 
-        let files = [...target.files].sort((a, b) => a.name.localeCompare(b.name));
+        let files2 = [...files1].sort((a, b) => a.name.localeCompare(b.name));
         // filter files to only include supported extensions
-        files = files.filter((file) => supportsExtension(file.name));
+        files2 = files2.filter((file) => supportsExtension(file.name));
 
         const content = {
-            files,
+            files: files2,
             builtin: false,
         } satisfies FileContentSetPayload;
         dispatch(fileContentSet(content));
-        target.blur();
     };
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const files1 = event.target.files;
+        if (!files1?.length) return;
+
+        openFiles([...files1]);
+        event.target.blur();
+    };
+
+    useEffect(() => {
+        // PWA open file support
+        if ('launchQueue' in window) {
+            (window as any).launchQueue.setConsumer(
+                async (launchParams: { files: FileSystemFileHandle[] }) => {
+                    if (!launchParams.files.length) return;
+
+                    const files1 = launchParams.files.map((fileHandle) =>
+                        fileHandle.getFile(),
+                    );
+                    const files1a = await Promise.all(files1);
+                    if (!files1a?.length) return;
+
+                    openFiles(files1a);
+                },
+            );
+        }
+    }, [dispatch]);
 
     const handleFileBrowserClick = async (e: React.MouseEvent<HTMLInputElement>) => {
         // shift-click: open a directory selector (if supported)

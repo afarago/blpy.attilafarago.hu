@@ -3789,6 +3789,11 @@
     "@types/glob" "*"
     "@types/node" "*"
 
+"@types/serviceworker@^0.0.120":
+  version "0.0.120"
+  resolved "https://registry.yarnpkg.com/@types/serviceworker/-/serviceworker-0.0.120.tgz#4444e3fc4ab2c0812bf2e3a98554ee10cfbf4489"
+  integrity sha512-pVe9ZC82J4uRw+v35TAydtsBAbX1V79uZ0H0rQNtx7oFPImuKY1FTEqSbjTMOtAmb5AWS6z2FFCShu6WMylNng==
+
 "@types/stack-utils@^2.0.0":
   version "2.0.3"
   resolved "https://registry.npmjs.org/@types/stack-utils/-/stack-utils-2.0.3.tgz"

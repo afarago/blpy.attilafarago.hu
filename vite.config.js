@@ -46,11 +46,11 @@ export default defineConfig(({ command }) => {
         ],
         server: {
             hot: true,
-            https: true,
+            https: isDebug,
         },
         plugins: [
             react(),
-            https(), // debug only
+            isDebug && https(), // debug only
             // visualizer(),
             nodeResolve(),
             svgr({
@@ -66,11 +66,44 @@ export default defineConfig(({ command }) => {
             // isProd &&
             VitePWA({
                 registerType: 'autoUpdate',
-                injectRegister: 'script',
+                injectRegister: 'auto',
+                // injectManifest: {
+                //     swSrc: './service-worker.ts', // Path to your service worker
+                // },
                 workbox: {
                     globPatterns: [
                         '**/*.{js,css,html,ico,png,svg,llsp,llsp3,lms,lmsp,ev3,ev3m,rbf,py,zip}',
                     ],
+                    disableDevLogs: isDebug,
+
+                    // This tells VitePWA to use your service-worker.ts file.
+                    // Even if empty, it's necessary.
+
+                    // runtimeCaching: [
+                    //     // Example of runtime caching configuration
+                    //     {
+                    //         // urlPattern: ({ url }) => {
+                    //         //     return url.pathname.startsWith('/api'); // Example: Cache API requests
+                    //         // },
+                    //         // handler: 'NetworkFirst',
+                    //         options: {
+                    //             // cacheName: 'api-cache',
+                    //             // expiration: {
+                    //             //     maxEntries: 30,
+                    //             //     maxAgeSeconds: 3600, // 1 hour
+                    //             // },
+
+                    //             // Suppress specific Workbox logs within a cache entry
+                    //             // The following example will suppress 'cache-hit' logs
+                    //             debug: {
+                    //                 // The following will suppress cache-hit logs
+                    //                 'cache-hit': false,
+                    //                 'cache-miss': true,
+                    //                 'cache-put': true,
+                    //             },
+                    //         },
+                    //     },
+                    // ],
                 },
                 devOptions: {
                     enabled: true,
@@ -144,15 +177,15 @@ export default defineConfig(({ command }) => {
                         },
                     ],
                     // https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/How_to/Associate_files_with_your_PWA
-                    // file_handlers: [
-                    //     {
-                    //         action: '/',
-                    //         accept: {
-                    //             'image/jpeg': ['.jpg', '.jpeg'],
-                    //             'image/png': ['.png'],
-                    //         },
-                    //     },
-                    // ],
+                    file_handlers: [
+                        {
+                            action: '/',
+                            accept: {
+                                'text/llsp3': ['.llsp3'],
+                                //TODO: add more file types
+                            },
+                        },
+                    ],
                     // protocol_handlers: [
                     //     {
                     //         protocol: 'web+tea',
@@ -185,6 +218,7 @@ export default defineConfig(({ command }) => {
                     chunkFileNames: 'assets/js/[name]-[hash].js',
                     entryFileNames: 'assets/js/[name]-[hash].js',
                     manualChunks: (id) => {
+                        // TODO: defer load of these chunks
                         if (id.includes('blocklypy')) {
                             return 'vendor-1';
                         } else if (id.includes('viz')) {
