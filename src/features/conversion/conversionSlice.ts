@@ -1,12 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
+import { IPyProjectResult } from 'blocklypy';
 import { RootState } from '@/app/store';
-import {
-    convertProjectToPython,
-    IPyConverterFile,
-    IPyConverterOptions,
-    IPyProjectResult,
-} from 'blocklypy';
 
 interface ConversionState {
     conversionResult?: IPyProjectResult;
@@ -55,37 +50,69 @@ export async function handleFileInputConversion(
             'No files to convert. Possible cause is that either none were selected or none were supported.',
         );
 
-    const inputs: IPyConverterFile[] = await Promise.all(
-        files.map(async (file) => ({
-            name: file.webkitRelativePath || file.name,
-            buffer: disabledFiles.includes(file.name)
-                ? new ArrayBuffer(0)
-                : await file.arrayBuffer(),
-            size: file.size,
-            date: builtin ? undefined : new Date(file.lastModified),
-        })),
+    // const inputs: IPyConverterFile[] = await Promise.all(
+    //     files.map(async (file) => ({
+    //         name: file.webkitRelativePath || file.name,
+    //         buffer: disabledFiles.includes(file.name)
+    //             ? new ArrayBuffer(0)
+    //             : await file.arrayBuffer(),
+    //         size: file.size,
+    //         date: builtin ? undefined : new Date(file.lastModified),
+    //     })),
+    // );
+
+    // const options: IPyConverterOptions = {
+    //     debug: {
+    //         ...(additionalCommentsChecked
+    //             ? {
+    //                   showExplainingComments: true,
+    //                   showBlockIds: true,
+    //               }
+    //             : {}),
+    //         ...(disabledFiles ? { skipFiles: disabledFiles } : {}),
+    //     },
+    //     output: {
+    //         'ev3b.source': true,
+    //         'blockly.slot': true,
+    //         'blockly.svg': true,
+    //     },
+    // } satisfies IPyConverterOptions;
+    // const retval = await convertProjectToPython(inputs, options);
+
+    // delete retval.topblocks;
+    // delete (retval as unknown as any).topLevelStacks;
+    // delete (retval as unknown as any).lastModifiedDate;
+
+    const worker = new Worker(
+        new URL('../../workers/conversionWorker.ts', import.meta.url),
+        { type: 'module' },
     );
+    const inputData = {
+        files,
+        disabledFiles,
+        builtin,
+        additionalCommentsChecked,
+    };
 
-    const options: IPyConverterOptions = {
-        debug: {
-            ...(additionalCommentsChecked
-                ? {
-                      showExplainingComments: true,
-                      showBlockIds: true,
-                  }
-                : {}),
-            ...(disabledFiles ? { skipFiles: disabledFiles } : {}),
-        },
-        output: {
-            'ev3b.source': true,
-            'blockly.slot': true,
-            'blockly.svg': true,
-        },
-    } satisfies IPyConverterOptions;
-    const retval = await convertProjectToPython(inputs, options);
+    const result = await new Promise<IPyProjectResult>((resolve, reject) => {
+        worker.postMessage(inputData);
 
-    delete retval.topblocks;
-    delete (retval as unknown as any).topLevelStacks;
-    delete (retval as unknown as any).lastModifiedDate;
-    return retval;
+        worker.onmessage = (event: MessageEvent<number | { error: string }>) => {
+            if (
+                typeof event.data === 'object' &&
+                event.data !== null &&
+                'error' in event.data
+            ) {
+                reject(event.data.error); // Reject with the error message from the worker
+            } else {
+                resolve(event.data as IPyProjectResult); // Type assertion here
+            }
+        };
+
+        worker.onerror = (error) => {
+            reject(error);
+        };
+    });
+
+    return result;
 }

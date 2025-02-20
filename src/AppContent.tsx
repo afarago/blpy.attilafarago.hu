@@ -1,22 +1,24 @@
 import './AppContent.scss';
 
+import React, { Suspense, lazy, useRef } from 'react';
 import {
     fileContentSet,
     selectFileContent,
 } from '@/features/fileContent/fileContentSlice';
 import { selectTabs, toastContentSet } from '@/features/tabs/tabsSlice';
-import React, { useRef } from 'react';
 
-import { useAppDispatch } from '@/app/hooks';
 import FileSelector from '@/features/fileContent/FileSelector';
 import Footer from '@/features/footer/Footer';
 import Header from '@/features/header/Header';
-import MainTab from '@/features/tabs/TabMain';
-import WelcomeTab from '@/features/welcome/TabWelcome';
 import Toast from 'react-bootstrap/Toast';
-import { useSelector } from 'react-redux';
-import TabLoading from './features/tabs/TabLoading';
+import WelcomeTab from '@/features/welcome/TabWelcome';
+import { selectConversion } from './features/conversion/conversionSlice';
+import { useAppDispatch } from '@/app/hooks';
 import { useDragAndDrop } from './utils/dragndrop-hook';
+import { useSelector } from 'react-redux';
+
+const MainTab = lazy(() => import('@/features/tabs/TabMain'));
+const TabLoading = lazy(() => import('@/features/tabs/TabLoading'));
 
 const AppContent: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -24,6 +26,7 @@ const AppContent: React.FC = () => {
     const { additionalCommentsChecked, toastContent, fullScreen } =
         useSelector(selectTabs);
     const fileContent = useSelector(selectFileContent);
+    const { conversionResult } = useSelector(selectConversion);
 
     const { isDragging, handleDragOver, handleDragLeave, handleDrop } = useDragAndDrop(
         (files: File[]) => {
@@ -75,9 +78,19 @@ const AppContent: React.FC = () => {
                     >
                         <FileSelector fileInputRef={fileInputRef}></FileSelector>
 
-                        {fileContent.showSpinner && <TabLoading />}
-                        <WelcomeTab fileInputRef={fileInputRef} />
-                        <MainTab />
+                        {fileContent.showSpinner && (
+                            <Suspense>
+                                <TabLoading />
+                            </Suspense>
+                        )}
+
+                        {conversionResult ? (
+                            <Suspense>
+                                <MainTab />
+                            </Suspense>
+                        ) : (
+                            <WelcomeTab fileInputRef={fileInputRef} />
+                        )}
                     </div>
                 </form>
             </div>

@@ -83,6 +83,7 @@
             img,
             svg {
                 height: 1.8em;
+                width: 1.8em;
                 margin-left: 0.2em;
             }
         }
@@ -96,17 +97,17 @@
             justify-content: center;
 
             &.github-icon {
-                padding-inline: 0px;
                 img {
                     vertical-align: baseline;
-                    height: 100%;
+                    width: 1.5em;
+                    height: 1.5em;
                 }
                 @include media-breakpoint-down(lg) {
                     width: 3em;
                 }
                 @include media-breakpoint-up(lg) {
                     img {
-                        padding-right: 0.4em;
+                        margin-right: 0.4em;
                     }
                 }
             }

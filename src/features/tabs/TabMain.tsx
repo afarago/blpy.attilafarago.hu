@@ -128,82 +128,76 @@ const TabMain: React.FC = () => {
     }, []);
 
     return (
-        !!conversionResult && (
-            <div className="tab-main container-lg pt-2">
-                <Tab.Container
-                    activeKey={selectedTabkey}
-                    onSelect={handleSelectTab}
-                    defaultActiveKey={TabKey.PYCODE}
-                >
-                    <Col>
-                        <Row sm={9} className="tabheader">
-                            <TabHeaders
+        <div className="tab-main container-lg pt-2">
+            <Tab.Container
+                activeKey={selectedTabkey}
+                onSelect={handleSelectTab}
+                defaultActiveKey={TabKey.PYCODE}
+            >
+                <Col>
+                    <Row sm={9} className="tabheader">
+                        <TabHeaders
+                            selectedTabkey={selectedTabkey}
+                            setSelectedTabkey={setSelectedTabkey}
+                            selectedSubTabkey={selectedSubTabkey}
+                            setSelectedSubTabkey={setSelectedSubTabkey}
+                            tabElems={tabElems}
+                        />
+                    </Row>
+
+                    {/* Tab Contents */}
+                    <Row sm={9} className="tabcontent position-relative">
+                        <Tab.Content className="border p-0 position-relative">
+                            <TabTopControls
+                                key="topcontrols"
                                 selectedTabkey={selectedTabkey}
                                 setSelectedTabkey={setSelectedTabkey}
                                 selectedSubTabkey={selectedSubTabkey}
                                 setSelectedSubTabkey={setSelectedSubTabkey}
+                                svgRef={svgRef}
+                                graphRef={graphRef}
                                 tabElems={tabElems}
                             />
-                        </Row>
 
-                        {/* Tab Contents */}
-                        <Row sm={9} className="tabcontent position-relative">
-                            <Tab.Content className="border p-0 position-relative">
-                                <TabTopControls
-                                    key="topcontrols"
-                                    selectedTabkey={selectedTabkey}
-                                    setSelectedTabkey={setSelectedTabkey}
-                                    selectedSubTabkey={selectedSubTabkey}
-                                    setSelectedSubTabkey={setSelectedSubTabkey}
-                                    svgRef={svgRef}
-                                    graphRef={graphRef}
-                                    tabElems={tabElems}
-                                />
-
-                                {tabElems.map((ikey) => {
-                                    if (!ikey.children?.length) {
-                                        // show only if children is empty, pycode will show all codes under children
-                                        return (
-                                            <TabContents
-                                                key={ikey.key}
-                                                genkey={ikey.key}
-                                                selectedTabkey={selectedTabkey}
-                                                setSelectedTabkey={setSelectedTabkey}
-                                                selectedSubTabkey={selectedSubTabkey}
-                                                setSelectedSubTabkey={
-                                                    setSelectedSubTabkey
-                                                }
-                                                svgRef={svgRef}
-                                                graphRef={graphRef}
-                                                tabElems={tabElems}
-                                            />
-                                        );
-                                    } else {
-                                        // show only if children, pycode will show all codes under children
-                                        return ikey.children?.map((elem, index) => (
-                                            <TabContents
-                                                key={ikey.key + '_' + elem.key}
-                                                genkey={ikey.key}
-                                                gensubkey={elem.key}
-                                                selectedTabkey={selectedTabkey}
-                                                setSelectedTabkey={setSelectedTabkey}
-                                                selectedSubTabkey={selectedSubTabkey}
-                                                setSelectedSubTabkey={
-                                                    setSelectedSubTabkey
-                                                }
-                                                svgRef={svgRef}
-                                                graphRef={graphRef}
-                                                tabElems={tabElems}
-                                            />
-                                        ));
-                                    }
-                                })}
-                            </Tab.Content>
-                        </Row>
-                    </Col>
-                </Tab.Container>
-            </div>
-        )
+                            {tabElems.map((ikey) => {
+                                if (!ikey.children?.length) {
+                                    // show only if children is empty, pycode will show all codes under children
+                                    return (
+                                        <TabContents
+                                            key={ikey.key}
+                                            genkey={ikey.key}
+                                            selectedTabkey={selectedTabkey}
+                                            setSelectedTabkey={setSelectedTabkey}
+                                            selectedSubTabkey={selectedSubTabkey}
+                                            setSelectedSubTabkey={setSelectedSubTabkey}
+                                            svgRef={svgRef}
+                                            graphRef={graphRef}
+                                            tabElems={tabElems}
+                                        />
+                                    );
+                                } else {
+                                    // show only if children, pycode will show all codes under children
+                                    return ikey.children?.map((elem, index) => (
+                                        <TabContents
+                                            key={ikey.key + '_' + elem.key}
+                                            genkey={ikey.key}
+                                            gensubkey={elem.key}
+                                            selectedTabkey={selectedTabkey}
+                                            setSelectedTabkey={setSelectedTabkey}
+                                            selectedSubTabkey={selectedSubTabkey}
+                                            setSelectedSubTabkey={setSelectedSubTabkey}
+                                            svgRef={svgRef}
+                                            graphRef={graphRef}
+                                            tabElems={tabElems}
+                                        />
+                                    ));
+                                }
+                            })}
+                        </Tab.Content>
+                    </Row>
+                </Col>
+            </Tab.Container>
+        </div>
     );
 };
 

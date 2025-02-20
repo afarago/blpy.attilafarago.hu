@@ -64,146 +64,146 @@ export default defineConfig(({ command }) => {
                 },
             }),
             isProd && // only include in production
-            VitePWA({
-                registerType: 'autoUpdate',
-                injectRegister: 'auto',
-                // injectManifest: {
-                //     swSrc: './service-worker.ts', // Path to your service worker
-                // },
-                workbox: {
-                    globPatterns: [
-                        '**/*.{js,css,html,ico,png,svg,llsp,llsp3,lms,lmsp,ev3,ev3m,rbf,py,zip}',
+                VitePWA({
+                    registerType: 'autoUpdate',
+                    injectRegister: 'auto',
+                    // injectManifest: {
+                    //     swSrc: './service-worker.ts', // Path to your service worker
+                    // },
+                    workbox: {
+                        globPatterns: [
+                            '**/*.{js,css,html,ico,png,svg,llsp,llsp3,lms,lmsp,ev3,ev3m,rbf,py,zip}',
+                        ],
+                        disableDevLogs: isDebug,
+
+                        // This tells VitePWA to use your service-worker.ts file.
+                        // Even if empty, it's necessary.
+
+                        // runtimeCaching: [
+                        //     // Example of runtime caching configuration
+                        //     {
+                        //         // urlPattern: ({ url }) => {
+                        //         //     return url.pathname.startsWith('/api'); // Example: Cache API requests
+                        //         // },
+                        //         // handler: 'NetworkFirst',
+                        //         options: {
+                        //             // cacheName: 'api-cache',
+                        //             // expiration: {
+                        //             //     maxEntries: 30,
+                        //             //     maxAgeSeconds: 3600, // 1 hour
+                        //             // },
+
+                        //             // Suppress specific Workbox logs within a cache entry
+                        //             // The following example will suppress 'cache-hit' logs
+                        //             debug: {
+                        //                 // The following will suppress cache-hit logs
+                        //                 'cache-hit': false,
+                        //                 'cache-miss': true,
+                        //                 'cache-put': true,
+                        //             },
+                        //         },
+                        //     },
+                        // ],
+                    },
+                    devOptions: {
+                        enabled: true,
+                    },
+                    includeAssets: [
+                        'favicon.ico',
+                        'robots.txt',
+                        'apple-touch-icon.png',
+                        '*.png',
+                        '*.svg',
+                        '*.ico',
                     ],
-                    disableDevLogs: isDebug,
-
-                    // This tells VitePWA to use your service-worker.ts file.
-                    // Even if empty, it's necessary.
-
-                    // runtimeCaching: [
-                    //     // Example of runtime caching configuration
-                    //     {
-                    //         // urlPattern: ({ url }) => {
-                    //         //     return url.pathname.startsWith('/api'); // Example: Cache API requests
-                    //         // },
-                    //         // handler: 'NetworkFirst',
-                    //         options: {
-                    //             // cacheName: 'api-cache',
-                    //             // expiration: {
-                    //             //     maxEntries: 30,
-                    //             //     maxAgeSeconds: 3600, // 1 hour
-                    //             // },
-
-                    //             // Suppress specific Workbox logs within a cache entry
-                    //             // The following example will suppress 'cache-hit' logs
-                    //             debug: {
-                    //                 // The following will suppress cache-hit logs
-                    //                 'cache-hit': false,
-                    //                 'cache-miss': true,
-                    //                 'cache-put': true,
-                    //             },
-                    //         },
-                    //     },
-                    // ],
-                },
-                devOptions: {
-                    enabled: true,
-                },
-                includeAssets: [
-                    'favicon.ico',
-                    'robots.txt',
-                    'apple-touch-icon.png',
-                    '*.png',
-                    '*.svg',
-                    '*.ico',
-                ],
-                manifest: {
-                    name: 'BlocklyPy',
-                    short_name: 'BlocklyPy',
-                    description:
-                        'BlocklyPy: SPIKE to Pybricks - A web-app for converting LEGO blockly programs to Python code',
-                    theme_color: '#ffffff',
-                    background_color: '#ffffff',
-                    start_url: '/',
-                    display: 'standalone',
-                    icons: [
-                        {
-                            src: '/favicon/android-chrome-192x192.png',
-                            sizes: '192x192',
-                            type: 'image/png',
-                        },
-                        {
-                            src: '/favicon/android-chrome-512x512.png',
-                            sizes: '512x512',
-                            type: 'image/png',
-                        },
-
-                        {
-                            src: '/favicon/apple-touch-icon.png',
-                            sizes: '180x180',
-                            type: 'image/png',
-                            // purpose: 'any maskable',
-                        },
-                        {
-                            src: '/favicon/safari-pinned-tab.svg',
-                            sizes: '768x768',
-                            type: 'image/svg+xml',
-                            // purpose: 'any maskable',
-                        },
-                    ],
-                    screenshots: [
-                        {
-                            src: '/screenshots/screenshot-1024x768.png',
-                            sizes: '1024x768',
-                            type: 'image/png',
-                        },
-                        {
-                            src: '/screenshots/screenshot-1280x720.png',
-                            sizes: '1280x720',
-                            type: 'image/png',
-                            form_factor: 'wide',
-                        },
-                        {
-                            src: '/screenshots/screenshot-1920x1080.png',
-                            sizes: '1920x1080',
-                            type: 'image/png',
-                            form_factor: 'wide',
-                        },
-                        {
-                            src: '/screenshots/screenshot-mobile-375x812.png',
-                            sizes: '375x812',
-                            type: 'image/png',
-                            form_factor: 'narrow',
-                            label: 'mobile',
-                        },
-                    ],
-                    // https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/How_to/Associate_files_with_your_PWA
-                    file_handlers: [
-                        {
-                            action: '/',
-                            accept: {
-                                'application/vnd.lego.spike': ['.llsp3', '.llsp'],
-                                'application/vnd.lego.robotinventor': ['.lms'],
-                                'application/vnd.lego.ev3classroom': ['.lmsp'],
-                                'application/vnd.lego.ev3lab': ['.ev3'],
-                                'application/vnd.lego.ev3labmobile': ['.ev3m'],
-                                'application/vnd.lego.compiled': ['.rbf'],
-                                'application/zip': ['.zip'],
-                                'text/x-python': ['.py'],
+                    manifest: {
+                        name: 'BlocklyPy',
+                        short_name: 'BlocklyPy',
+                        description:
+                            'BlocklyPy: SPIKE to Pybricks - A web-app for converting LEGO blockly programs to Python code',
+                        theme_color: '#ffffff',
+                        background_color: '#ffffff',
+                        start_url: '/',
+                        display: 'standalone',
+                        icons: [
+                            {
+                                src: '/favicon/android-chrome-192x192.png',
+                                sizes: '192x192',
+                                type: 'image/png',
                             },
-                        },
-                    ],
-                    // protocol_handlers: [
-                    //     {
-                    //         protocol: 'web+tea',
-                    //         url: '/tea?type=%s',
-                    //     },
-                    //     {
-                    //         protocol: 'web+coffee',
-                    //         url: '/coffee?type=%s',
-                    //     },
-                    // ],
-                },
-            }),
+                            {
+                                src: '/favicon/android-chrome-512x512.png',
+                                sizes: '512x512',
+                                type: 'image/png',
+                            },
+
+                            {
+                                src: '/favicon/apple-touch-icon.png',
+                                sizes: '180x180',
+                                type: 'image/png',
+                                // purpose: 'any maskable',
+                            },
+                            {
+                                src: '/favicon/safari-pinned-tab.svg',
+                                sizes: '768x768',
+                                type: 'image/svg+xml',
+                                // purpose: 'any maskable',
+                            },
+                        ],
+                        screenshots: [
+                            {
+                                src: '/screenshots/screenshot-1024x768.png',
+                                sizes: '1024x768',
+                                type: 'image/png',
+                            },
+                            {
+                                src: '/screenshots/screenshot-1280x720.png',
+                                sizes: '1280x720',
+                                type: 'image/png',
+                                form_factor: 'wide',
+                            },
+                            {
+                                src: '/screenshots/screenshot-1920x1080.png',
+                                sizes: '1920x1080',
+                                type: 'image/png',
+                                form_factor: 'wide',
+                            },
+                            {
+                                src: '/screenshots/screenshot-mobile-375x812.png',
+                                sizes: '375x812',
+                                type: 'image/png',
+                                form_factor: 'narrow',
+                                label: 'mobile',
+                            },
+                        ],
+                        // https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/How_to/Associate_files_with_your_PWA
+                        file_handlers: [
+                            {
+                                action: '/',
+                                accept: {
+                                    'application/vnd.lego.spike': ['.llsp3', '.llsp'],
+                                    'application/vnd.lego.robotinventor': ['.lms'],
+                                    'application/vnd.lego.ev3classroom': ['.lmsp'],
+                                    'application/vnd.lego.ev3lab': ['.ev3'],
+                                    'application/vnd.lego.ev3labmobile': ['.ev3m'],
+                                    'application/vnd.lego.compiled': ['.rbf'],
+                                    'application/zip': ['.zip'],
+                                    'text/x-python': ['.py'],
+                                },
+                            },
+                        ],
+                        // protocol_handlers: [
+                        //     {
+                        //         protocol: 'web+tea',
+                        //         url: '/tea?type=%s',
+                        //     },
+                        //     {
+                        //         protocol: 'web+coffee',
+                        //         url: '/coffee?type=%s',
+                        //     },
+                        // ],
+                    },
+                }),
         ],
         build: {
             outDir: './dist',
@@ -224,6 +224,8 @@ export default defineConfig(({ command }) => {
                     chunkFileNames: 'assets/js/[name]-[hash].js',
                     entryFileNames: 'assets/js/[name]-[hash].js',
                     manualChunks: (id) => {
+                        if (isDebug) return id;
+                        
                         // TODO: defer load of these chunks
                         if (id.includes('blocklypy')) {
                             return 'vendor-1';
@@ -238,7 +240,7 @@ export default defineConfig(({ command }) => {
                 // preserveEntrySignatures: "strict",
             },
             chunkSizeWarningLimit: 800, // ignore graphviz 739kb limit // TODO: selective ignore only for this chunk
-            minify: 'esbuild',
+            minify: isProd ? 'esbuild' : false,
             esbuild: { legalComments: 'none', minify: true },
             // minify: 'terser', // Use Terser for minification
             // terserOptions: {

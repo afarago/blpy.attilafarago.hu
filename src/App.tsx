@@ -1,9 +1,10 @@
+import React, { lazy } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
-import AuthCallbackPage from './pages/AuthCallback';
 import Home from './pages/Home';
-import React from 'react';
 import ReactGA from 'react-ga4';
+
+const AuthCallbackPage = lazy(() => import('./pages/AuthCallback'));
 
 const GA_TRACKING_ID = 'G-WRDV9368S9';
 ReactGA.initialize(GA_TRACKING_ID);

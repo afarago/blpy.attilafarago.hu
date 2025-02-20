@@ -1,35 +1,31 @@
-import Cat0 from '@/assets/img/cat0.svg?react';
-import Cat1 from '@/assets/img/cat1.svg?react';
-import Cat10 from '@/assets/img/cat10.svg?react';
-import Cat11 from '@/assets/img/cat11.svg?react';
-import Cat12 from '@/assets/img/cat12.svg?react';
-import Cat13 from '@/assets/img/cat13.svg?react';
-import Cat14 from '@/assets/img/cat14.svg?react';
-import Cat15 from '@/assets/img/cat15.svg?react';
-import Cat16 from '@/assets/img/cat16.svg?react';
-import Cat17 from '@/assets/img/cat17.svg?react';
-import Cat18 from '@/assets/img/cat18.svg?react';
-import Cat19 from '@/assets/img/cat19.svg?react';
-import Cat2 from '@/assets/img/cat2.svg?react';
-import Cat3 from '@/assets/img/cat3.svg?react';
-import Cat4 from '@/assets/img/cat4.svg?react';
-import Cat5 from '@/assets/img/cat5.svg?react';
-import Cat6 from '@/assets/img/cat6.svg?react';
-import Cat7 from '@/assets/img/cat7.svg?react';
-import Cat8 from '@/assets/img/cat8.svg?react';
-import Cat9 from '@/assets/img/cat9.svg?react';
-import React from 'react';
+import React, { lazy } from 'react';
+
+const Cat0 = lazy(() => import('@/assets/img/cat0.svg?react'));
+const Cat1 = lazy(() => import('@/assets/img/cat1.svg?react'));
+const Cat2 = lazy(() => import('@/assets/img/cat2.svg?react'));
+const Cat3 = lazy(() => import('@/assets/img/cat3.svg?react'));
+const Cat4 = lazy(() => import('@/assets/img/cat4.svg?react'));
+const Cat5 = lazy(() => import('@/assets/img/cat5.svg?react'));
+const Cat6 = lazy(() => import('@/assets/img/cat6.svg?react'));
+const Cat7 = lazy(() => import('@/assets/img/cat7.svg?react'));
+const Cat8 = lazy(() => import('@/assets/img/cat8.svg?react'));
+const Cat9 = lazy(() => import('@/assets/img/cat9.svg?react'));
+const Cat10 = lazy(() => import('@/assets/img/cat10.svg?react'));
+const Cat11 = lazy(() => import('@/assets/img/cat11.svg?react'));
+const Cat12 = lazy(() => import('@/assets/img/cat12.svg?react'));
+const Cat13 = lazy(() => import('@/assets/img/cat13.svg?react'));
+const Cat14 = lazy(() => import('@/assets/img/cat14.svg?react'));
+const Cat15 = lazy(() => import('@/assets/img/cat15.svg?react'));
+const Cat16 = lazy(() => import('@/assets/img/cat16.svg?react'));
+const Cat17 = lazy(() => import('@/assets/img/cat17.svg?react'));
+const Cat18 = lazy(() => import('@/assets/img/cat18.svg?react'));
+const Cat19 = lazy(() => import('@/assets/img/cat19.svg?react'));
 
 interface CatIconProps {
     slot?: number;
 }
 
 export const CatIcon: React.FC<CatIconProps> = ({ slot }) => {
-    //   className={
-    //                     conversionResult?.additionalFields?.blockly?.slot ===
-    //                     undefined
-    //                       ? "d-none"
-    //                       : "mx-2"
     return (
         <>
             {slot === 0 && <Cat0 />}

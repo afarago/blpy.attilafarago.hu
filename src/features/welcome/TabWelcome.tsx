@@ -31,45 +31,43 @@ const WelcomeTab: React.FC<{
     );
 
     return (
-        !conversionResult && (
-            <div className="tab-welcome active">
-                <div className="justify-content-center">
-                    <div className="text-center">
-                        <button onClick={handleCloudIconClick}>
-                            <CloudArrowUpFill
-                                className="drop-cloud-icon"
-                                aria-label="upload file"
-                            />
-                        </button>
-                        <div className="mb-4 mx-auto" style={{ maxWidth: '30em' }}>
-                            Imagine a world where magical unicorns transform your LEGO
-                            blockly programs into Python code!
-                        </div>
-                        <small>
-                            <i>
-                                Yes, that means all{' '}
-                                {ACCEPTED_EXTENSIONS.replaceAll('.', ' ')} files from
-                                your computer and from github
-                            </i>
-                        </small>
-                        <br />
-                        {icons.map((icon, index) => {
-                            if (typeof icon !== 'string') {
-                                return icon;
-                            } else {
-                                return (
-                                    <DevTypeIcon
-                                        key={icon}
-                                        devtype={icon}
-                                        className="icon"
-                                    />
-                                );
-                            }
-                        })}
+        <div className="tab-welcome active">
+            <div className="justify-content-center">
+                <div className="text-center">
+                    <button onClick={handleCloudIconClick}>
+                        <CloudArrowUpFill
+                            className="drop-cloud-icon"
+                            aria-label="upload file"
+                        />
+                    </button>
+                    <div className="mb-4 mx-auto" style={{ maxWidth: '30em' }}>
+                        Imagine a world where magical unicorns transform your LEGO
+                        blockly programs into Python code!
                     </div>
+                    <small>
+                        <i>
+                            Yes, that means all{' '}
+                            {ACCEPTED_EXTENSIONS.replaceAll('.', ' ')} files from your
+                            computer and from github
+                        </i>
+                    </small>
+                    <br />
+                    {icons.map((icon, index) => {
+                        if (typeof icon !== 'string') {
+                            return icon;
+                        } else {
+                            return (
+                                <DevTypeIcon
+                                    key={icon}
+                                    devtype={icon}
+                                    className="icon"
+                                />
+                            );
+                        }
+                    })}
                 </div>
             </div>
-        )
+        </div>
     );
 };
 

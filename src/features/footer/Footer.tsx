@@ -4,7 +4,11 @@ import { GITHUB_VERSION } from '@/github_version';
 import React from 'react';
 
 const Footer: React.FC = () => (
-    <footer className="border-top footer text-muted py-2">
+    <footer
+        className="border-top footer text-muted py-2"
+        aria-hidden="true"
+        role="presentation"
+    >
         <div className="container text-center d-flex flex-column">
             <div
                 className="small text-muted align-self-center"
@@ -12,31 +16,57 @@ const Footer: React.FC = () => (
             >
                 No robots were harmed in making this converter and visualizer of LEGO
                 SPIKE and EV3 robot files. News and updates are available on the{' '}
-                <a href="https://www.facebook.com/ev3treevis" target="_blank">
+                <a
+                    href="https://www.facebook.com/ev3treevis"
+                    target="_blank"
+                    aria-label="Facebook page for EV3TreeVis"
+                    tabIndex={-1}
+                >
                     facebook page
                 </a>
                 , open-source on{' '}
                 <a
                     href="https://github.com/afarago/blpy.attilafarago.hu"
                     target="_blank"
+                    aria-label="GitHub repository for BlocklyPy"
+                    tabIndex={-1}
                 >
                     GitHub
                 </a>{' '}
                 and{' '}
-                <a href="https://www.npmjs.com/package/blocklypy" target="_blank">
+                <a
+                    href="https://www.npmjs.com/package/blocklypy"
+                    target="_blank"
+                    aria-label="NPM package for BlocklyPy"
+                    tabIndex={-1}
+                >
                     npm
                 </a>{' '}
                 . You might freely use, share any generated artifacts, visualizations
                 with attribution in place.
             </div>
             <div className="d-flex gap-2 flex-row align-self-center">
-                <a href="https://www.facebook.com/ev3treevis" target="_blank">
+                <a
+                    href="https://www.facebook.com/ev3treevis"
+                    target="_blank"
+                    aria-label="Facebook page for EV3TreeVis"
+                    tabIndex={-1}
+                >
                     <Facebook />
                 </a>
-                <a href="https://www.linkedin.com/in/afarago/" target="_blank">
+                <a
+                    href="https://www.linkedin.com/in/afarago/"
+                    target="_blank"
+                    aria-label="LinkedIn profile for Attila Farago"
+                    tabIndex={-1}
+                >
                     <Linkedin />
                 </a>
-                <a href="mailto:attila.farago.hu+ev3treevis@gmail.com">
+                <a
+                    href="mailto:attila.farago.hu+ev3treevis@gmail.com"
+                    aria-label="Send email to Attila Farago"
+                    tabIndex={-1}
+                >
                     <EnvelopeFill />
                 </a>
                 {''}

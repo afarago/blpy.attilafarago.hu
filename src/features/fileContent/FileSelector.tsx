@@ -200,6 +200,7 @@ const FileSelector: React.FC<{
                         ref={fileInputRef}
                         onChange={handleFileChange}
                         onClick={handleFileBrowserClick}
+                        aria-label="File selector"
                     />
                     {conversionResult && (
                         <div className="file-selector-icons position-absolute end-0 d-none d-lg-flex">
@@ -231,7 +232,7 @@ const FileSelector: React.FC<{
                     title="Enter GitHub Repository URL"
                     onClick={() => setShowGithubDialog(true)}
                 >
-                    <img src={Github} alt="github" />{' '}
+                    <img src={Github} alt="github" width="1.8em" height="1.8em" />{' '}
                     <span className="d-none d-lg-block">Open from GitHub</span>
                 </Button>
             </Form.Group>
