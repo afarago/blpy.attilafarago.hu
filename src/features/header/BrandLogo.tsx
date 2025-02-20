@@ -7,7 +7,7 @@ const BrandLogo: React.FC = () => {
             <LogoFull height="1.5em" width="4em" />
             &nbsp;
             <b>BlocklyPy</b>
-            <span className="d-none d-sm-inline">&nbsp;· LegoAppTools</span>
+            <span className="d-none d-md-inline">&nbsp;· LegoAppTools</span>
         </>
     );
 };

@@ -1,9 +1,9 @@
-import { useAppDispatch } from '@/app/hooks';
-import { fileContentReset } from '@/features/fileContent/fileContentSlice';
-import { useBeforeInstallPrompt } from '@/utils/pwainstall-hook';
-import React from 'react';
-import { Button } from 'react-bootstrap';
 import BrandLogo from './BrandLogo';
+import { Button } from 'react-bootstrap';
+import React from 'react';
+import { fileContentReset } from '@/features/fileContent/fileContentSlice';
+import { useAppDispatch } from '@/app/hooks';
+import { useBeforeInstallPrompt } from '@/utils/pwainstall-hook';
 
 const Header: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -28,7 +28,7 @@ const Header: React.FC = () => {
                     </div>
                     {deferredInstallPrompt && (
                         <div className="d-flex flex-row align-items-center">
-                            <div className="small px-2 text-end">
+                            <div className="small px-2 text-end d-none d-lg-block">
                                 Access BlocklyPy offline
                                 <br />
                                 using the web app.

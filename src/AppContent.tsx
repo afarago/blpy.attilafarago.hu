@@ -10,15 +10,15 @@ import { selectTabs, toastContentSet } from '@/features/tabs/tabsSlice';
 import FileSelector from '@/features/fileContent/FileSelector';
 import Footer from '@/features/footer/Footer';
 import Header from '@/features/header/Header';
+import TabLoading from '@/features/tabs/TabLoading';
 import Toast from 'react-bootstrap/Toast';
-import WelcomeTab from '@/features/welcome/TabWelcome';
+import WelcomeTab from './features/welcome/TabWelcome';
 import { selectConversion } from './features/conversion/conversionSlice';
 import { useAppDispatch } from '@/app/hooks';
 import { useDragAndDrop } from './utils/dragndrop-hook';
 import { useSelector } from 'react-redux';
 
 const MainTab = lazy(() => import('@/features/tabs/TabMain'));
-const TabLoading = lazy(() => import('@/features/tabs/TabLoading'));
 
 const AppContent: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -78,14 +78,10 @@ const AppContent: React.FC = () => {
                     >
                         <FileSelector fileInputRef={fileInputRef}></FileSelector>
 
-                        {fileContent.showSpinner && (
-                            <Suspense>
-                                <TabLoading />
-                            </Suspense>
-                        )}
+                        {fileContent.showSpinner && <TabLoading />}
 
                         {conversionResult ? (
-                            <Suspense>
+                            <Suspense fallback={<TabLoading />}>
                                 <MainTab />
                             </Suspense>
                         ) : (

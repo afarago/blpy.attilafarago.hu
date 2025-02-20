@@ -63,7 +63,7 @@ export default defineConfig(({ command }) => {
                     exclude: '',
                 },
             }),
-            isProd && // only include in production
+            //isProd && // only include in production
                 VitePWA({
                     registerType: 'autoUpdate',
                     injectRegister: 'auto',

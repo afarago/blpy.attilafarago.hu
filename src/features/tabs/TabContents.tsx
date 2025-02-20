@@ -1,10 +1,10 @@
 import { ITabElem, TabKey } from './TabMain';
-import React, { useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 
 import Button from 'react-bootstrap/Button';
-import CallGraph from '@/features/graph/CallGraph';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import Tab from 'react-bootstrap/Tab';
+import TabLoading from './TabLoading';
 import { fileSetEnabled } from '@/features/fileContent/fileContentSlice';
 import less from 'react-syntax-highlighter/dist/esm/languages/hljs/less';
 import python from 'react-syntax-highlighter/dist/esm/languages/hljs/python';
@@ -15,6 +15,8 @@ import svgPanZoom from 'svg-pan-zoom';
 import { useAppDispatch } from '@/app/hooks';
 import { useSelector } from 'react-redux';
 import { vs } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+
+const CallGraph = React.lazy(() => import('@/features/graph/CallGraph'));
 
 SyntaxHighlighter.registerLanguage('python', python);
 SyntaxHighlighter.registerLanguage('less', less);
@@ -154,7 +156,11 @@ const TabContents: React.FC<TabContentsProps> = ({
                                 {code}
                             </SyntaxHighlighter>
                         )}
-                    {genkey === TabKey.CALLGRAPH && <CallGraph ref={graphRef} />}
+                    {genkey === TabKey.CALLGRAPH && (
+                        <Suspense fallback={<TabLoading />}>
+                            <CallGraph ref={graphRef} />
+                        </Suspense>
+                    )}
                     {genkey === TabKey.PREVIEW && (
                         <div
                             ref={svgRef}
