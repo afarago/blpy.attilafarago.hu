@@ -228,12 +228,12 @@ export default defineConfig(({ command }) => {
                         
                         // TODO: defer load of these chunks
                         if (id.includes('blocklypy')) {
-                            return 'vendor-1';
+                            return 'vendor-2'; // will only be imported in conversionworker
                         } else if (id.includes('viz')) {
-                            return 'vendor-2';
+                            return 'vendor-1';
                         } else if (id.includes('node_modules')) {
                             return 'vendor-0';
-                        }
+                        } else return 'index';
                     },
                     // preserveModules: true,
                 },
