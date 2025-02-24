@@ -150,61 +150,61 @@ export default defineConfig(({ command }) => {
                             purpose: 'any maskable',
                         },
                         {
-                            src: '/favicon/icon-44x44.png',
+                            src: '/favicon/favicon-44x44.png',
                             sizes: '44x44',
                             type: 'image/png',
                             purpose: 'any',
                         }, // Windows
                         {
-                            src: '/favicon/icon-48x48.png',
+                            src: '/favicon/favicon-48x48.png',
                             sizes: '48x48',
                             type: 'image/png',
                             purpose: 'any',
                         },
                         {
-                            src: '/favicon/icon-71x71.png',
+                            src: '/favicon/favicon-71x71.png',
                             sizes: '71x71',
                             type: 'image/png',
                             purpose: 'any',
                         }, // Windows
                         {
-                            src: '/favicon/icon-72x72.png',
+                            src: '/favicon/favicon-72x72.png',
                             sizes: '72x72',
                             type: 'image/png',
                             purpose: 'any',
                         },
                         {
-                            src: '/favicon/icon-96x96.png',
+                            src: '/favicon/favicon-96x96.png',
                             sizes: '96x96',
                             type: 'image/png',
                             purpose: 'any',
                         },
                         {
-                            src: '/favicon/icon-144x144.png',
+                            src: '/favicon/favicon-144x144.png',
                             sizes: '144x144',
                             type: 'image/png',
                             purpose: 'any',
                         },
                         {
-                            src: '/favicon/icon-150x150.png',
+                            src: '/favicon/favicon-150x150.png',
                             sizes: '150x150',
                             type: 'image/png',
                             purpose: 'any',
                         }, // Windows
                         {
-                            src: '/favicon/icon-192x192.png',
+                            src: '/favicon/favicon-192x192.png',
                             sizes: '192x192',
                             type: 'image/png',
                             purpose: 'any maskable',
                         }, // Maskable
                         {
-                            src: '/favicon/icon-310x310.png',
+                            src: '/favicon/favicon-310x310.png',
                             sizes: '310x310',
                             type: 'image/png',
                             purpose: 'any',
                         }, // Windows
                         {
-                            src: '/favicon/icon-512x512.png',
+                            src: '/favicon/favicon-512x512.png',
                             sizes: '512x512',
                             type: 'image/png',
                             purpose: 'any maskable',
