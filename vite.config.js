@@ -1,8 +1,8 @@
 import * as path from 'path';
 
-import { VitePWA } from 'vite-plugin-pwa';
-import { defineConfig } from 'vite';
 import { fileURLToPath } from 'url';
+import { defineConfig } from 'vite';
+import { VitePWA } from 'vite-plugin-pwa';
 // import https from 'vite-plugin-https'; // local PWA testing, yarn add -D vite-plugin-https
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import react from '@vitejs/plugin-react';
@@ -124,7 +124,22 @@ export default defineConfig(({ command }) => {
                     theme_color: '#ffffff',
                     background_color: '#ffffff',
                     start_url: '/',
+                    // lang: 'en',
                     display: 'standalone',
+                    // shortcuts: [
+                    //     {
+                    //         name: 'Convert LEGO Blockly to Python',
+                    //         short_name: 'Convert',
+                    //         url: '/',
+                    //         icons: [
+                    //             {
+                    //                 src: '/favicon/android-chrome-192x192.png',
+                    //                 sizes: '192x192',
+                    //                 type: 'image/png',
+                    //             },
+                    //         ],
+                    //     },
+                    // ],
                     icons: [
                         {
                             src: '/favicon/android-chrome-192x192.png',
@@ -252,6 +267,19 @@ export default defineConfig(({ command }) => {
                             },
                         },
                     ],
+                    launch_handler: {
+                        client_mode: 'focus-existing',
+                    },
+                    // https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Manifest/Reference/share_target
+                    // share_target: {
+                    //     action: '/share',
+                    //     method: 'POST',
+                    //     params: {
+                    //         title: 'title',
+                    //         text: 'text',
+                    //         url: 'url',
+                    //     },
+                    // },
                     // protocol_handlers: [
                     //     {
                     //         protocol: 'web+tea',

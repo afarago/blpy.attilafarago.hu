@@ -10,7 +10,6 @@
 -   github graphql batch query
     https://api.github.com/graphql
 -   https://www.npmjs.com/package/@octokit/rest / https://www.npmjs.com/package/@octokit/graphql
--   better handling of file open in PWA / single page
 
 ## LATER
 
