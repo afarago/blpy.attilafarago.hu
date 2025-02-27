@@ -78,22 +78,49 @@ const FileSelector: React.FC<{
 
     useEffect(() => {
         // PWA open file support
+        // lauchqueue callback for multiple files can be called multiple times in fragments
+        // solving this with a timeout and batch collecting
+        let fileHandles: FileSystemFileHandle[] = [];
+        let launchTimeout: NodeJS.Timeout | undefined;
+
+        const processBatch = async () => {
+            if (fileHandles.length > 0) {
+                // processing the batch of files
+
+                const filesPromises = fileHandles.map((fileHandle) =>
+                    fileHandle.getFile(),
+                );
+                const files = await Promise.all(filesPromises);
+
+                if (files.length > 0) {
+                    openFiles(files);
+                }
+
+                fileHandles = []; // Reset the array
+            }
+        };
+
         if ('launchQueue' in window) {
             (window as any).launchQueue.setConsumer(
-                async (launchParams: { files: FileSystemFileHandle[] | undefined }) => {
-                    if (!launchParams.files?.length) return;
-
-                    const files1 = launchParams.files.map((fileHandle) =>
-                        fileHandle.getFile(),
-                    );
-                    const files1a = await Promise.all(files1);
-                    if (!files1a?.length) return;
-
-                    openFiles(files1a);
+                (launchParams: { files: FileSystemFileHandle[] | undefined }) => {
+                    // lauchqueue callback, yet for multiple files can be called multiple times in fragments
+                    if (launchParams.files && launchParams.files.length > 0) {
+                        fileHandles.push(...launchParams.files);
+                        clearTimeout(launchTimeout);
+                        // OS can send multiple fragments, so wait a bit before processing
+                        launchTimeout = setTimeout(processBatch, 200);
+                    }
                 },
             );
         }
-    }, [dispatch]);
+
+        // Cleanup timeout on unmount
+        return () => {
+            if (launchTimeout) {
+                clearTimeout(launchTimeout);
+            }
+        };
+    }, [openFiles]); // Ensure openFiles is in the dependency array.
 
     const handleFileBrowserClick = async (e: React.MouseEvent<HTMLInputElement>) => {
         // shift-click: open a directory selector (if supported)
@@ -201,6 +228,11 @@ const FileSelector: React.FC<{
                         onChange={handleFileChange}
                         onClick={handleFileBrowserClick}
                         aria-label="File selector"
+                        title={
+                            fileContent?.files?.length
+                                ? undefined
+                                : 'shift-click to select a directory'
+                        }
                     />
                     {conversionResult && (
                         <div className="file-selector-icons position-absolute end-0 d-none d-lg-flex">
