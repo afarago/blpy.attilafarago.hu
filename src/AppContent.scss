@@ -143,6 +143,11 @@
         }
     }
 
+    .tab-main,
+    .file-selector {
+        filter: drop-shadow(2px 3px 10px #eee);
+    }
+
     .tab-main {
         min-height: 30vh;
 
@@ -220,6 +225,7 @@
             color: $icon-color;
             line-height: 1em;
             cursor: pointer;
+            filter: drop-shadow(2px 3px 10px #ccc);
         }
     }
 
@@ -315,6 +321,8 @@
     }
 
     .code-top-container {
+        // backdrop-filter: blur(3px);
+        filter: drop-shadow(2px 3px 10px lightgrey);
         position: absolute;
         top: 0.5em;
         right: 0.5em;
