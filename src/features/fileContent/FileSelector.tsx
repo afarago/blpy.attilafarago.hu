@@ -31,7 +31,6 @@ const FileSelector: React.FC<{
     const dispatch = useAppDispatch();
 
     const [showGithubDialog, setShowGithubDialog] = useState(false);
-
     const [filesCached, setFilesCached] = useState<File[] | undefined>();
     const { additionalCommentsChecked } = useSelector(selectTabs);
     const { conversionResult } = useSelector(selectConversion);
@@ -54,8 +53,13 @@ const FileSelector: React.FC<{
         // e.g. https://gist.github.com/afarago/4718cffcbea66ca88f99be64fd912cd8
     };
 
-    const openFiles = (files1: File[]) => {
-        if (!files1?.length) return;
+    const openFiles = async (files: FileSystemFileHandle[] | File[]) => {
+        if (!files?.length) return;
+
+        const filesPromises = files.map((fe) =>
+            fe instanceof File ? fe : fe.getFile(),
+        );
+        const files1 = await Promise.all(filesPromises);
 
         let files2 = [...files1].sort((a, b) => a.name.localeCompare(b.name));
         // filter files to only include supported extensions
@@ -68,11 +72,11 @@ const FileSelector: React.FC<{
         dispatch(fileContentSet(content));
     };
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const files1 = event.target.files;
         if (!files1?.length) return;
 
-        openFiles([...files1]);
+        await openFiles([...files1]);
         event.target.blur();
     };
 
@@ -86,16 +90,7 @@ const FileSelector: React.FC<{
         const processBatch = async () => {
             if (fileHandles.length > 0) {
                 // processing the batch of files
-
-                const filesPromises = fileHandles.map((fileHandle) =>
-                    fileHandle.getFile(),
-                );
-                const files = await Promise.all(filesPromises);
-
-                if (files.length > 0) {
-                    openFiles(files);
-                }
-
+                if (fileHandles.length > 0) await openFiles(fileHandles);
                 fileHandles = []; // Reset the array
             }
         };
@@ -106,6 +101,8 @@ const FileSelector: React.FC<{
                     // lauchqueue callback, yet for multiple files can be called multiple times in fragments
                     if (launchParams.files && launchParams.files.length > 0) {
                         fileHandles.push(...launchParams.files);
+                        openFiles(fileHandles);
+
                         clearTimeout(launchTimeout);
                         // OS can send multiple fragments, so wait a bit before processing
                         launchTimeout = setTimeout(processBatch, 200);
