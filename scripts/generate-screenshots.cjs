@@ -22,7 +22,7 @@ async function generateScreenshots() {
     await page.setViewport({ width, height });
     // Important: Use the correct URL for your *built* app, not localhost.
     // Use a relative path so it works when deployed to different environments
-    const baseUrl = process.env.VITE_BASE_URL || "https://localhost:5173";
+    const baseUrl = process.env.VITE_BASE_URL || "http://localhost:5173";
     console.log(`Navigating to ${baseUrl}`); // Helpful for debugging
     await page.goto(`${baseUrl}`); // or `${baseUrl}your/route` if needed
 
