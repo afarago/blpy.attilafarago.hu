@@ -22,28 +22,16 @@ export default defineConfig(({ command }) => {
         // define: {
         //     'import.meta.env.NETLIFY': JSON.stringify(isNetlify),
         // },
-        root: path.resolve(__dirname, '.'),
+        root: __dirname,
         resolve: {
             alias: {
-                '@': path.resolve(__dirname, 'src/'),
-                '@components': path.resolve(__dirname, 'src/components'),
-                '~bootstrap': path.resolve(__dirname, 'node_modules/bootstrap'),
+            '@': path.resolve(__dirname, 'src'),
+            '@components': path.resolve(__dirname, 'src/components'),
+            '~bootstrap': 'bootstrap',
             },
         },
         assetsInclude: [
-            '**/*.llsp',
-            '**/*.llsp3',
-            '**/*.lms',
-            '**/*.lmsp',
-            '**/*.ev3',
-            '**/*.ev3m',
-            '**/*.rbf',
-            '**/*.proj',
-            '**/*.py',
-            '**/*.zip',
-            '**/*.png',
-            '**/*.svg',
-            '**/*.ico',
+            '**/*.{ico,png,jpg,svg,llsp,llsp3,lms,lmsp,ev3,ev3m,rbf,proj,py,zip}',
         ],
         server: {
             hot: true,
@@ -73,7 +61,7 @@ export default defineConfig(({ command }) => {
                 // },
                 workbox: {
                     globPatterns: [
-                        '**/*.{js,css,html,ico,png,svg,llsp,llsp3,lms,lmsp,ev3,ev3m,rbf,proj,py,zip}',
+                        '**/*.{js,css,html,ico,png,jpg,svg,llsp,llsp3,lms,lmsp,ev3,ev3m,rbf,proj,py,zip}',
                     ],
                     disableDevLogs: isDebug,
 
@@ -304,9 +292,9 @@ export default defineConfig(({ command }) => {
                         let extType = assetInfo.name.split('.').at(1);
                         if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType)) {
                             extType = 'img';
-                        } else if (/css|woff|woff2/.test(extType)) {
+                        } else if (/css|html|js|woff|woff2/.test(extType)) {
                             extType = 'css';
-                        } else if (/llsp|llsp3|lsm|lms|lmsp|ev3|rbf|proj/.test(extType)) {
+                        } else if (/llsp|llsp3|lms|lmsp|ev3|ev3m|rbf|proj/.test(extType)) {
                             extType = 'lego';
                         }
                         return `assets/${extType}/[name]-[hash][extname]`;
