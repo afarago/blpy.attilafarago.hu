@@ -26,6 +26,7 @@
         // top: 0;
         // z-index: 1000;
         transition: height 0.3s ease, padding 0.3s ease, font-size 0.3s ease;
+        filter: drop-shadow(2px 4px 6px #ddd);
 
         nav {
             background-color: $headerfooter-background-color;

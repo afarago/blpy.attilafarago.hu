@@ -227,7 +227,14 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
                     <Form.Check
                         type="switch"
                         id="additionalCommentsCheck"
-                        label="Explanatory&nbsp;Comments"
+                        label={
+                            <>
+                                <span className="d-none d-lg-inline">
+                                    Explanatory&nbsp;
+                                </span>
+                                Comments
+                            </>
+                        }
                         checked={additionalCommentsChecked}
                         title="Add explanatory comments to the source code (ctrl+e)"
                         onChange={handleSetIsAdditionalCommentsChecked}
