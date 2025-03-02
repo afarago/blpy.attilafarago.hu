@@ -1,8 +1,8 @@
 import * as path from 'path';
 
-import { fileURLToPath } from 'url';
-import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
+import { defineConfig } from 'vite';
+import { fileURLToPath } from 'url';
 // import https from 'vite-plugin-https'; // local PWA testing, yarn add -D vite-plugin-https
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import react from '@vitejs/plugin-react';
@@ -38,6 +38,7 @@ export default defineConfig(({ command }) => {
             '**/*.ev3',
             '**/*.ev3m',
             '**/*.rbf',
+            '**/*.proj',
             '**/*.py',
             '**/*.zip',
             '**/*.png',
@@ -72,7 +73,7 @@ export default defineConfig(({ command }) => {
                 // },
                 workbox: {
                     globPatterns: [
-                        '**/*.{js,css,html,ico,png,svg,llsp,llsp3,lms,lmsp,ev3,ev3m,rbf,py,zip}',
+                        '**/*.{js,css,html,ico,png,svg,llsp,llsp3,lms,lmsp,ev3,ev3m,rbf,proj,py,zip}',
                     ],
                     disableDevLogs: isDebug,
 
@@ -261,7 +262,8 @@ export default defineConfig(({ command }) => {
                                 'application/vnd.lego.ev3classroom': ['.lmsp'],
                                 'application/vnd.lego.ev3lab': ['.ev3'],
                                 'application/vnd.lego.ev3labmobile': ['.ev3m'],
-                                'application/vnd.lego.compiled': ['.rbf'],
+                                'application/vnd.lego.ev3compiled': ['.rbf'],
+                                'application/vnd.lego.wedo2': ['.proj'],
                                 'application/zip': ['.zip'],
                                 'text/x-python': ['.py'],
                             },
@@ -304,7 +306,7 @@ export default defineConfig(({ command }) => {
                             extType = 'img';
                         } else if (/css|woff|woff2/.test(extType)) {
                             extType = 'css';
-                        } else if (/llsp3?|lsm|lms|lmsp|ev3|rbf/.test(extType)) {
+                        } else if (/llsp|llsp3|lsm|lms|lmsp|ev3|rbf|proj/.test(extType)) {
                             extType = 'lego';
                         }
                         return `assets/${extType}/[name]-[hash][extname]`;
