@@ -14,8 +14,8 @@ const App: React.FC = () => {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<Home />} />
                 <Route path="/auth-callback" element={<AuthCallbackPage />} />
+                <Route index path="/*" element={<Home />} />
             </Routes>
         </Router>
     );
