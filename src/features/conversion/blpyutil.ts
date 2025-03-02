@@ -13,6 +13,7 @@ let _supportedExtensions: string[] = [
     '.py',
     '.zip',
     '.proj',
+    '.jpg', // wedo2 supporter
 ];
 
 export function supportedExtensions() {
