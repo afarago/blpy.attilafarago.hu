@@ -16,16 +16,24 @@ export async function processConversion(
     input: IConversionInputData,
 ): Promise<IPyProjectResult> {
     const { files, disabledFiles, builtin, additionalCommentsChecked } = input;
-    const inputs: IPyConverterFile[] = await Promise.all(
-        files.map(async (file) => ({
-            name: file.webkitRelativePath || file.name,
-            buffer: disabledFiles.includes(file.name)
-                ? new ArrayBuffer(0)
-                : await file.arrayBuffer(),
-            size: file.size,
-            date: builtin ? undefined : new Date(file.lastModified),
-        })),
+    const inputs0 = await Promise.all(
+        files.map(async (file) => {
+            try {
+                return {
+                    name: file.webkitRelativePath || file.name,
+                    buffer: disabledFiles.includes(file.name)
+                        ? new ArrayBuffer(0)
+                        : await file.arrayBuffer(),
+                    size: file.size,
+                    date: builtin ? undefined : new Date(file.lastModified),
+                };
+            } catch (error) {
+                // NOTE: skip errors, might be directories or other non-file objects
+                console.error('Error reading file:', error);
+            }
+        }),
     );
+    const inputs: IPyConverterFile[] = inputs0.filter((f) => f !== undefined);
 
     const options: IPyConverterOptions = {
         debug: {

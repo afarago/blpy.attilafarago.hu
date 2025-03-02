@@ -30,6 +30,7 @@ const AppContent: React.FC = () => {
 
     const { isDragging, handleDragOver, handleDragLeave, handleDrop } = useDragAndDrop(
         (files: File[]) => {
+            // NOTE: directories are also added, need to filter them out later
             const payload = {
                 files: files,
                 builtin: false,
