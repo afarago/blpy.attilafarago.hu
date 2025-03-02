@@ -154,15 +154,19 @@ const handleLoadingWithSpinner = async (
 
 export const fetchFileContent = createAsyncThunk(
     'fileselector/fetchFileContent',
-    async ({ url }: { url: string }, { dispatch, rejectWithValue }) => {
+    async ({ urls }: { urls: string[] }, { dispatch, rejectWithValue }) => {
         try {
             await handleLoadingWithSpinner(dispatch, async () => {
-                if (!url) throw new Error('No example file URL provided');
+                if (!urls) throw new Error('No example file URL provided');
 
-                const response = await axios.get(url, { responseType: 'blob' });
-                const blob = response.data;
-                const fileName = url.split('/').pop() ?? url;
-                const files = [new File([blob], fileName)];
+                const responses = await Promise.all(
+                    urls.map((url) => axios.get(url, { responseType: 'blob' })),
+                );
+                const files = responses.map((response, index) => {
+                    const blob = response.data;
+                    const fileName = urls[index].split('/').pop() ?? urls[index];
+                    return new File([blob], fileName);
+                });
                 const payload: FileContentSetPayload = {
                     files,
                     builtin: true,

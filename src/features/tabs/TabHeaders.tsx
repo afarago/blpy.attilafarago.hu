@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react';
 import { ITabElem, TabKey } from './TabMain';
+import React, { useEffect } from 'react';
 
 import BrandLogo from '@/features/header/BrandLogo';
 import Nav from 'react-bootstrap/Nav';
 import ReactGA from 'react-ga4';
+import { selectTabs } from './tabsSlice';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useSelector } from 'react-redux';
-import { selectTabs } from './tabsSlice';
 
 interface TabHeadersProps {
     selectedTabkey: string;
@@ -25,8 +25,8 @@ const TabHeaders: React.FC<TabHeadersProps> = ({
 }) => {
     const { fullScreen } = useSelector(selectTabs);
 
-    useHotkeys('control+1', () => setSelectedTabkey(TabKey.PYCODE));
-    useHotkeys('control+2', () => setSelectedTabkey(TabKey.PLAINCODE));
+    useHotkeys('control+1', () => setSelectedTabkey(TabKey.PLAINCODE));
+    useHotkeys('control+2', () => setSelectedTabkey(TabKey.PYCODE));
     useHotkeys('control+3', () => setSelectedTabkey(TabKey.CALLGRAPH));
     useHotkeys('control+4', () => setSelectedTabkey(TabKey.PREVIEW));
 
@@ -52,7 +52,9 @@ const TabHeaders: React.FC<TabHeadersProps> = ({
             !tabElem?.condition ||
             (tabElem?.key === TabKey.PYCODE && tabElem?.children && !tabSubElem)
         ) {
-            targetkey = TabKey.PYCODE;
+            targetkey = tabElems.find((elem) => elem.condition)?.key;
+            if (!targetkey) return;
+
             setSelectedTabkey(targetkey);
 
             if (tabElem?.children && !tabSubElem) {

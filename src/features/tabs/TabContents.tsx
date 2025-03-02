@@ -1,5 +1,9 @@
 import { ITabElem, TabKey } from './TabMain';
-import React, { Suspense, useEffect } from 'react';
+import React, { Ref, Suspense, useEffect } from 'react';
+import {
+    selectSvgContentData,
+    selectWeDo2PreviewData,
+} from '@/features/conversion/conversionSlice';
 
 import Button from 'react-bootstrap/Button';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -8,7 +12,6 @@ import TabLoading from './TabLoading';
 import { fileSetEnabled } from '@/features/fileContent/fileContentSlice';
 import less from 'react-syntax-highlighter/dist/esm/languages/hljs/less';
 import python from 'react-syntax-highlighter/dist/esm/languages/hljs/python';
-import { selectSvgContentData } from '@/features/conversion/conversionSlice';
 import { selectTabs } from './tabsSlice';
 import svgPanZoom from 'svg-pan-zoom';
 // import SyntaxHighlighter from 'react-syntax-highlighter';
@@ -28,7 +31,7 @@ interface TabContentsProps {
     setSelectedTabkey: (key: string) => void;
     selectedSubTabkey: string;
     setSelectedSubTabkey: (key: string) => void;
-    svgRef: React.RefObject<HTMLDivElement | null>;
+    previewRef: React.RefObject<HTMLDivElement | HTMLImageElement | null>;
     graphRef: React.RefObject<HTMLDivElement | null>;
     tabElems: ITabElem[];
 }
@@ -40,19 +43,20 @@ const TabContents: React.FC<TabContentsProps> = ({
     setSelectedTabkey,
     selectedSubTabkey,
     setSelectedSubTabkey,
-    svgRef,
+    previewRef,
     graphRef,
     tabElems,
 }) => {
     const { copying } = useSelector(selectTabs);
     const svgContentData = useSelector(selectSvgContentData);
+    const wedo2PreviewData = useSelector(selectWeDo2PreviewData);
     const dispatch = useAppDispatch();
 
     const REFMAP = {
-        [TabKey.PREVIEW]: { ref: svgRef, ext: 'preview' },
+        [TabKey.PREVIEW]: { ref: previewRef, ext: 'preview' },
         [TabKey.CALLGRAPH]: { ref: graphRef, ext: 'graph' },
     } as {
-        [key: string]: { ref: React.RefObject<HTMLDivElement>; ext: string };
+        [key: string]: { ref: React.RefObject<HTMLElement>; ext: string };
     };
 
     let panzoom: SvgPanZoom.Instance | undefined;
@@ -79,9 +83,10 @@ const TabContents: React.FC<TabContentsProps> = ({
             } catch {}
         };
     }, [
-        svgRef,
+        previewRef,
         graphRef,
         svgContentData,
+        wedo2PreviewData,
         genkey,
         gensubkey,
         selectedTabkey,
@@ -161,14 +166,23 @@ const TabContents: React.FC<TabContentsProps> = ({
                             <CallGraph ref={graphRef} />
                         </Suspense>
                     )}
-                    {genkey === TabKey.PREVIEW && (
-                        <div
-                            ref={svgRef}
-                            dangerouslySetInnerHTML={{
-                                __html: svgContentData ?? '',
-                            }}
-                        />
-                    )}
+                    {genkey === TabKey.PREVIEW &&
+                        (svgContentData ? (
+                            <div
+                                ref={previewRef as Ref<HTMLDivElement>}
+                                dangerouslySetInnerHTML={{
+                                    __html: svgContentData ?? '',
+                                }}
+                            />
+                        ) : wedo2PreviewData ? (
+                            <img
+                                ref={previewRef as Ref<HTMLImageElement>}
+                                src={wedo2PreviewData}
+                                alt="WeDo 2.0 preview"
+                            />
+                        ) : (
+                            <></>
+                        ))}
                 </Tab.Pane>
             </>
         );

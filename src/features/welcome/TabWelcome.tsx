@@ -12,6 +12,7 @@ const icons: (React.ReactElement | string)[] = [
     'ev3classroom',
     'ev3g',
     'ev3b',
+    'wedo2',
     'python',
     <CaretRight key="caretright" className="tranform-caret-icon " />,
     'pybricks',

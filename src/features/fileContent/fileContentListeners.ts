@@ -14,15 +14,19 @@ import { selectTabs, toastContentSet } from '@/features/tabs/tabsSlice';
 import ReactGA from 'react-ga4';
 import { RootState } from '@/app/store';
 import { createListenerMiddleware } from '@reduxjs/toolkit';
-import { supportsExtension } from '@/features/conversion/blpyutil';
+import { supportsExtension } from '../conversion/blpyutil';
 
 const fileContentListenerMiddleware = createListenerMiddleware();
 
 fileContentListenerMiddleware.startListening({
     actionCreator: fileContentSet,
     effect: async (action, listenerApi) => {
-        const files = action.payload.files.filter((file) =>
-            supportsExtension(file.name),
+        const files = action.payload.files.sort((a, b) =>
+            supportsExtension(a.name) === supportsExtension(b.name)
+                ? 0
+                : supportsExtension(a.name)
+                ? -1
+                : 1,
         );
 
         const { additionalCommentsChecked } = selectTabs(

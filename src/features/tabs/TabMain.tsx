@@ -12,6 +12,7 @@ import {
     selectConversion,
     selectRbfDecompileData,
     selectSvgContentData,
+    selectWeDo2PreviewData,
 } from '@/features/conversion/conversionSlice';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -46,26 +47,41 @@ const TabMain: React.FC = () => {
     const { disabledFiles } = useSelector(selectFileContent);
     const { conversionResult } = useSelector(selectConversion);
     const svgContentData = useSelector(selectSvgContentData);
+    const wedo2preview = useSelector(selectWeDo2PreviewData);
     const rbfDecompileData = useSelector(selectRbfDecompileData);
     const { additionalCommentsChecked } = useSelector(selectTabs);
 
     const [selectedTabkey, setSelectedTabkey] = useState<string>('');
     const [selectedSubTabkey, setSelectedSubTabkey] = useState<string>('');
     const [tabElems, setTabElems] = useState<ITabElem[]>([]);
-    const svgRef = useRef<HTMLDivElement>(null);
+    const previewRef = useRef<HTMLDivElement>(null);
     const graphRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const tabElemValues: ITabElem[] = [
             {
+                key: TabKey.PLAINCODE,
+                title: 'pseudocode (ctrl+1)',
+                icon: CodeSlash,
+                name: 'Pseudocode',
+                condition: conversionResult?.plaincode !== undefined,
+                code: !additionalCommentsChecked
+                    ? conversionResult?.plaincode
+                    : // replace @ .* ending with /* () */ for css formatter
+                      conversionResult?.plaincode?.replaceAll(
+                          /@ ?([^\r\n]{1,32})/g,
+                          '/* $1 */',
+                      ),
+            },
+            {
                 key: TabKey.PYCODE,
-                title: 'pycode (ctrl+1)',
+                title: 'pycode (ctrl+2)',
                 icon: FiletypePy,
                 name: 'Python',
                 code: Array.isArray(conversionResult?.name)
                     ? undefined
                     : (conversionResult?.pycode as string),
-                condition: true,
+                condition: conversionResult?.pycode !== undefined,
                 children: Array.isArray(conversionResult?.name)
                     ? conversionResult?.name.map(
                           (elem, index) =>
@@ -79,20 +95,6 @@ const TabMain: React.FC = () => {
                               } satisfies ITabElem),
                       )
                     : undefined,
-            },
-            {
-                key: TabKey.PLAINCODE,
-                title: 'pseudocode (ctrl+2)',
-                icon: CodeSlash,
-                name: 'Pseudocode',
-                condition: conversionResult?.plaincode !== undefined,
-                code: !additionalCommentsChecked
-                    ? conversionResult?.plaincode
-                    : // replace @ .* ending with /* () */ for css formatter
-                      conversionResult?.plaincode?.replaceAll(
-                          /@ ?([^\r\n]{1,32})/g,
-                          '/* $1 */',
-                      ),
             },
             {
                 key: TabKey.EV3BDECOMPILED,
@@ -115,7 +117,7 @@ const TabMain: React.FC = () => {
                 title: 'preview (ctrl+4)',
                 icon: FileEarmarkImage,
                 name: 'Preview',
-                condition: svgContentData !== undefined,
+                condition: !!svgContentData || !!wedo2preview,
                 code: svgContentData,
             },
         ];
@@ -154,7 +156,7 @@ const TabMain: React.FC = () => {
                                 setSelectedTabkey={setSelectedTabkey}
                                 selectedSubTabkey={selectedSubTabkey}
                                 setSelectedSubTabkey={setSelectedSubTabkey}
-                                svgRef={svgRef}
+                                previewRef={previewRef}
                                 graphRef={graphRef}
                                 tabElems={tabElems}
                             />
@@ -170,7 +172,7 @@ const TabMain: React.FC = () => {
                                             setSelectedTabkey={setSelectedTabkey}
                                             selectedSubTabkey={selectedSubTabkey}
                                             setSelectedSubTabkey={setSelectedSubTabkey}
-                                            svgRef={svgRef}
+                                            previewRef={previewRef}
                                             graphRef={graphRef}
                                             tabElems={tabElems}
                                         />
@@ -186,7 +188,7 @@ const TabMain: React.FC = () => {
                                             setSelectedTabkey={setSelectedTabkey}
                                             selectedSubTabkey={selectedSubTabkey}
                                             setSelectedSubTabkey={setSelectedSubTabkey}
-                                            svgRef={svgRef}
+                                            previewRef={previewRef}
                                             graphRef={graphRef}
                                             tabElems={tabElems}
                                         />

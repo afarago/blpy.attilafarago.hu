@@ -5,39 +5,29 @@ import DevtypePybricks from '@/assets/img/devtype_pybricks.png';
 import DevtypePython from '@/assets/img/devtype_python.png';
 import DevtypeRobotInventor from '@/assets/img/devtype_robotinventor.png';
 import DevtypeSpike from '@/assets/img/devtype_spike.png';
+import DevtypeWeDo2 from '@/assets/img/devtype_wedo2.png';
 import React from 'react';
 
 interface DevTypeIconProps {
     devtype?: string;
     className?: string;
 }
+const devtypeMap: { [key: string]: { src: string; alt: string } } = {
+    ev3b: { src: DevtypeEV3B, alt: 'LEGO EV3 Lab Binary' },
+    ev3classroom: { src: DevtypeEV3C, alt: 'LEGO EV3 Classroom' },
+    ev3g: { src: DevtypeEV3G, alt: 'LEGO EV3 Lab' },
+    pybricks: { src: DevtypePybricks, alt: 'Pybricks' },
+    robotinventor: { src: DevtypeRobotInventor, alt: 'LEGO Robot Inventor' },
+    spike: { src: DevtypeSpike, alt: 'LEGO SPIKE' },
+    python: { src: DevtypePython, alt: 'LEGO Python' },
+    wedo2: { src: DevtypeWeDo2, alt: 'WeDo2' },
+};
 
 export const DevTypeIcon: React.FC<DevTypeIconProps> = ({ devtype, className }) => {
     const renderIcon = () => {
-        let prop: { src?: string; alt?: string } = {};
-        switch (devtype) {
-            case 'ev3b':
-                prop = { src: DevtypeEV3B, alt: 'LEGO EV3 Lab Binary' };
-                break;
-            case 'ev3classroom':
-                prop = { src: DevtypeEV3C, alt: 'LEGO EV3 Classroom' };
-                break;
-            case 'ev3g':
-                prop = { src: DevtypeEV3G, alt: 'LEGO EV3 Lab' };
-                break;
-            case 'pybricks':
-                prop = { src: DevtypePybricks, alt: 'Pybricks' };
-                break;
-            case 'robotinventor':
-                prop = { src: DevtypeRobotInventor, alt: 'LEGO Robot Inventor' };
-                break;
-            case 'spike':
-                prop = { src: DevtypeSpike, alt: 'LEGO SPIKE' };
-                break;
-            case 'python':
-                prop = { src: DevtypePython, alt: 'LEGO Python' };
-                break;
-        }
+        if (!devtype) return <></>;
+
+        const prop = devtypeMap[devtype];
         return (
             <img src={prop.src} alt={prop.alt} title={prop.alt} className={className} />
         );

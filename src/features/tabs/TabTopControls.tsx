@@ -17,6 +17,7 @@ import {
 import {
     selectConversion,
     selectSvgContentData,
+    selectWeDo2PreviewData,
 } from '@/features/conversion/conversionSlice';
 
 import Form from 'react-bootstrap/Form';
@@ -31,7 +32,7 @@ interface TabTopControlsProps {
     setSelectedTabkey: (key: string) => void;
     selectedSubTabkey: string;
     setSelectedSubTabkey: (key: string) => void;
-    svgRef: React.RefObject<HTMLDivElement | null>;
+    previewRef: React.RefObject<HTMLDivElement | null>;
     graphRef: React.RefObject<HTMLDivElement | null>;
     tabElems: ITabElem[];
 }
@@ -41,7 +42,7 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
     setSelectedTabkey,
     selectedSubTabkey,
     setSelectedSubTabkey,
-    svgRef,
+    previewRef,
     graphRef,
     tabElems,
 }) => {
@@ -50,6 +51,7 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
     const { conversionResult } = useSelector(selectConversion);
     const svgContentData = useSelector(selectSvgContentData);
     const fileContent = useSelector(selectFileContent);
+    const wedo2PreviewData = useSelector(selectWeDo2PreviewData);
 
     const handleSetIsAdditionalCommentsChecked = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,7 +94,7 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
                             let ref:
                                 | React.RefObject<HTMLDivElement | null>
                                 | undefined = undefined;
-                            if (selectedTabkey === TabKey.PREVIEW) ref = svgRef;
+                            if (selectedTabkey === TabKey.PREVIEW) ref = previewRef;
                             else if (selectedTabkey === TabKey.CALLGRAPH)
                                 ref = graphRef;
                             if (!ref?.current) return;
@@ -175,7 +177,7 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
             conversionResult,
             selectedTabkey,
             selectedSubTabkey,
-            svgRef,
+            previewRef,
             graphRef,
             fileContent,
             tabElems,
@@ -254,18 +256,26 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
     );
 
     const renderSVGMinimap = () =>
-        svgContentData &&
+        (svgContentData || wedo2PreviewData) &&
         (selectedTabkey === TabKey.PYCODE || selectedTabkey === TabKey.PLAINCODE) && (
             <div
                 className="svg-minimap mt-5 px-3 float-right d-none d-lg-block"
-                dangerouslySetInnerHTML={{
-                    __html: svgContentData || '',
-                }}
                 onClick={() => setSelectedTabkey(TabKey.PREVIEW)}
                 role="presentation"
-            ></div>
+            >
+                <>
+                    {svgContentData !== undefined ? (
+                        <div
+                            dangerouslySetInnerHTML={{ __html: svgContentData ?? '' }}
+                        />
+                    ) : (
+                        wedo2PreviewData !== undefined && (
+                            <img src={wedo2PreviewData} alt="WeDo 2.0 preview" />
+                        )
+                    )}
+                </>
+            </div>
         );
-
     return (
         <>
             {renderTopContainer()}

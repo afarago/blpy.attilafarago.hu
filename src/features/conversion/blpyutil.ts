@@ -1,10 +1,30 @@
 // import { supportedExtensions, supportsExtension } from 'blocklypy';
 
-// export { supportsExtension };
-
 // handle this locally to avoid static dependency on load
+
+let _supportedExtensions: string[] = [
+    '.llsp3',
+    '.llsp',
+    '.lms',
+    '.lmsp',
+    '.ev3',
+    '.ev3m',
+    '.rbf',
+    '.py',
+    '.zip',
+    '.proj',
+];
+
 export function supportedExtensions() {
-    return ['.llsp3', '.llsp', '.lms', '.lmsp', '.ev3', '.ev3m', '.rbf', '.zip', '.py'];
+    // (async () => {
+    //     try {
+    //         const { supportedExtensions } = await import('blocklypy');
+    //         _supportedExtensions = supportedExtensions();
+    //     } catch (error) {
+    //         console.error('Failed to load supported extensions from blocklypy:', error);
+    //     }
+    // })();
+    return _supportedExtensions;
 }
 export function supportsExtension(filename: string) {
     return supportedExtensions().some((ext) => filename.endsWith(ext));

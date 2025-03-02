@@ -257,7 +257,6 @@ export const searchPublicReposGithub = createAsyncThunk(
     'github/searchPublicReposGithub',
     async (query: string, { rejectWithValue }) => {
         try {
-            console.log('searchPublicReposGithub', query);
             if (query.length === 0) return [];
 
             const token = localStorage.getItem('github_access_token');

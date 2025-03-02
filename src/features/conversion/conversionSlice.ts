@@ -35,6 +35,8 @@ export const selectRbfDecompileData = (state: RootState) =>
     state.conversion.conversionResult?.extra?.['ev3b.source']?.['main'];
 export const selectSvgContentData = (state: RootState) =>
     state.conversion.conversionResult?.extra?.['blockly.svg'];
+export const selectWeDo2PreviewData = (state: RootState) =>
+    state.conversion.conversionResult?.extra?.['wedo2.preview'];
 
 // Export the slice reducer for use in the store configuration
 export default conversionSlice.reducer;
@@ -49,44 +51,8 @@ export async function handleFileInputConversion(
         throw new Error(
             'No files to convert. Possible cause is that either none were selected or none were supported.',
         );
+    let retval: IPyProjectResult | undefined = undefined;
 
-    // const inputs: IPyConverterFile[] = await Promise.all(
-    //     files.map(async (file) => ({
-    //         name: file.webkitRelativePath || file.name,
-    //         buffer: disabledFiles.includes(file.name)
-    //             ? new ArrayBuffer(0)
-    //             : await file.arrayBuffer(),
-    //         size: file.size,
-    //         date: builtin ? undefined : new Date(file.lastModified),
-    //     })),
-    // );
-
-    // const options: IPyConverterOptions = {
-    //     debug: {
-    //         ...(additionalCommentsChecked
-    //             ? {
-    //                   showExplainingComments: true,
-    //                   showBlockIds: true,
-    //               }
-    //             : {}),
-    //         ...(disabledFiles ? { skipFiles: disabledFiles } : {}),
-    //     },
-    //     output: {
-    //         'ev3b.source': true,
-    //         'blockly.slot': true,
-    //         'blockly.svg': true,
-    //     },
-    // } satisfies IPyConverterOptions;
-    // const retval = await convertProjectToPython(inputs, options);
-
-    // delete retval.topblocks;
-    // delete (retval as unknown as any).topLevelStacks;
-    // delete (retval as unknown as any).lastModifiedDate;
-
-    const worker = new Worker(
-        new URL('../../workers/conversionWorker.ts', import.meta.url),
-        { type: 'module' },
-    );
     const inputData = {
         files,
         disabledFiles,
@@ -94,7 +60,20 @@ export async function handleFileInputConversion(
         additionalCommentsChecked,
     };
 
-    const result = await new Promise<IPyProjectResult>((resolve, reject) => {
+    // /* debug mode, handling conversion in the main thread */
+    // const isDevEnvironment = process.env.NODE_ENV === 'development';
+    // if (isDevEnvironment) {
+    //     retval = await processConversion(inputData);
+    //     return retval;
+    // }
+
+    /* production mode, handling conversion in a worker */
+    const worker = new Worker(
+        new URL('../../workers/conversionWorker.ts', import.meta.url),
+        { type: 'module' },
+    );
+
+    retval = await new Promise<IPyProjectResult>((resolve, reject) => {
         worker.postMessage(inputData);
 
         worker.onmessage = (event: MessageEvent<number | { error: string }>) => {
@@ -113,6 +92,5 @@ export async function handleFileInputConversion(
             reject(error);
         };
     });
-
-    return result;
+    return retval;
 }

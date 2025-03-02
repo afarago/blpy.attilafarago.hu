@@ -141,24 +141,19 @@ const FileSelector: React.FC<{
         }
     };
 
-    const handleExampleButtonOpenClick = async (
-        event: React.MouseEvent<HTMLButtonElement>,
-    ) => {
-        const path = (event.target as HTMLElement).closest('a')?.dataset.file;
-        if (!path) return;
-
+    const handleExampleButtonOpenClick = async (files: string[]) => {
         try {
-            if (path.includes(GITHUB_DOMAIN)) {
+            if (files[0].includes(GITHUB_DOMAIN)) {
                 dispatch(
                     fetchRepoContents({
-                        url: path,
+                        url: files[0],
                         builtin: true,
                         token: github.token,
                         useBackendProxy: github.hasAuthProxy,
                     }),
                 );
             } else {
-                dispatch(fetchFileContent({ url: path }));
+                dispatch(fetchFileContent({ urls: files }));
             }
         } catch (error) {
             console.error('::ERROR::', error);
@@ -283,11 +278,12 @@ const FileSelector: React.FC<{
                     </div>
                     <div className="flex-fill d-flex gap-1 flex-wrap">
                         {EXAMPLES.map((example, index) => (
-                            <div key={example.file}>
+                            <div key={example.files[0]}>
                                 <Badge
                                     pill
-                                    data-file={example.file}
-                                    onClick={handleExampleButtonOpenClick}
+                                    onClick={(files) =>
+                                        handleExampleButtonOpenClick(example.files)
+                                    }
                                     as="a"
                                     href="#"
                                     className="example-content-button bg-light text-dark"
@@ -319,47 +315,55 @@ export default FileSelector;
 
 const EXAMPLES = [
     {
-        file: '/samples/demo_cityshaper_cranemission.llsp3',
+        files: ['/samples/demo_cityshaper_cranemission.llsp3'],
         label: 'SPIKE',
         icon: 'spike',
     },
     {
-        file: '/samples/demo_iconblocks.llsp3',
+        files: ['/samples/demo_iconblocks.llsp3'],
         label: 'SPIKE icon blocks',
         icon: 'spike',
     },
     {
-        file: '/samples/demo_cityshaper_cranemission.lms',
+        files: ['/samples/demo_cityshaper_cranemission.lms'],
         label: 'RobotInventor',
         icon: 'robotinventor',
     },
     {
-        file: '/samples/demo_cityshaper_cranemission.lmsp',
+        files: ['/samples/demo_cityshaper_cranemission.lmsp'],
         label: 'EV3Classroom',
         icon: 'ev3classroom',
     },
     {
-        file: '/samples/demo_cityshaper_cranemission.ev3',
+        files: ['/samples/demo_cityshaper_cranemission.ev3'],
         label: 'EV3Lab',
         icon: 'ev3g',
     },
     {
-        file: '/samples/demo_cityshaper_cranemission.rbf',
+        files: ['/samples/demo_cityshaper_cranemission.rbf'],
         label: 'EV3Lab binary',
         icon: 'ev3b',
     },
     {
-        file: '/samples/demo_cityshaper_cranemission.py',
+        files: [
+            '/samples/demo_cityshaper_cranemission_wedo2.proj',
+            '/samples/demo_cityshaper_cranemission_wedo2_lobbypreview.jpg',
+        ],
+        label: 'WeDo2',
+        icon: 'wedo2',
+    },
+    {
+        files: ['/samples/demo_cityshaper_cranemission.py'],
         label: 'Pybricks Python',
         icon: 'pybricks',
     },
     {
-        file: 'https://github.com/afarago/2025educup-masters-attilafarago',
+        files: ['https://github.com/afarago/2025educup-masters-attilafarago'],
         label: 'Github Public Repo',
         icon: <img src={Github} alt="github" />,
     },
     {
-        file: 'https://gist.github.com/afarago/4718cffcbea66ca88f99be64fd912cd8',
+        files: ['https://gist.github.com/afarago/4718cffcbea66ca88f99be64fd912cd8'],
         label: 'Github Gist',
         icon: <img src={Github} alt="github" />,
     },
