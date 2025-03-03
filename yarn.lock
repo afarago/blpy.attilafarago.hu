@@ -4096,10 +4096,10 @@ bl@^4.0.3:
     inherits "^2.0.4"
     readable-stream "^3.4.0"
 
-blocklypy@^0.0.98:
-  version "0.0.98"
-  resolved "https://registry.yarnpkg.com/blocklypy/-/blocklypy-0.0.98.tgz#694d4cb650510c072c8ac791cc08cc925cd7aae8"
-  integrity sha512-67nnhCtClqR32A3knIk54LSUoXbXkpjKy/CcDK0O4uHwo1cCaTPEBafPDjSdwHcgG1y2JcGUuOL0SSQFMZ+a6w==
+blocklypy@^0.0.99:
+  version "0.0.99"
+  resolved "https://registry.yarnpkg.com/blocklypy/-/blocklypy-0.0.99.tgz#dcf3da7aab56c1b56a93f77c19935ba7ea0ea90d"
+  integrity sha512-xwJtn1tbgNYeYQWsi92ePO/vH9HZJxVjN0Uq0jT8McyYgqFTcM9k3drcqgKMNZfROYbbkKWO0Hcf6h21gHslzA==
   dependencies:
     buffer "^6.0.3"
     canvas "^3.1.0"
