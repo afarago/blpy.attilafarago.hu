@@ -51,6 +51,7 @@
         "react-syntax-highlighter": "^15.6.1",
         "svg-pan-zoom": "^3.6.2",
         "ts-graphviz": "^2.1.5",
+        "usehooks-ts": "^3.1.1",
         "web-vitals": "^4.2.4",
         "workbox-build": "^7.3.0",
         "workbox-window": "^7.3.0"

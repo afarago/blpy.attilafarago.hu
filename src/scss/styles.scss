@@ -15,3 +15,18 @@ body {
     background-image: url('/lego-piece-bg.svg');
     background-repeat: repeat;
 }
+
+.hide-on-short {
+    display: none;
+}
+.show-on-short {
+    display: block;
+}
+@media (min-height: 600px) {
+    .hide-on-short {
+        display: block;
+    }
+    .show-on-short {
+        display: hide;
+    }
+}

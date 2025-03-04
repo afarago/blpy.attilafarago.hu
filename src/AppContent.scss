@@ -96,21 +96,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-
-            &.github-icon {
-                img {
-                    vertical-align: baseline;
-                    width: 1.5em;
-                    height: 1.5em;
-                }
-                @include media-breakpoint-down(lg) {
-                    width: 3em;
-                }
-                @include media-breakpoint-up(lg) {
-                    img {
-                        margin-right: 0.4em;
-                    }
-                }
+            .bi {
+                width: 1em;
+                height: 1em;
+            }
+            span {
+                margin-left: 0.2em;
             }
         }
     }
@@ -383,11 +374,13 @@
         align-items: center;
 
         img {
-            margin-left: 0.5em;
             height: $mini-icon-size;
             width: $mini-icon-size;
             // opacity: 0.6;
             border-radius: 10px;
+        }
+        span {
+            margin-right: 0.5em;
         }
 
         &:hover {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { useAppDispatch } from '@/app/hooks';
-import Github from '@/assets/img/github.png';
+import GithubImg from '@/assets/img/github.png';
 import { ACCEPTED_EXTENSIONS, supportsExtension } from '@/features/conversion/blpyutil';
 import { selectConversion } from '@/features/conversion/conversionSlice';
 import {
@@ -18,12 +18,13 @@ import { GITHUB_DOMAIN } from '@/features/github/utils';
 import { CatIcon } from '@/features/icons/CatIcon';
 import { DevTypeIcon } from '@/features/icons/DevTypeIcon';
 import { selectTabs } from '@/features/tabs/tabsSlice';
-import { Download } from 'react-bootstrap-icons';
+import { Download, FilePlay, Github, Link45deg } from 'react-bootstrap-icons';
 import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useSelector } from 'react-redux';
+import { useToggle } from 'usehooks-ts';
 
 const FileSelector: React.FC<{
     fileInputRef: React.RefObject<HTMLInputElement | null>;
@@ -31,6 +32,8 @@ const FileSelector: React.FC<{
     const dispatch = useAppDispatch();
 
     const [showGithubDialog, setShowGithubDialog] = useState(false);
+    const [showExamplesButtons, toggleShowExamplesButtons, setShowExamplesButtons] =
+        useToggle(true);
     const [filesCached, setFilesCached] = useState<File[] | undefined>();
     const { additionalCommentsChecked } = useSelector(selectTabs);
     const { conversionResult } = useSelector(selectConversion);
@@ -201,6 +204,10 @@ const FileSelector: React.FC<{
         }
     }, [filesCached]);
 
+    useEffect(() => {
+        setShowExamplesButtons(conversionResult === undefined);
+    }, [conversionResult]);
+
     useHotkeys(
         'control+o',
         () => fileInputRef.current?.click(),
@@ -248,7 +255,17 @@ const FileSelector: React.FC<{
                         onClick={handleExampleButtonDownloadClick}
                         title="Download example file"
                     >
-                        <Download scale={2} />
+                        <Download scale={2} className="text-secondary" />
+                    </Button>
+                )}
+                {!showExamplesButtons && (
+                    <Button
+                        className="btn-light mini-button flex-grow-0"
+                        onClick={() => toggleShowExamplesButtons()}
+                        title="Show built-in examples"
+                    >
+                        <FilePlay scale={2} className="text-secondary" />
+                        <span className="d-none d-lg-block">Examples</span>
                     </Button>
                 )}
                 <Button
@@ -256,51 +273,54 @@ const FileSelector: React.FC<{
                     title="Enter GitHub Repository URL"
                     onClick={() => setShowGithubDialog(true)}
                 >
-                    <img src={Github} alt="github" width="1.8em" height="1.8em" />{' '}
-                    <span className="d-none d-lg-block">Open from GitHub</span>
+                    <Github scale={4} className="text-primary" />
+                    <span className="d-none d-lg-block">GitHub</span>
                 </Button>
             </Form.Group>
-
             {/* url as info */}
             {fileContent.url && (
                 <div className="small">
                     <a href={fileContent.url} target="_blank">
+                        <Link45deg />
                         {fileContent.url}
                     </a>
                 </div>
             )}
-
             {/* buttons for builtin example files */}
-            <div className="file-examples col-sm-12 m-0 p-0 pt-1">
-                <small className="d-flex flex-row flex-nowrap align-items-baseline">
-                    <div className="d-none d-sm-block pe-2">
-                        <b>Examples:</b>
-                    </div>
-                    <div className="flex-fill d-flex gap-1 flex-wrap">
-                        {EXAMPLES.map((example, index) => (
-                            <div key={example.files[0]}>
-                                <Badge
-                                    pill
-                                    onClick={(files) =>
-                                        handleExampleButtonOpenClick(example.files)
-                                    }
-                                    as="a"
-                                    href="#"
-                                    className="example-content-button bg-light text-dark"
-                                >
-                                    {example.label}
-                                    {typeof example.icon === 'string' ? (
-                                        <DevTypeIcon devtype={example.icon} />
-                                    ) : (
-                                        example.icon
-                                    )}
-                                </Badge>
-                            </div>
-                        ))}
-                    </div>
-                </small>
-            </div>
-
+            {showExamplesButtons && (
+                <div className="file-examples col-sm-12 m-0 p-0 pt-1">
+                    <small className="d-flex flex-row flex-nowrap align-items-baseline">
+                        <div className="d-none d-md-block pe-2">
+                            <b>Examples:</b>
+                        </div>
+                        <div className="flex-fill d-flex gap-1 flex-wrap">
+                            {EXAMPLES.map((example, index) => (
+                                <div key={example.files[0]}>
+                                    <Badge
+                                        pill
+                                        onClick={(files) =>
+                                            handleExampleButtonOpenClick(example.files)
+                                        }
+                                        as="a"
+                                        href="#"
+                                        className="example-content-button bg-light text-dark"
+                                        title={example.label + ' example'}
+                                    >
+                                        <span className="d-none d-sm-block">
+                                            {example.label}
+                                        </span>
+                                        {typeof example.icon === 'string' ? (
+                                            <DevTypeIcon devtype={example.icon} />
+                                        ) : (
+                                            example.icon
+                                        )}
+                                    </Badge>
+                                </div>
+                            ))}
+                        </div>
+                    </small>
+                </div>
+            )}
             {showGithubDialog && (
                 <GithubOpenDialog
                     handleClose={handleCloseModal}
@@ -360,11 +380,11 @@ const EXAMPLES = [
     {
         files: ['https://github.com/afarago/2025educup-masters-attilafarago'],
         label: 'Github Public Repo',
-        icon: <img src={Github} alt="github" />,
+        icon: <img src={GithubImg} alt="github" />,
     },
     {
         files: ['https://gist.github.com/afarago/4718cffcbea66ca88f99be64fd912cd8'],
         label: 'Github Gist',
-        icon: <img src={Github} alt="github" />,
+        icon: <img src={GithubImg} alt="github" />,
     },
 ];

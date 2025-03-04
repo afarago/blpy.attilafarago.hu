@@ -11,7 +11,7 @@ const Footer: React.FC = () => (
     >
         <div className="container text-center d-flex flex-column">
             <div
-                className="small text-muted align-self-center"
+                className="small text-muted align-self-center hide-on-short"
                 style={{ maxWidth: '80em' }}
             >
                 No robots were harmed in making this converter and visualizer of LEGO
