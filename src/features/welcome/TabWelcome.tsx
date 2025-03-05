@@ -1,9 +1,9 @@
-import React, { useCallback } from 'react';
 import { CaretRight, CloudArrowUpFill } from 'react-bootstrap-icons';
+import React, { useCallback } from 'react';
 
 import { ACCEPTED_EXTENSIONS } from '@/features/conversion/blpyutil';
-import { selectConversion } from '@/features/conversion/conversionSlice';
 import { DevTypeIcon } from '@/features/icons/DevTypeIcon';
+import { selectConversion } from '@/features/conversion/conversionSlice';
 import { useSelector } from 'react-redux';
 
 const icons: (React.ReactElement | string)[] = [
@@ -24,7 +24,7 @@ const WelcomeTab: React.FC<{
     const { conversionResult } = useSelector(selectConversion);
 
     const handleCloudIconClick = useCallback(
-        (event: React.MouseEvent<HTMLButtonElement>): void => {
+        (event: React.MouseEvent<HTMLElement>): void => {
             event.preventDefault();
             if (fileInputRef?.current) fileInputRef?.current.click();
         },
@@ -32,10 +32,10 @@ const WelcomeTab: React.FC<{
     );
 
     return (
-        <div className="tab-welcome active">
+        <div className="tab-welcome active" onClick={handleCloudIconClick}>
             <div className="justify-content-center">
                 <div className="text-center">
-                    <button onClick={handleCloudIconClick}>
+                    <button>
                         <CloudArrowUpFill
                             className="drop-cloud-icon"
                             aria-label="upload file"
