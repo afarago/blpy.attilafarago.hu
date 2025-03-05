@@ -13,9 +13,10 @@ export const Banner: React.FC = () => {
                 className="pt-1 position-relative"
             >
                 <img
-                    src="./public/banner-toviscsapat.png"
+                    src="/banner-toviscsapat.png"
                     alt="Toviscsapat"
                     style={{ height: '3.0em', width: 'auto' }}
+                    className="d-none d-lg-inline"
                 />
             </a>
             <h4 className="position-relative p-0 m-0">
