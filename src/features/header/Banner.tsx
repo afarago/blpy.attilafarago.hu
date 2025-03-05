@@ -22,10 +22,20 @@ export const Banner: React.FC = () => {
                 » Hungary Champs to Houston! Support Our Team!
             </h4>
             <div>
-                <button className="btn btn-outline-light btn-sm mx-1">
+                <a
+                    className="btn btn-outline-light btn-sm mx-1"
+                    href="https://gogetfunding.com/team-tovis-x-goes-to-houston/"
+                    target="_blank"
+                >
                     Support now!
-                </button>
-                <button className="btn btn-outline-light btn-sm mx-1">Támogasd!</button>
+                </a>
+                <a
+                    className="btn btn-outline-light btn-sm mx-1"
+                    href="https://gogetfunding.com/toviscsapat-reszvetele-a-fll-vilagdonton"
+                    target="_blank"
+                >
+                    Támogasd!
+                </a>
             </div>
         </div>
     );
