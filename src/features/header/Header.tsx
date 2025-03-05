@@ -16,6 +16,7 @@ const Header: React.FC = () => {
 
     return (
         <header>
+            {/* <Banner /> */}
             <nav className="navbar navbar-expand-sm border-bottom box-shadow mb-1">
                 <div className="container-lg d-flex justify-content-between align-items-stretch">
                     <div
