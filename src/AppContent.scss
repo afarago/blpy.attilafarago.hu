@@ -358,10 +358,21 @@
         overflow: hidden;
     }
 
-    pre {
-        line-height: 1em;
-        code {
-            font-size: 0.8em !important;
+    .tab-pane.active {
+        display: flex;
+        & > * {
+            padding: 1.25rem !important;
+        }
+        pre {
+            display: flex;
+            flex-grow: 1;
+            line-height: 1em;
+            background-color: green;
+            margin-bottom: 0;
+            code {
+                font-size: 0.8em !important;
+                flex-grow: 1;
+            }
         }
     }
 

@@ -67,13 +67,15 @@ const TabContents: React.FC<TabContentsProps> = ({
         const svgelement = element?.querySelector<HTMLElement>('svg, div>svg'); //!! svg
         if (svgelement) {
             panzoom = svgPanZoom(svgelement, {
-                zoomScaleSensitivity: 0.5,
+                zoomScaleSensitivity: 0.3,
                 controlIconsEnabled: !copying,
                 // mouseWheelZoomEnabled: true,
                 // panEnabled: true,
                 // zoomEnabled: true,
                 // contain: true,
                 // fit: true,
+                minZoom: 0.1,
+                // maxZoom: 10,
             });
         }
 
@@ -143,7 +145,7 @@ const TabContents: React.FC<TabContentsProps> = ({
                 <Tab.Pane
                     eventKey={genkey}
                     className={
-                        `p-4 content-${genkey}` +
+                        `content-${genkey}` +
                         (!elem.children || selectedSubTabkey === gensubkey
                             ? ''
                             : ' d-none')
