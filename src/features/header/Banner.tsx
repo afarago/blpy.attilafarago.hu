@@ -19,9 +19,10 @@ export const Banner: React.FC = () => {
                     className="d-none d-lg-inline"
                 />
             </a>
-            <h4 className="position-relative p-0 m-0">
+            <h4 className="d-none d-md-inline">
                 » Hungary Champs to Houston! Support Our Team!
             </h4>
+            <div className="d-inline d-md-none">» Hungary Champs to Houston! </div>
             <div>
                 <a
                     className="btn btn-outline-light btn-sm mx-1"

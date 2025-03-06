@@ -2,10 +2,15 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { RootState } from '@/app/store';
 
+interface ToastContent {
+    header?: string;
+    body: string[];
+}
+
 interface TabsState {
     fullScreen: boolean;
     copying: boolean;
-    toastContent?: string;
+    toastContent?: ToastContent;
     additionalCommentsChecked: boolean;
 }
 
@@ -29,7 +34,7 @@ const tabsSlice = createSlice({
         copyingSet: (state, action: PayloadAction<boolean>) => {
             state.copying = action.payload;
         },
-        toastContentSet: (state, action: PayloadAction<string | undefined>) => {
+        toastContentSet: (state, action: PayloadAction<ToastContent | undefined>) => {
             state.toastContent = action.payload;
         },
         additionalCommentsCheckedSet: (state, action: PayloadAction<boolean>) => {

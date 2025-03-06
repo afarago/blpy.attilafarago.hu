@@ -43,6 +43,18 @@
 
     .toast {
         z-index: 9999;
+        --bs-toast-bg: rgb(var(--bs-body-bg-rgb));
+        filter: drop-shadow(6px 6px 8px lightgray);
+        .toast-body div:not(:first-child) {
+            font-size: 80%;
+        }
+        .toast-header {
+            font-weight: bold;
+            img {
+                height: 1.5em;
+                width: 1.5em;
+            }
+        }
     }
 
     &,

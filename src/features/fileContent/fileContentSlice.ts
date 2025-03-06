@@ -4,6 +4,7 @@ import { RootState } from '@/app/store';
 import { supportsExtension } from '@/features/conversion/blpyutil';
 import { extractGithubUrlInfo, getGithubContents } from '@/features/github/utils';
 import axios from 'axios';
+import { toastContentSet } from '../tabs/tabsSlice';
 
 interface UploadedFileInfo {
     name: string;
@@ -159,6 +160,7 @@ export const fetchFileContent = createAsyncThunk(
             await handleLoadingWithSpinner(dispatch, async () => {
                 if (!urls) throw new Error('No example file URL provided');
 
+                // TODO: later on add a meta to be retrieved on error for the actual url
                 const responses = await Promise.all(
                     urls.map((url) => axios.get(url, { responseType: 'blob' })),
                 );
@@ -175,6 +177,14 @@ export const fetchFileContent = createAsyncThunk(
                 dispatch(fileContentSet(payload));
             });
         } catch (error) {
+            dispatch(
+                toastContentSet({
+                    body: [
+                        'Oops! Something went wrong while fetching the file. Please try again later.',
+                        String(error),
+                    ],
+                }),
+            );
             return rejectWithValue('Failed to fetch example file');
         }
     },
@@ -215,6 +225,14 @@ export const fetchRepoContents = createAsyncThunk(
                 dispatch(fileContentSet(payload2));
             });
         } catch (error) {
+            dispatch(
+                toastContentSet({
+                    body: [
+                        'Oops! Something went wrong while fetching the repository. Please try again later.',
+                        String(error),
+                    ],
+                }),
+            );
             return rejectWithValue('Failed to fetch repository contents');
         }
     },

@@ -71,11 +71,14 @@ fileContentListenerMiddleware.startListening({
 
             console.error('Error converting project to Python:', error);
             listenerApi.dispatch(
-                toastContentSet(
-                    error instanceof Error
-                        ? error.message
-                        : 'An unknown error occurred.',
-                ),
+                toastContentSet({
+                    header: 'Conversion Error',
+                    body: [
+                        error instanceof Error
+                            ? error.message
+                            : 'An unknown error occurred.',
+                    ],
+                }),
             );
             listenerApi.dispatch(conversionReset());
         }

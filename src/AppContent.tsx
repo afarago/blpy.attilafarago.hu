@@ -1,21 +1,21 @@
 import './AppContent.scss';
 
+import React, { Suspense, lazy, useRef } from 'react';
 import {
     fileContentSet,
     selectFileContent,
 } from '@/features/fileContent/fileContentSlice';
 import { selectTabs, toastContentSet } from '@/features/tabs/tabsSlice';
-import React, { Suspense, lazy, useRef } from 'react';
 
-import { useAppDispatch } from '@/app/hooks';
-import { selectConversion } from '@/features/conversion/conversionSlice';
 import FileSelector from '@/features/fileContent/FileSelector';
 import Footer from '@/features/footer/Footer';
 import Header from '@/features/header/Header';
 import TabLoading from '@/features/tabs/TabLoading';
-import WelcomeTab from '@/features/welcome/TabWelcome';
-import { useDragAndDrop } from '@/utils/dragndrop-hook';
 import Toast from 'react-bootstrap/Toast';
+import WelcomeTab from '@/features/welcome/TabWelcome';
+import { selectConversion } from '@/features/conversion/conversionSlice';
+import { useAppDispatch } from '@/app/hooks';
+import { useDragAndDrop } from '@/utils/dragndrop-hook';
 import { useSelector } from 'react-redux';
 
 const MainTab = lazy(() => import('@/features/tabs/TabMain'));
@@ -51,9 +51,22 @@ const AppContent: React.FC = () => {
                 className="position-fixed top-0 end-0 mt-2 me-2"
             >
                 <Toast.Header>
-                    <span className="me-auto">Conversion Error</span>
+                    <img
+                        src="/favicon/favicon-48x48.png"
+                        className="rounded me-2"
+                        aria-hidden
+                    />
+                    <span className="me-auto">
+                        {toastContent?.header ?? 'Conversion Error'}
+                    </span>
                 </Toast.Header>
-                <Toast.Body>{toastContent}</Toast.Body>
+                <Toast.Body>
+                    <>
+                        {toastContent?.body.map((line) => (
+                            <div>{line}</div>
+                        ))}
+                    </>
+                </Toast.Body>
             </Toast>
 
             <div className="container-lg mycontent">
