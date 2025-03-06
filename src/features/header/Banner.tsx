@@ -23,7 +23,7 @@ export const Banner: React.FC = () => {
                 » Hungary Champs to Houston! Support Our Team!
             </h4>
             <div className="d-inline d-md-none">» Hungary Champs to Houston! </div>
-            <div>
+            <div className="text-nowrap">
                 <a
                     className="btn btn-outline-light btn-sm mx-1"
                     href="https://gogetfunding.com/team-tovis-x-goes-to-houston/"
