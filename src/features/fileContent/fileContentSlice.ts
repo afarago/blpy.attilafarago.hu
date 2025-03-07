@@ -4,6 +4,7 @@ import { RootState } from '@/app/store';
 import { supportsExtension } from '@/features/conversion/blpyutil';
 import { extractGithubUrlInfo, getGithubContents } from '@/features/github/utils';
 import axios from 'axios';
+import { conversionReset } from '../conversion/conversionSlice';
 import { toastContentSet } from '../tabs/tabsSlice';
 
 interface UploadedFileInfo {
@@ -185,6 +186,8 @@ export const fetchFileContent = createAsyncThunk(
                     ],
                 }),
             );
+            dispatch(fileContentReset());
+            dispatch(conversionReset());
             return rejectWithValue('Failed to fetch example file');
         }
     },
@@ -233,6 +236,8 @@ export const fetchRepoContents = createAsyncThunk(
                     ],
                 }),
             );
+            dispatch(fileContentReset());
+            dispatch(conversionReset());
             return rejectWithValue('Failed to fetch repository contents');
         }
     },
