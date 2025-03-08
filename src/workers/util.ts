@@ -1,8 +1,8 @@
+import { IConverstionResultExtended } from '@/features/conversion/types';
 import {
     convertProjectToPython,
     IPyConverterFile,
     IPyConverterOptions,
-    IPyProjectResult,
 } from 'blocklypy';
 
 export interface IConversionInputData {
@@ -14,7 +14,7 @@ export interface IConversionInputData {
 
 export async function processConversion(
     input: IConversionInputData,
-): Promise<IPyProjectResult> {
+): Promise<IConverstionResultExtended> {
     const { files, disabledFiles, builtin, additionalCommentsChecked } = input;
     const inputs0 = await Promise.all(
         files.map(async (file) => {
@@ -35,6 +35,7 @@ export async function processConversion(
     );
     const inputs: IPyConverterFile[] = inputs0.filter((f) => f !== undefined);
 
+    const logs = [] as string[];
     const options: IPyConverterOptions = {
         debug: {
             ...(additionalCommentsChecked
@@ -51,12 +52,20 @@ export async function processConversion(
             'blockly.svg': true,
             'wedo2.preview': true,
         },
+        log: {
+            // level: 0,
+            callback: (level: unknown, ...args: unknown[]) => {
+                const line = args.map(String).join(' ');
+                logs.push(line);
+            },
+        },
     } satisfies IPyConverterOptions;
-    const retval = await convertProjectToPython(inputs, options);
 
-    delete retval.topblocks;
-    delete (retval as unknown as any).topLevelStacks;
-    delete (retval as unknown as any).lastModifiedDate;
+    const content = await convertProjectToPython(inputs, options);
 
-    return retval;
+    delete content.topblocks;
+    delete (content as unknown as any).topLevelStacks;
+    delete (content as unknown as any).lastModifiedDate;
+
+    return { content, logs } satisfies IConverstionResultExtended;
 }

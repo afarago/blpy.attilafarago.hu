@@ -1,7 +1,8 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { IPyProjectResult } from 'blocklypy';
 import { RootState } from '@/app/store';
+import { IPyProjectResult } from 'blocklypy';
+import { IConverstionResultExtended } from './types';
 
 interface ConversionState {
     conversionResult?: IPyProjectResult;
@@ -51,7 +52,6 @@ export async function handleFileInputConversion(
         throw new Error(
             'No files to convert. Possible cause is that either none were selected or none were supported.',
         );
-    let retval: IPyProjectResult | undefined = undefined;
 
     const inputData = {
         files,
@@ -73,10 +73,12 @@ export async function handleFileInputConversion(
         { type: 'module' },
     );
 
-    retval = await new Promise<IPyProjectResult>((resolve, reject) => {
+    const retval = await new Promise<IConverstionResultExtended>((resolve, reject) => {
         worker.postMessage(inputData);
 
-        worker.onmessage = (event: MessageEvent<number | { error: string }>) => {
+        worker.onmessage = (
+            event: MessageEvent<IConverstionResultExtended | { error: string }>,
+        ) => {
             if (
                 typeof event.data === 'object' &&
                 event.data !== null &&
@@ -84,7 +86,7 @@ export async function handleFileInputConversion(
             ) {
                 reject(event.data.error); // Reject with the error message from the worker
             } else {
-                resolve(event.data as IPyProjectResult); // Type assertion here
+                resolve(event.data);
             }
         };
 

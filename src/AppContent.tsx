@@ -1,21 +1,21 @@
 import './AppContent.scss';
 
-import React, { Suspense, lazy, useRef } from 'react';
 import {
     fileContentSet,
     selectFileContent,
 } from '@/features/fileContent/fileContentSlice';
 import { selectTabs, toastContentSet } from '@/features/tabs/tabsSlice';
+import React, { Suspense, lazy, useRef } from 'react';
 
+import { useAppDispatch } from '@/app/hooks';
+import { selectConversion } from '@/features/conversion/conversionSlice';
 import FileSelector from '@/features/fileContent/FileSelector';
 import Footer from '@/features/footer/Footer';
 import Header from '@/features/header/Header';
 import TabLoading from '@/features/tabs/TabLoading';
-import Toast from 'react-bootstrap/Toast';
 import WelcomeTab from '@/features/welcome/TabWelcome';
-import { selectConversion } from '@/features/conversion/conversionSlice';
-import { useAppDispatch } from '@/app/hooks';
 import { useDragAndDrop } from '@/utils/dragndrop-hook';
+import Toast from 'react-bootstrap/Toast';
 import { useSelector } from 'react-redux';
 
 const MainTab = lazy(() => import('@/features/tabs/TabMain'));
@@ -63,7 +63,7 @@ const AppContent: React.FC = () => {
                 <Toast.Body>
                     <>
                         {toastContent?.body.map((line) => (
-                            <div>{line}</div>
+                            <div key={line}>{line}</div>
                         ))}
                     </>
                 </Toast.Body>

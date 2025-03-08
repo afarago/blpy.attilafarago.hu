@@ -1,19 +1,19 @@
 import {
+    conversionReset,
+    conversionSet,
+    handleFileInputConversion,
+} from '@/features/conversion/conversionSlice';
+import {
     FileContentSetPayload,
     fileContentReset,
     fileContentSet,
     selectFileContent,
 } from '@/features/fileContent/fileContentSlice';
-import {
-    conversionReset,
-    conversionSet,
-    handleFileInputConversion,
-} from '@/features/conversion/conversionSlice';
 import { selectTabs, toastContentSet } from '@/features/tabs/tabsSlice';
 
-import ReactGA from 'react-ga4';
 import { RootState } from '@/app/store';
 import { createListenerMiddleware } from '@reduxjs/toolkit';
+import ReactGA from 'react-ga4';
 import { supportsExtension } from '../conversion/blpyutil';
 
 const fileContentListenerMiddleware = createListenerMiddleware();
@@ -56,8 +56,24 @@ fileContentListenerMiddleware.startListening({
                     .join(', ')}`,
             });
 
-            listenerApi.dispatch(toastContentSet(undefined));
-            listenerApi.dispatch(conversionSet(retval));
+            const logsUnique = retval.logs?.length
+                ? Array.from(new Set(retval.logs))
+                : undefined;
+
+            listenerApi.dispatch(
+                toastContentSet(
+                    logsUnique?.length
+                        ? {
+                              header: 'Conversion Success',
+                              body: [
+                                  'Conversion succeeded, but generated warnings',
+                                  ...logsUnique.map((line) => '* ' + line),
+                              ],
+                          }
+                        : undefined,
+                ),
+            );
+            listenerApi.dispatch(conversionSet(retval.content));
         } catch (error) {
             ReactGA.send({
                 hitType: 'event',
