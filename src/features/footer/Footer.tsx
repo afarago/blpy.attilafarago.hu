@@ -1,6 +1,6 @@
+/// <reference types="vite/client" />
 import { EnvelopeFill, Facebook, Linkedin } from 'react-bootstrap-icons';
 
-import { GITHUB_VERSION } from '@/github_version';
 import React from 'react';
 
 const Footer: React.FC = () => (
@@ -71,7 +71,9 @@ const Footer: React.FC = () => (
                 </a>
                 {''}
                 Attila Farago,
-                <span title={GITHUB_VERSION}>2025</span>
+                <span title={import.meta?.env?.VITE_COMMIT_REF ?? 'development'}>
+                    2025
+                </span>
             </div>
         </div>
     </footer>
