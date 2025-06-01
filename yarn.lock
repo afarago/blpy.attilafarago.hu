@@ -10408,10 +10408,10 @@ rc@1.2.8, rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-bootstrap-icons@^1.11.5:
-  version "1.11.5"
-  resolved "https://registry.yarnpkg.com/react-bootstrap-icons/-/react-bootstrap-icons-1.11.5.tgz#9b91a0bf0d5505d92c3574f1f990bb52f36a3ec0"
-  integrity sha512-eOhtFJMUqw98IJcfKJsSMZkFHCeNPTTwXZAe9V9d4mT22ARmbrISxPO9GmtWWuf72zQctLeZMGodX/q6wrbYYg==
+react-bootstrap-icons@^1.11.6:
+  version "1.11.6"
+  resolved "https://registry.yarnpkg.com/react-bootstrap-icons/-/react-bootstrap-icons-1.11.6.tgz#211b58b2f2b32a624c4f5b24b9a4dae8df3d3268"
+  integrity sha512-ycXiyeSyzbS1C4+MlPTYe0riB+UlZ7LV7YZQYqlERV2cxDiKtntI0huHmP/3VVvzPt4tGxqK0K+Y6g7We3U6tQ==
   dependencies:
     prop-types "^15.7.2"
 
@@ -10434,7 +10434,7 @@ react-bootstrap@^2.10.9:
     uncontrollable "^7.2.1"
     warning "^4.0.3"
 
-react-dom@19.1.0:
+react-dom@^19.1.0:
   version "19.1.0"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-19.1.0.tgz#133558deca37fa1d682708df8904b25186793623"
   integrity sha512-Xs1hdnE+DyKgeHJeJznQmYMIBG3TKIHJJT95Q58nHLSrElKlGQqDTR2HQ9fx5CN/Gk6Vh/kupBTDLU11/nDk/g==

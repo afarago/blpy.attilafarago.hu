@@ -42,7 +42,7 @@
         "dom-to-image": "^2.6.0",
         "react": "^19.1.0",
         "react-bootstrap": "^2.10.9",
-        "react-bootstrap-icons": "^1.11.5",
+        "react-bootstrap-icons": "^1.11.6",
         "react-dom": "^19.1.0",
         "react-ga4": "^2.1.0",
         "react-hotkeys-hook": "^4.6.1",
