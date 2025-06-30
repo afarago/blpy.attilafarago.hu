@@ -72,7 +72,7 @@
         "@types/json-schema": "^7.0.15",
         "@types/node": "^22.15.29",
         "@types/react": "^19.0.12",
-        "@types/react-dom": "^19.0.2",
+        "@types/react-dom": "^19.1.5",
         "@types/react-syntax-highlighter": "^15.5.13",
         "@types/serviceworker": "^0.0.123",
         "@vitejs/plugin-react": "^4.3.4",
