@@ -3275,10 +3275,10 @@
   resolved "https://registry.yarnpkg.com/@types/retry/-/retry-0.12.1.tgz#d8f1c0d0dc23afad6dc16a9e993a0865774b4065"
   integrity sha512-xoDlM2S4ortawSWORYqsdU+2rxdh4LRW9ytc3zmT37RIKQh6IHyKwwtKhKis9ah8ol07DCkZxPt8BBvPjC6v4g==
 
-"@types/serviceworker@^0.0.123":
-  version "0.0.123"
-  resolved "https://registry.yarnpkg.com/@types/serviceworker/-/serviceworker-0.0.123.tgz#3d8bde62b5bd3a2c4ffc3086dfacfdc52e470e1d"
-  integrity sha512-c6ynzmpJwqKTkMHDLonE+EStBqTHJqiR+1RsDd40K3YjglABm/C6mZO7xn25g5WldsgxfGHGaKa3IXRnig9c0A==
+"@types/serviceworker@^0.0.140":
+  version "0.0.140"
+  resolved "https://registry.yarnpkg.com/@types/serviceworker/-/serviceworker-0.0.140.tgz#2a79bc64a26a2464d9428a6192c65b0f2817234b"
+  integrity sha512-9YBn/87nAamFtRCKEFZh2F+3Hs0UQzrxPgDbiqTgIS+F0LxbcVavgKtLhqSgSVF+OYtQM+fw8r3VXs7P1QpiXg==
 
 "@types/stack-utils@^2.0.0":
   version "2.0.3"

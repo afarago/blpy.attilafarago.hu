@@ -74,7 +74,7 @@
         "@types/react": "^19.0.12",
         "@types/react-dom": "^19.1.5",
         "@types/react-syntax-highlighter": "^15.5.13",
-        "@types/serviceworker": "^0.0.123",
+        "@types/serviceworker": "^0.0.140",
         "@vitejs/plugin-react": "^4.3.4",
         "babel-jest": "^29.7.0",
         "eslint": "^9.21.0",
