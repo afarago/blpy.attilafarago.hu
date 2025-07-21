@@ -38,7 +38,7 @@
         "axios": "^1.10.0",
         "blocklypy": ">=0.0.108 <0.1.0",
         "bootstrap": "^5.3.6",
-        "bootstrap-icons": "^1.11.3",
+        "bootstrap-icons": "^1.13.1",
         "dom-to-image": "^2.6.0",
         "react": "^19.1.0",
         "react-bootstrap": "^2.10.9",
