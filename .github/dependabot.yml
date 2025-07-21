@@ -7,6 +7,7 @@ updates:
       labels:
           - 'npm dependencies'
           - 'triage-board'
+      open-pull-requests-limit: 10
       target-branch: 'master'
       ignore:
           - dependency-name: 'typescript'
