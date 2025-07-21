@@ -4072,10 +4072,10 @@ avvio@^8.3.0:
     "@fastify/error" "^3.3.0"
     fastq "^1.17.1"
 
-axios@^1.8.2:
-  version "1.8.2"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-1.8.2.tgz#fabe06e241dfe83071d4edfbcaa7b1c3a40f7979"
-  integrity sha512-ls4GYBm5aig9vWx8AWDSGLpnpDQRtWAfrjU+EuytuODrFBkqesN2RkOQCBzrA1RQNHw1SmRMSDDDSwzNAYQ6Rg==
+axios@^1.10.0:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.10.0.tgz#af320aee8632eaf2a400b6a1979fa75856f38d54"
+  integrity sha512-/1xYAC4MP/HEG+3duIhFr4ZQXR4sQXOIe+o6sdqzeykGLx6Upp/1p8MHqhINOvGeP7xyNHe7tsiJByc4SSVUxw==
   dependencies:
     follow-redirects "^1.15.6"
     form-data "^4.0.0"
@@ -4272,10 +4272,10 @@ bl@^4.0.3:
     inherits "^2.0.4"
     readable-stream "^3.4.0"
 
-blocklypy@^0.0.108:
-  version "0.0.108"
-  resolved "https://registry.yarnpkg.com/blocklypy/-/blocklypy-0.0.108.tgz#e36144d2f2e70f94954d66802bcd8b7cbf56eb25"
-  integrity sha512-LK/NhSf5wr0AOyXYbwAShFd1/EAJ1H0pP76Y0LocRryxdF4cOIvcK5QJaonx/p34Tz6xZoKJocgNIDF2Esr44A==
+"blocklypy@>=0.0.108 <0.1.0":
+  version "0.0.109"
+  resolved "https://registry.yarnpkg.com/blocklypy/-/blocklypy-0.0.109.tgz#17bd221532dc208c0691d98baca7151e99fd597f"
+  integrity sha512-4ohDX4Jb5VWLa6OVSw7LZZcDUAfMDG82+C5bGWoGAVoZYoh63WOtZFllJyrSvnVKLsZvkvBOpdp142DMKRadPw==
   dependencies:
     buffer "^6.0.3"
     canvas "^3.1.0"
