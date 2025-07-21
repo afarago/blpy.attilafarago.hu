@@ -88,7 +88,7 @@
         "netlify-cli": "^18.1.0",
         "puppeteer": "^24.3.0",
         "sass": "^1.83.0",
-        "sass-embedded": "^1.87.0",
+        "sass-embedded": "^1.89.2",
         "ts-jest": "^29.4.0",
         "ts-node": "^10.9.2",
         "typescript": "^5.7.3",
