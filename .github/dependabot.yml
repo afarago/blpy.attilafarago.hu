@@ -13,3 +13,10 @@ updates:
           - dependency-name: 'typescript'
             # For typescript, ignore all Dependabot updates for version 5.x
             versions: ['5.x']
+      groups:
+          patch-updates:
+            update-types:
+              - "patch"
+          minor-updates:
+            update-types:
+              - "minor"
