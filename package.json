@@ -86,7 +86,7 @@
         "jest": "^30.0.4",
         "jest-environment-jsdom": "^29.7.0",
         "netlify-cli": "^22.3.0",
-        "puppeteer": "^24.3.0",
+        "puppeteer": "^24.14.0",
         "sass": "^1.89.2",
         "sass-embedded": "^1.89.2",
         "ts-jest": "^29.4.0",
