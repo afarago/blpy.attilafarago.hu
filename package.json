@@ -27,7 +27,7 @@
         ]
     },
     "dependencies": {
-        "@hpcc-js/wasm-graphviz": "^1.8.0",
+        "@hpcc-js/wasm-graphviz": "^1.10.0",
         "@netlify/functions": "^3.0.0",
         "@popperjs/core": "^2.11.8",
         "@reduxjs/toolkit": "^2.5.1",
