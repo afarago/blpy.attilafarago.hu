@@ -35,7 +35,7 @@
         "@svgr/plugin-jsx": "^8.1.0",
         "@svgr/plugin-svgo": "^8.1.0",
         "animate.css": "^4.1.1",
-        "axios": "^1.10.0",
+        "axios": "^1.11.0",
         "blocklypy": "^0.1.0",
         "bootstrap": "^5.3.7",
         "bootstrap-icons": "^1.13.1",
