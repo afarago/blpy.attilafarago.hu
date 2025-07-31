@@ -47,7 +47,7 @@ To run locally or contribute, clone this repository and follow the setup instruc
 
 ## Core Dependency
 
-- [blocklypy](https://www.npmjs.com/package/blocklypy): The functional base for all LEGO® block-based to Python conversion in this project.
+- [blocklypy](https://github.com/afarago/blocklypy): The functional base for all LEGO® block-based to Python conversion in this project, published at [npmjs](https://www.npmjs.com/package/blocklypy).
 
 ## License
 
