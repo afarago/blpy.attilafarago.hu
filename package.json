@@ -85,7 +85,7 @@
         "identity-obj-proxy": "^3.0.0",
         "jest": "^30.0.5",
         "jest-environment-jsdom": "^30.0.5",
-        "netlify-cli": "^22.3.0",
+        "netlify-cli": "^23.0.0",
         "puppeteer": "^24.15.0",
         "sass": "^1.89.2",
         "sass-embedded": "^1.89.2",
