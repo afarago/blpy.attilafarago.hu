@@ -11,7 +11,7 @@
     URL = "http://localhost:5174"
 
 [build.environment]
-  FONTCONFIG_PATH = "fonts"
+  FONTCONFIG_PATH = "./netlify/functions/fonts"
   FC_LANG = "en_US.UTF-8"
   
 [functions]
