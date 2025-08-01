@@ -4034,10 +4034,10 @@
   resolved "https://registry.yarnpkg.com/@types/retry/-/retry-0.12.2.tgz#ed279a64fa438bb69f2480eda44937912bb7480a"
   integrity sha512-XISRgDJ2Tc5q4TRqvgJtzsRkFYNJzZrhTdtMoGVBttwzzQJkPnS3WWTFc7kuDRoPtPakl+T+OfdEUjYJj7Jbow==
 
-"@types/serviceworker@^0.0.147":
-  version "0.0.147"
-  resolved "https://registry.yarnpkg.com/@types/serviceworker/-/serviceworker-0.0.147.tgz#3d6af894024d861a6815968664c8d6ecd9f779e1"
-  integrity sha512-l+nd8PlzcPF+FNZ/FGYLMjn1sIghd769RrmFCCYqEzzSIfUcTUfJX3q+X04qgr8n5tVXFfQnOzCopIumrWTQAg==
+"@types/serviceworker@^0.0.148":
+  version "0.0.148"
+  resolved "https://registry.yarnpkg.com/@types/serviceworker/-/serviceworker-0.0.148.tgz#7bdb1c385820fef452af1cf38ac34fc719c75321"
+  integrity sha512-H26EVhDX94Fd2Nb1mVYsmCDgn4qOmJMnDLqAK1zfWmXf1r7uVAKE+f6ZMfwlT7e42GnX1ViZ/2sA0Y022sF4rw==
 
 "@types/stack-utils@^2.0.3":
   version "2.0.3"
