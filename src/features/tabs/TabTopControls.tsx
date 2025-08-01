@@ -5,7 +5,8 @@ import {
     Fullscreen,
     FullscreenExit,
 } from 'react-bootstrap-icons';
-import { ITabElem, TabKey } from './TabMain';
+import type { ITabElem } from './TabMain';
+import { TabKey } from './TabMainTabKeys';
 import React, { useCallback, useMemo } from 'react';
 import {
     additionalCommentsCheckedSet,

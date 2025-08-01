@@ -1,4 +1,6 @@
-import { ITabElem, TabKey } from './TabMain';
+import type { ITabElem } from './TabMain';
+import { TabKey } from './TabMainTabKeys';
+
 import React, { Ref, Suspense, useEffect } from 'react';
 import {
     selectSvgContentData,

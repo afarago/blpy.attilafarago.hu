@@ -1,4 +1,5 @@
-import { ITabElem, TabKey } from './TabMain';
+import type { ITabElem } from './TabMain';
+import { TabKey } from './TabMainTabKeys';
 import React, { useEffect } from 'react';
 
 import BrandLogo from '@/features/header/BrandLogo';

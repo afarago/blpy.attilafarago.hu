@@ -23,14 +23,7 @@ import TabContents from './TabContents';
 import TabHeaders from './TabHeaders';
 import { selectTabs } from './tabsSlice';
 import TabTopControls from './TabTopControls';
-
-export enum TabKey {
-    PYCODE = 'pycode',
-    PLAINCODE = 'plaincode',
-    EV3BDECOMPILED = 'ev3b_decompiled',
-    PREVIEW = 'preview',
-    CALLGRAPH = 'callgraph',
-}
+import { TabKey } from './TabMainTabKeys';
 
 export interface ITabElem {
     key: string;
