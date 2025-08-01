@@ -10,7 +10,14 @@
   [dev.env]
     URL = "http://localhost:5174"
 
+[build.environment]
+  FONTCONFIG_PATH = "fonts"
+  FC_LANG = "en_US.UTF-8"
   
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["sharp"]
+
 [[redirects]]
   # This rule proxies requests from a clean API path to your function
   from = "/api/convert/*"
