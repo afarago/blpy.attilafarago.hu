@@ -25,9 +25,9 @@ export default defineConfig(({ command }) => {
         root: __dirname,
         resolve: {
             alias: {
-            '@': path.resolve(__dirname, 'src'),
-            '@components': path.resolve(__dirname, 'src/components'),
-            '~bootstrap': 'bootstrap',
+                '@': path.resolve(__dirname, 'src'),
+                '@components': path.resolve(__dirname, 'src/components'),
+                '~bootstrap': 'bootstrap',
             },
         },
         assetsInclude: [
@@ -64,7 +64,10 @@ export default defineConfig(({ command }) => {
                         '**/*.{js,css,html,ico,png,jpg,svg,llsp,llsp3,lms,lmsp,ev3,ev3m,rbf,proj,py,zip}',
                     ],
                     disableDevLogs: isDebug,
-
+                    navigateFallbackDenylist: [
+                        /^\/api\/.*$/, // Exclude /api paths
+                        /^\/netlify\/.*$/, // Exclude /netlify paths
+                    ],
                     // This tells VitePWA to use your service-worker.ts file.
                     // Even if empty, it's necessary.
 
@@ -294,7 +297,9 @@ export default defineConfig(({ command }) => {
                             extType = 'img';
                         } else if (/css|html|js|woff|woff2/.test(extType)) {
                             extType = 'css';
-                        } else if (/llsp|llsp3|lms|lmsp|ev3|ev3m|rbf|proj/.test(extType)) {
+                        } else if (
+                            /llsp|llsp3|lms|lmsp|ev3|ev3m|rbf|proj/.test(extType)
+                        ) {
                             extType = 'lego';
                         }
                         return `assets/${extType}/[name]-[hash][extname]`;
