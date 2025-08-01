@@ -41,7 +41,11 @@ const Footer: React.FC = () => (
                     tabIndex={-1}
                 >
                     npm
-                </a>{' '}
+                </a>
+                , with{' '}
+                <a href="/api" target="_blank">
+                    API
+                </a>
                 . You might freely use, share any generated artifacts, visualizations
                 with attribution in place.
             </div>

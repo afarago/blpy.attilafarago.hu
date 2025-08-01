@@ -3,6 +3,7 @@ import { processConversion } from '../../src/workers/util';
 import { fetchSampleFileFromUrl, handleFileUpload } from './utils/fileHandler';
 import { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { convertSvgToPngBase64 } from './utils/imageHelper';
+import { sendAnalyticsEvent } from './utils/googleAnalyticsHelper';
 
 const baseUrl = process.env.URL;
 
@@ -97,9 +98,13 @@ export const handler: Handler = async (event: HandlerEvent) => {
                 }
 
                 break;
+            default:
+                throw new Error(`Unsupported endpoint: ${endpoint}`);
         }
 
         if (!contents) throw new Error('Unsupported format or empty content');
+
+        await sendAnalyticsEvent('convert', endpoint, fileName, 200); // Track successful call
         return {
             statusCode: 200,
             body: contents,
@@ -110,6 +115,7 @@ export const handler: Handler = async (event: HandlerEvent) => {
         };
     } catch (error) {
         console.error('Error processing the request:', error);
+        await sendAnalyticsEvent('convert', event.path, undefined, 500); // Track error
         return {
             statusCode: 500,
             body: JSON.stringify({

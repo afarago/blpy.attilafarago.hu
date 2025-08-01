@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import ReactGA from 'react-ga4';
 
 const AuthCallbackPage = lazy(() => import('./pages/AuthCallback'));
+const SwaggerPage = lazy(() => import('./pages/SwaggerPage'));
 
 const GA_TRACKING_ID = 'G-WRDV9368S9';
 ReactGA.initialize(GA_TRACKING_ID);
@@ -15,6 +16,7 @@ const App: React.FC = () => {
         <Router>
             <Routes>
                 <Route path="/auth-callback" element={<AuthCallbackPage />} />
+                <Route path="/api" element={<SwaggerPage />} />
                 <Route index path="/*" element={<Home />} />
             </Routes>
         </Router>

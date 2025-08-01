@@ -30,3 +30,15 @@ body {
         display: hide;
     }
 }
+
+.swagger-ui {
+    .info {
+        margin-bottom: 0 !important;
+    }
+    .scheme-container {
+        background-color: transparent !important;
+        box-shadow: none !important;
+        padding-block: 0 !important;
+        margin-top: 0 !important;
+    }
+}
