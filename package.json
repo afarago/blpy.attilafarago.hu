@@ -31,6 +31,7 @@
         "@netlify/functions": "^4.2.1",
         "@popperjs/core": "^2.11.8",
         "@reduxjs/toolkit": "^2.8.2",
+        "@resvg/resvg-js": "^2.6.2",
         "@svgr/core": "^8.1.0",
         "@svgr/plugin-jsx": "^8.1.0",
         "@svgr/plugin-svgo": "^8.1.0",

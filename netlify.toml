@@ -16,7 +16,7 @@
   
 [functions]
   node_bundler = "esbuild"
-  external_node_modules = ["sharp"]
+  external_node_modules = ["sharp", "@resvg/resvg-js"]
 
 [[redirects]]
   # This rule proxies requests from a clean API path to your function
