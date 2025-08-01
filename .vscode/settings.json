@@ -8,5 +8,6 @@
             "root": "/dist"
         }
     },
-    "github-actions.workflows.pinned.workflows": [".github/workflows/webpack.yml"]
+    "github-actions.workflows.pinned.workflows": [".github/workflows/webpack.yml"],
+    "rest-client.previewOption": "body"
 }

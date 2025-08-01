@@ -8,14 +8,16 @@ import {
 export interface IConversionInputData {
     files: File[];
     disabledFiles: string[];
-    builtin: boolean | undefined;
+    builtin?: boolean;
     additionalCommentsChecked: boolean;
+    rawsource?: boolean | number | string;
 }
 
 export async function processConversion(
-    input: IConversionInputData,
+    config: IConversionInputData,
 ): Promise<IConverstionResultExtended> {
-    const { files, disabledFiles, builtin, additionalCommentsChecked } = input;
+    const { files, disabledFiles, builtin, additionalCommentsChecked, rawsource } =
+        config;
     const inputs0 = await Promise.all(
         files.map(async (file) => {
             try {
@@ -43,14 +45,22 @@ export async function processConversion(
                       showExplainingComments: true,
                       showBlockIds: true,
                   }
-                : {}),
+                : { skipRegionComments: true }),
             ...(disabledFiles ? { skipFiles: disabledFiles } : {}),
         },
         output: {
-            'ev3b.source': true,
             'blockly.slot': true,
             'blockly.svg': true,
             'wedo2.preview': true,
+            'ev3b.source': rawsource
+                ? typeof rawsource === 'boolean'
+                    ? 3
+                    : typeof rawsource === 'string'
+                    ? parseInt(rawsource)
+                    : rawsource
+                : false,
+            'ev3g.source': rawsource !== undefined,
+            'sb3.source': rawsource !== undefined,
         },
         log: {
             // level: 0,

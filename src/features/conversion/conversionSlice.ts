@@ -58,6 +58,7 @@ export async function handleFileInputConversion(
         disabledFiles,
         builtin,
         additionalCommentsChecked,
+        rawsource: true
     };
 
     // /* debug mode, handling conversion in the main thread */
