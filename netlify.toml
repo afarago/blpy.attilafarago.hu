@@ -1,5 +1,5 @@
 [build]
-  command = "VITE_COMMIT_REF=$COMMIT_REF yarn build && npm run build:functions"
+  command = "VITE_COMMIT_REF=$COMMIT_REF yarn build"
   publish = "dist"
   functions = "netlify/functions"
 
