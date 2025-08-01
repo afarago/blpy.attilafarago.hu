@@ -6,7 +6,7 @@ import { Handler, HandlerEvent } from '@netlify/functions';
 import { processConversion } from '../../src/workers/util';
 import { fetchSampleFileFromUrl, handleFileUpload } from './utils/fileHandler';
 import { sendAnalyticsEvent } from './utils/googleAnalyticsHelper';
-import { convertSvgToPngBase64 } from './utils/imageHelper';
+import { convertSvgToPngBase64 } from './imageHelper';
 
 const baseUrl = process.env.URL;
 

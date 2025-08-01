@@ -20,6 +20,7 @@
                     {
                         "name": "file",
                         "in": "query",
+                        "required": true,
                         "schema": {
                             "type": "string",
                             "enum": [
@@ -206,7 +207,8 @@
                                 "png",
                                 "dot",
                                 "txt"
-                            ]
+                            ],
+                            "default": "png"
                         },
                         "description": "Output format for the graph."
                     }
@@ -234,7 +236,8 @@
                                 "png",
                                 "dot",
                                 "txt"
-                            ]
+                            ],
+                            "default": "png"
                         },
                         "description": "Output format for the graph."
                     }
@@ -297,7 +300,8 @@
                             "enum": [
                                 "svg",
                                 "png"
-                            ]
+                            ],
+                            "default": "png"
                         },
                         "description": "Output format for the preview."
                     }
@@ -323,7 +327,8 @@
                             "enum": [
                                 "svg",
                                 "png"
-                            ]
+                            ],
+                            "default": "png"
                         },
                         "description": "Output format for the preview."
                     }

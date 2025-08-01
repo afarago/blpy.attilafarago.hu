@@ -10,6 +10,7 @@ const SwaggerPage: React.FC = () => {
             deepLinking={true}
             tryItOutEnabled={true}
             showCommonExtensions={true}
+            displayRequestDuration={true}
         />
     );
 };

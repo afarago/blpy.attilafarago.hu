@@ -5,7 +5,7 @@
 //     return pngBuffer.toString('base64');
 // }
 
-import { Resvg } from "@resvg/resvg-js";
+import { Resvg } from '@resvg/resvg-js';
 
 export async function convertSvgToPngBase64(svg: string): Promise<string> {
     const resvg = new Resvg(svg, {
@@ -14,12 +14,16 @@ export async function convertSvgToPngBase64(svg: string): Promise<string> {
             value: 1024,
         },
         font: {
-            fontDirs: [
-                './fonts',
-                '../fonts',
-                '/var/task/fonts',
+            fontFiles: [
+                './fonts/Arial.ttf',
+                './fonts/ChaletLondonNineteenSixty.ttf',
+                './fonts/ChaletNewYorkNineteenSixty.ttf',
+                './fonts/Helvetica.ttf',
+                './fonts/LiberationSans-Regular.ttf',
             ],
+            fontDirs: ['./fonts', '../fonts', '/var/task/fonts'],
             defaultFontFamily: 'sans-serif',
+            sansSerifFamily: 'Helvetica',
         },
     });
 
