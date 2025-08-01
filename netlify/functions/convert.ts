@@ -1,3 +1,6 @@
+process.env.FONTCONFIG_PATH = `${__dirname}/fonts`;
+process.env.FC_LANG = 'en_US.UTF-8';
+
 import { Handler, HandlerEvent } from '@netlify/functions';
 import { processConversion } from '../../src/workers/util';
 import { fetchSampleFileFromUrl, handleFileUpload } from './utils/fileHandler';
