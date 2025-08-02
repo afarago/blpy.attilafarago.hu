@@ -208,9 +208,9 @@
                                 "dot",
                                 "txt"
                             ],
-                            "default": "png"
+                            "default": "svg"
                         },
-                        "description": "Output format for the graph."
+                        "description": "Output format for the graph. Disclaimer: The 'png' format has rendering probkems on this endpoint."
                     }
                 ],
                 "responses": {
@@ -237,9 +237,9 @@
                                 "dot",
                                 "txt"
                             ],
-                            "default": "png"
+                            "default": "svg"
                         },
-                        "description": "Output format for the graph."
+                        "description": "Output format for the graph. Disclaimer: The 'png' format has rendering probkems on this endpoint."
                     }
                 ],
                 "requestBody": {
@@ -301,9 +301,9 @@
                                 "svg",
                                 "png"
                             ],
-                            "default": "png"
+                            "default": "svg"
                         },
-                        "description": "Output format for the preview."
+                        "description": "Output format for the preview. Disclaimer: The 'png' format has rendering probkems on this endpoint."
                     }
                 ],
                 "responses": {
@@ -328,9 +328,9 @@
                                 "svg",
                                 "png"
                             ],
-                            "default": "png"
+                            "default": "svg"
                         },
-                        "description": "Output format for the preview."
+                        "description": "Output format for the preview. Disclaimer: The 'png' format has rendering probkems on this endpoint."
                     }
                 ],
                 "requestBody": {
