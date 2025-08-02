@@ -43,7 +43,13 @@ const Footer: React.FC = () => (
                     npm
                 </a>
                 , with{' '}
-                <a href="/api" target="_blank" rel="external" tabIndex={-1}>
+                <a
+                    href="/api"
+                    target="_blank"
+                    rel="external"
+                    tabIndex={-1}
+                    onClick={() => window.open('/api', '_blank')}
+                >
                     API
                 </a>
                 . You might freely use, share any generated artifacts, visualizations

@@ -104,6 +104,9 @@ const AppContent: React.FC = () => {
                     </div>
                 </form>
             </div>
+
+            {/* <SwaggerPage /> */}
+
             <Footer />
         </div>
     );
