@@ -3,6 +3,11 @@ import { EnvelopeFill, Facebook, Linkedin } from 'react-bootstrap-icons';
 
 import React from 'react';
 
+function openExternal(url: string, event: React.MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault();
+    window.open(event.currentTarget.href, url);
+}
+
 const Footer: React.FC = () => (
     <footer
         className="border-top footer text-muted py-2"
@@ -48,7 +53,7 @@ const Footer: React.FC = () => (
                     target="_blank"
                     rel="external"
                     tabIndex={-1}
-                    onClick={() => window.open('/api', '_blank')}
+                    onClick={(event) => openExternal('/api', event)}
                 >
                     API
                 </a>
@@ -90,7 +95,3 @@ const Footer: React.FC = () => (
 );
 
 export default Footer;
-
-// <footer className="border-top footer text-muted">
-//     <div className="mx-md-5 text-center text-md-end">
-//         &copy; Attila Faragó - <a href="https://github.com/afarago">@afarago</a> -{' '}
