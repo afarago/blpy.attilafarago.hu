@@ -1,7 +1,14 @@
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  external_node_modules = ["sharp", "@resvg/resvg-js"]
+
 [build]
-  command = "VITE_COMMIT_REF=$COMMIT_REF yarn build"
+  command = "go build -o netlify/functions/convertSvg/main ./netlify/functions/convertSvg && VITE_COMMIT_REF=$COMMIT_REF yarn build"
   publish = "dist"
-  functions = "netlify/functions"
+  [build.environment]
+    FONTCONFIG_PATH = "./netlify/functions/fonts"
+    FC_LANG = "en_US.UTF-8"
 
 [dev]
   framework = "vite"
@@ -10,16 +17,7 @@
   [dev.env]
     URL = "http://localhost:5174"
 
-[build.environment]
-  FONTCONFIG_PATH = "./netlify/functions/fonts"
-  FC_LANG = "en_US.UTF-8"
-  
-[functions]
-  node_bundler = "esbuild"
-  external_node_modules = ["sharp", "@resvg/resvg-js"]
-
 [[redirects]]
-  # This rule proxies requests from a clean API path to your function
-  from = "/api/convert/*"
-  to = "/.netlify/functions/convert/:splat"
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
   status = 200
