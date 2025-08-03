@@ -1,12 +1,14 @@
 import * as path from 'path';
 
-import { VitePWA } from 'vite-plugin-pwa';
-import { defineConfig } from 'vite';
 import { fileURLToPath } from 'url';
+import { defineConfig } from 'vite';
+import { VitePWA } from 'vite-plugin-pwa';
 // import https from 'vite-plugin-https'; // local PWA testing, yarn add -D vite-plugin-https
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
+import viteCompression from 'vite-plugin-compression';
+
 
 // import { visualizer } from 'rollup-plugin-visualizer';
 
@@ -23,6 +25,7 @@ export default defineConfig(({ command }) => {
         //     'import.meta.env.NETLIFY': JSON.stringify(isNetlify),
         // },
         root: __dirname,
+        base: '/',
         resolve: {
             alias: {
                 '@': path.resolve(__dirname, 'src'),
@@ -52,6 +55,7 @@ export default defineConfig(({ command }) => {
                     exclude: '',
                 },
             }),
+            viteCompression(),
             //isProd && // only include in production
             VitePWA({
                 registerType: 'autoUpdate',
@@ -332,6 +336,10 @@ export default defineConfig(({ command }) => {
             //     comments: false, // This option removes all comments
             //   },
             // },
+            sourcemap: isProd, // Enable source maps in production
+            optimizeDeps: {
+                include: ['react', 'react-dom'],
+            },
         },
         css: {
             preprocessorOptions: {
