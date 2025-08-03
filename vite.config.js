@@ -66,7 +66,8 @@ export default defineConfig(({ command }) => {
                     disableDevLogs: isDebug,
                     navigateFallbackDenylist: [
                         /^\/api\/.*$/, // Exclude /api paths
-                        /^\/netlify\/.*$/, // Exclude /netlify paths
+                        /^\/\.netlify\/.*$/, // Exclude /.netlify paths
+                        /^\/swagger\.json$/, // Exclude /swagger.json
                     ],
                     // This tells VitePWA to use your service-worker.ts file.
                     // Even if empty, it's necessary.
