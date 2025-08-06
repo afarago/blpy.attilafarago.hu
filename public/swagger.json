@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "/api",
+            "url": "https://blpy.attilafarago.hu/api",
             "description": "base URL"
         }
     ],
