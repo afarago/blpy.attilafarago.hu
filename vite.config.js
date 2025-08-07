@@ -5,7 +5,7 @@ import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 // import https from 'vite-plugin-https'; // local PWA testing, yarn add -D vite-plugin-https
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import react from '@vitejs/plugin-react';
+import react from '@vitejs/plugin-react-swc';
 import svgr from 'vite-plugin-svgr';
 import viteCompression from 'vite-plugin-compression';
 
