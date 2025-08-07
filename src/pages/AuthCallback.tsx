@@ -6,15 +6,16 @@ const AuthCallbackPage: React.FC = () => {
     const error = searchParams.get('error');
     const errorDescription = searchParams.get('error_description');
     const errorUri = searchParams.get('error_uri');
+    const validatedErrorUri = errorUri && URL.canParse(errorUri) ? new URL(errorUri).href : undefined;
 
     if (error) {
         return (
             <div>
                 <h1>Github Authentication Error</h1>
                 <div>{errorDescription}</div>
-                {errorUri && (
+                {validatedErrorUri && (
                     <div>
-                        Read more details on <a href={errorUri}>{error}</a>
+                        Read more details on <a href={validatedErrorUri}>{error}</a>
                     </div>
                 )}
             </div>
