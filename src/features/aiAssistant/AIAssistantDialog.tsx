@@ -1,3 +1,4 @@
+import CanvasVisualizer from '@/features/botVisualizer/CanvasVisualizer';
 import React, { useEffect, useRef, useState } from 'react';
 import { InputGroup, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
@@ -143,7 +144,7 @@ export const AIInteractiveAssistantDialog: React.FC<AIAssitantDialogProps> = ({
         <Modal
             show={true}
             onHide={handleClose}
-            size="lg"
+            size="xl"
             // onShow={handleOnShow}
             // onEscapeKeyDown={handleEscapeKeyDown}
             className="GithubDialog"
@@ -157,13 +158,14 @@ export const AIInteractiveAssistantDialog: React.FC<AIAssitantDialogProps> = ({
                         This assistant helps you convert natural language commands into
                         Python code for Pybricks. You can use voice or text input, edit
                         the generated code, and copy it to your clipboard.
-                        <br/><b>Examples:</b> <code>go forward 20 cm</code>,{' '}
+                        <br />
+                        <b>Examples:</b> <code>go forward 20 cm</code>,{' '}
                         <code>move back 10 mm</code>, <code>turn left 90 degrees</code>,{' '}
                         <code>rotate right 45 deg</code>, <code>stop</code>.
                     </i>
                 </div>
 
-                <Form.Group className="mb-3">
+                <Form.Group>
                     <ToggleButtonGroup
                         className="me-2"
                         type="radio"
@@ -218,34 +220,40 @@ export const AIInteractiveAssistantDialog: React.FC<AIAssitantDialogProps> = ({
                     )}
                 </Form.Group>
 
-                <Form.Group className="mb-3">
-                    <Form.Label>Natural Language Input</Form.Label>
-                    <InputGroup>
-                        <Form.Control
-                            as="textarea"
-                            aria-label="With textarea"
-                            value={commandInput}
-                            placeholder="Type your command here in natural language..."
-                            onChange={(e) => setCommandInput(e.target.value)}
-                            rows={5}
-                            disabled={isListening}
-                            className='small'
-                        />
-                    </InputGroup>
-                </Form.Group>
+                <div className="row">
+                    <Form.Group className="col">
+                        <Form.Label className="mb-0 mt-2">
+                            Natural Language Input
+                        </Form.Label>
+                        <InputGroup>
+                            <Form.Control
+                                as="textarea"
+                                aria-label="With textarea"
+                                value={commandInput}
+                                placeholder="Type your command here in natural language..."
+                                onChange={(e) => setCommandInput(e.target.value)}
+                                rows={5}
+                                disabled={isListening}
+                                className="small"
+                            />
+                        </InputGroup>
 
-                <Form.Group className="mb-3">
-                    <Form.Label>Generated Python Code</Form.Label>
-                    <Form.Control
-                        value={pythonCode}
-                        readOnly
-                        as="textarea"
-                        rows={20}
-                        style={{ fontFamily: 'monospace' }}
-                        onChange={(e) => setPythonCode(e.target.value)}
-                        className='small'
-                    />
-                </Form.Group>
+                        <Form.Label className="mb-0 mt-2">
+                            Generated Python Code
+                        </Form.Label>
+                        <Form.Control
+                            value={pythonCode}
+                            as="textarea"
+                            rows={20}
+                            style={{ fontFamily: 'monospace' }}
+                            onChange={(e) => setPythonCode(e.target.value)}
+                            className="small"
+                        />
+                    </Form.Group>
+                    <div className="col">
+                        <CanvasVisualizer pycode={pythonCode} axle_track={120}></CanvasVisualizer>
+                    </div>
+                </div>
             </Modal.Body>
             <Modal.Footer>
                 <Button onClick={handleCopy} disabled={!pythonCode}>

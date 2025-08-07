@@ -169,7 +169,6 @@ function parseSingleLineCommand(
 
                 // Determine direction: prefer dir1 (from "turn left"), else dir2 (from "left 90")
                 let direction = dir1 || dir2;
-                console.log(match.groups);
                 if (!action && !direction) return undefined;
 
                 // Determine direction: if not given, default to 'right' when degrees is present
