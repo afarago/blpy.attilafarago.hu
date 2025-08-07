@@ -1,6 +1,10 @@
 @use '~bootstrap/scss/bootstrap' as *;
 @use 'animate.css';
 
+textarea.small {
+    font-size: 0.75em !important;
+}
+
 .AppContent {
     $drop-highlight-color: cornflowerblue;
     $success-color: rgba(144, 238, 144, 1);

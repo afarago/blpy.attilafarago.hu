@@ -4,6 +4,7 @@ import fileContentListenerMiddleware from '@/features/fileContent/fileContentLis
 import fileContentReducer from '@/features/fileContent/fileContentSlice';
 import githubReducer from '@/features/github/githubSlice';
 import tabsReducer from '@/features/tabs/tabsSlice';
+import aiAssistantReducer from '@/features/aiAssistant/aiAssistantSlice';
 
 const store = configureStore({
     reducer: {
@@ -11,6 +12,7 @@ const store = configureStore({
         conversion: conversionReducer,
         tabs: tabsReducer,
         github: githubReducer,
+        aiAssistant: aiAssistantReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

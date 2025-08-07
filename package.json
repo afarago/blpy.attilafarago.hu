@@ -35,6 +35,7 @@
         "@svgr/core": "^8.1.0",
         "@svgr/plugin-jsx": "^8.1.0",
         "@svgr/plugin-svgo": "^8.1.0",
+        "@types/webspeechapi": "^0.0.29",
         "animate.css": "^4.1.1",
         "axios": "^1.11.0",
         "blocklypy": "^0.1.6",

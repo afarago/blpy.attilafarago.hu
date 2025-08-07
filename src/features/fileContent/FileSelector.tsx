@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { useAppDispatch } from '@/app/hooks';
 import GithubImg from '@/assets/img/github.png';
+import AIInteractiveAssistantDialog from '@/features/aiAssistant/AIAssistantDialog';
 import { ACCEPTED_EXTENSIONS, supportsExtension } from '@/features/conversion/blpyutil';
 import { selectConversion } from '@/features/conversion/conversionSlice';
 import {
@@ -32,6 +33,7 @@ const FileSelector: React.FC<{
     const dispatch = useAppDispatch();
 
     const [showGithubDialog, setShowGithubDialog] = useState(false);
+    const [showAssistantDialog, setShowAssistantDialog] = useState(false);
     const [showExamplesButtons, toggleShowExamplesButtons, setShowExamplesButtons] =
         useToggle(true);
     const [filesCached, setFilesCached] = useState<File[] | undefined>();
@@ -40,7 +42,7 @@ const FileSelector: React.FC<{
     const fileContent = useSelector(selectFileContent);
     const github = useSelector(selectGithub);
 
-    const handleCloseModal = (url?: string) => {
+    const handleGithubCloseModal = (url?: string) => {
         setShowGithubDialog(false);
         if (url) {
             dispatch(
@@ -276,7 +278,15 @@ const FileSelector: React.FC<{
                     <Github scale={4} className="text-primary" />
                     <span className="d-none d-lg-block">GitHub</span>
                 </Button>
+                <Button
+                    className="btn-light mini-button github-icon flex-grow-0"
+                    title="Open AI Assistant"
+                    onClick={() => setShowAssistantDialog(true)}
+                >
+                    <span className="d-none d-lg-block">🤖 AI Assistant</span>
+                </Button>
             </Form.Group>
+
             {/* url as info */}
             {fileContent.url && (
                 <div className="small">
@@ -286,6 +296,7 @@ const FileSelector: React.FC<{
                     </a>
                 </div>
             )}
+
             {/* buttons for builtin example files */}
             {showExamplesButtons && (
                 <div className="file-examples col-sm-12 m-0 p-0 pt-1">
@@ -321,10 +332,19 @@ const FileSelector: React.FC<{
                     </small>
                 </div>
             )}
+
+            {/* GitHub dialog */}
             {showGithubDialog && (
                 <GithubOpenDialog
-                    handleClose={handleCloseModal}
+                    handleClose={handleGithubCloseModal}
                     initialUrl={fileContent.url}
+                />
+            )}
+
+            {/* AI Assistant Modal/Panel */}
+            {showAssistantDialog && (
+                <AIInteractiveAssistantDialog
+                    handleClose={() => setShowAssistantDialog(false)}
                 />
             )}
         </div>
