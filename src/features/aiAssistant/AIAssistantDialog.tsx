@@ -198,6 +198,7 @@ export const AIInteractiveAssistantDialog: React.FC<AIAssitantDialogProps> = ({
                                         onClick={(e) => setLanguage(lang.code)}
                                         value={lang.code}
                                         checked={language === lang.code}
+                                        className="btn-light"
                                     >
                                         {lang.label}
                                     </ToggleButton>
