@@ -70,7 +70,7 @@ export async function handleFileInputConversion(
 
     /* production mode, handling conversion in a worker */
     const worker = new Worker(
-        new URL('../../workers/conversionWorker.ts', import.meta.url),
+        new URL('../../workers/conversion-worker.ts', import.meta.url),
         { type: 'module' },
     );
 

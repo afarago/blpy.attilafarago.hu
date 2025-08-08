@@ -94,6 +94,7 @@
         "jest-environment-jsdom": "^30.0.5",
         "netlify-cli": "^23.0.0",
         "puppeteer": "^24.15.0",
+        "rollup-plugin-visualizer": "^6.0.3",
         "sass": "^1.90.0",
         "ts-jest": "^29.4.0",
         "ts-node": "^10.9.2",

@@ -8,8 +8,6 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import react from '@vitejs/plugin-react-swc';
 import svgr from 'vite-plugin-svgr';
 import viteCompression from 'vite-plugin-compression';
-
-
 // import { visualizer } from 'rollup-plugin-visualizer';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -43,7 +41,7 @@ export default defineConfig(({ command }) => {
         plugins: [
             react(),
             // isDebug && https(), // debug only
-            // visualizer(),
+            // visualizer({ open: true }), // only in debug mode
             nodeResolve(),
             svgr({
                 svgrOptions: {
@@ -296,6 +294,7 @@ export default defineConfig(({ command }) => {
             emptyOutDir: true,
             rollupOptions: {
                 output: {
+                    compact: true,
                     assetFileNames: (assetInfo) => {
                         let extType = assetInfo.name.split('.').at(1);
                         if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType)) {
@@ -307,21 +306,55 @@ export default defineConfig(({ command }) => {
                         ) {
                             extType = 'lego';
                         }
-                        return `assets/${extType}/[name]-[hash][extname]`;
+                        const name = assetInfo.name
+                            ? assetInfo.name.toLowerCase()
+                            : '[name]';
+                        return `assets/${extType}/${name}-[hash][extname]`;
                     },
-                    chunkFileNames: 'assets/js/[name]-[hash].js',
-                    entryFileNames: 'assets/js/[name]-[hash].js',
-                    manualChunks: (id) => {
-                        if (isDebug) return id;
+                    chunkFileNames: (chunkInfo) => {
+                        const name = chunkInfo.name
+                            ? chunkInfo.name.toLowerCase()
+                            : '[name]';
+                        return `assets/js/${name}-[hash].js`;
+                    },
+                    entryFileNames: (chunkInfo) => {
+                        const name = chunkInfo.name
+                            ? chunkInfo.name.toLowerCase()
+                            : '[name]';
+                        return `assets/js/${name}-[hash].js`;
+                    },
+                    // manualChunks: (id, meta) => {
+                    //     if (isDebug) return id;
 
-                        // TODO: defer load of these chunks
+                    //     // TODO: defer load of these chunks
+                    //     // console.log('manualChunks', id, meta.getModuleInfo(id).code.length);
+                    //     if (id.includes('blocklypy')) {
+                    //         return 'vendor-blocklypy'; // will only be imported in conversion-worker
+                    //     } else if (id.includes('viz')) {
+                    //         return 'vendor-viz';
+                    //     } else if (id.includes('swagger') || id.includes('openapi') || id.includes('js-yaml') || id.includes('remarkable') ) {
+                    //         return 'vendor-swagger';
+                    //     } else if (id.includes('react') || id.includes('redux') || id.includes('immutable')) {
+                    //         return 'vendor-react';
+                    //     // } else if (id.includes('micromark') || id.includes('openapi')) {
+                    //     //     return 'vendor-markdown';
+                    //     } else if (id.includes('node_modules')) {
+                    //         return 'vendor-0';
+                    //     } else return 'index';
+                    // },
+                    manualChunks: (id) => {
+                        if (id.includes('cat')) {
+                            console.log('manualChunks', id);
+                        }
+
                         if (id.includes('blocklypy')) {
-                            return 'vendor-2'; // will only be imported in conversionworker
-                        } else if (id.includes('viz')) {
-                            return 'vendor-1';
-                        } else if (id.includes('node_modules')) {
-                            return 'vendor-0';
-                        } else return 'index';
+                            return 'vendor-blocklypy'; // will only be imported in conversion-worker
+                        } else if (id.includes('graphviz')) {
+                            return 'vendor-graphviz';
+                        } else if (id.includes('assets/img/cat')) {
+                            return 'icon-cat';
+                        }
+                        return null;
                     },
                     // preserveModules: true,
                 },

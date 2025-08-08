@@ -4,9 +4,9 @@ process.env.FC_LANG = 'en_US.UTF-8';
 import { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { Handler, HandlerEvent } from '@netlify/functions';
 import { processConversion } from '../../../src/workers/util';
-import { fetchSampleFileFromUrl, handleFileUpload } from './fileHandler';
-import { sendAnalyticsEvent } from './googleAnalyticsHelper';
-import { convertSvgToPngBase64 } from './imageHelper';
+import { fetchSampleFileFromUrl, handleFileUpload } from './file-handler';
+import { sendAnalyticsEvent } from './google-analytics-helper';
+import { convertSvgToPngBase64 } from './image-helper';
 
 const baseUrl = process.env.URL;
 
