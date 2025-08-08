@@ -24,7 +24,8 @@ export const fetchAiSummary = createAsyncThunk<
     try {
         const response = await axios.post(
             '/api/summarize-code',
-            { pseudocode, pycode },
+            // { pseudocode, pycode },
+            pseudocode ? { pseudocode } : { pycode },
             {
                 headers: {
                     'Content-Type': 'application/json',
@@ -36,7 +37,10 @@ export const fetchAiSummary = createAsyncThunk<
         return code;
     } catch (err: any) {
         return rejectWithValue(
-            err.response?.data?.error || JSON.stringify(err.response?.data) || err.message || 'Network error',
+            err.response?.data?.error ||
+                JSON.stringify(err.response?.data) ||
+                err.message ||
+                'Network error',
         );
     }
 });
