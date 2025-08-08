@@ -156,7 +156,8 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
                     default: {
                         if (
                             selectedTabkey === TabKey.PYCODE ||
-                            selectedTabkey === TabKey.PLAINCODE
+                            selectedTabkey === TabKey.PLAINCODE ||
+                            selectedTabkey === TabKey.AISUMMARY
                         ) {
                             if (tabelem) {
                                 textcontent = tabelem.code;

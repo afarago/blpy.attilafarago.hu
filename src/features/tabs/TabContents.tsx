@@ -2,26 +2,29 @@ import type { ITabElem } from './TabMain';
 import { TabKey } from './TabMainTabKeys';
 
 import React, { Ref, Suspense, useEffect } from 'react';
+import Markdown from 'react-markdown';
+
 import {
     selectSvgContentData,
     selectWeDo2PreviewData,
 } from '@/features/conversion/conversionSlice';
-
-import Button from 'react-bootstrap/Button';
-import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
-import Tab from 'react-bootstrap/Tab';
-import TabLoading from './TabLoading';
 import { fileSetEnabled } from '@/features/fileContent/fileContentSlice';
+import Button from 'react-bootstrap/Button';
+import Tab from 'react-bootstrap/Tab';
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import less from 'react-syntax-highlighter/dist/esm/languages/hljs/less';
 import python from 'react-syntax-highlighter/dist/esm/languages/hljs/python';
-import { selectTabs } from './tabsSlice';
 import svgPanZoom from 'svg-pan-zoom';
+import TabLoading from './TabLoading';
+import { selectTabs } from './tabsSlice';
 // import SyntaxHighlighter from 'react-syntax-highlighter';
 import { useAppDispatch } from '@/app/hooks';
 import { useSelector } from 'react-redux';
 import { vs } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { selectAiSummary } from '../aiSummary/aiSummarySlice';
 
 const CallGraph = React.lazy(() => import('@/features/graph/CallGraph'));
+const GroqSVG = React.lazy(() => import('@/assets/img/groq.svg?react'));
 
 SyntaxHighlighter.registerLanguage('python', python);
 SyntaxHighlighter.registerLanguage('less', less);
@@ -52,6 +55,7 @@ const TabContents: React.FC<TabContentsProps> = ({
     const { copying } = useSelector(selectTabs);
     const svgContentData = useSelector(selectSvgContentData);
     const wedo2PreviewData = useSelector(selectWeDo2PreviewData);
+    const aiSummary = useSelector(selectAiSummary);
     const dispatch = useAppDispatch();
 
     const REFMAP = {
@@ -186,6 +190,24 @@ const TabContents: React.FC<TabContentsProps> = ({
                             />
                         ) : (
                             <></>
+                        ))}
+                    {genkey === TabKey.AISUMMARY &&
+                        (aiSummary.loading ? (
+                            <TabLoading />
+                        ) : (
+                            <div className="ai-summary">
+                                <Markdown>{aiSummary.code ?? aiSummary.error}</Markdown>
+                                <div className="smaller opacity-50 m-2 position-absolute bottom-0 end-0 text-secondary">
+                                    powered by{' '}
+                                    <a
+                                        href="https://groq.com"
+                                        target="_blank"
+                                        className="text-secondary"
+                                    >
+                                        <GroqSVG />
+                                    </a>
+                                </div>
+                            </div>
                         ))}
                 </Tab.Pane>
             </>

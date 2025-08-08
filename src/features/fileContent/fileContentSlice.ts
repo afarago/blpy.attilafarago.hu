@@ -4,6 +4,7 @@ import { RootState } from '@/app/store';
 import { supportsExtension } from '@/features/conversion/blpyutil';
 import { extractGithubUrlInfo, getGithubContents } from '@/features/github/utils';
 import axios from 'axios';
+import { resetAiSummary } from '../aiSummary/aiSummarySlice';
 import { conversionReset } from '../conversion/conversionSlice';
 import { toastContentSet } from '../tabs/tabsSlice';
 
@@ -188,6 +189,7 @@ export const fetchFileContent = createAsyncThunk(
             );
             dispatch(fileContentReset());
             dispatch(conversionReset());
+            dispatch(resetAiSummary());
             return rejectWithValue('Failed to fetch example file');
         }
     },
@@ -238,6 +240,7 @@ export const fetchRepoContents = createAsyncThunk(
             );
             dispatch(fileContentReset());
             dispatch(conversionReset());
+            dispatch(resetAiSummary());
             return rejectWithValue('Failed to fetch repository contents');
         }
     },

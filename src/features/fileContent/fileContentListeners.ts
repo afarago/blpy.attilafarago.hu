@@ -14,6 +14,7 @@ import { selectTabs, toastContentSet } from '@/features/tabs/tabsSlice';
 import { RootState } from '@/app/store';
 import { createListenerMiddleware } from '@reduxjs/toolkit';
 import ReactGA from 'react-ga4';
+import { resetAiSummary } from '../aiSummary/aiSummarySlice';
 import { supportsExtension } from '../conversion/blpyutil';
 
 const fileContentListenerMiddleware = createListenerMiddleware();
@@ -74,6 +75,7 @@ fileContentListenerMiddleware.startListening({
                 ),
             );
             listenerApi.dispatch(conversionSet(retval.content));
+            listenerApi.dispatch(resetAiSummary());
         } catch (error) {
             ReactGA.send({
                 hitType: 'event',
@@ -97,6 +99,7 @@ fileContentListenerMiddleware.startListening({
                 }),
             );
             listenerApi.dispatch(conversionReset());
+            listenerApi.dispatch(resetAiSummary());
         }
     },
 });
@@ -108,6 +111,7 @@ fileContentListenerMiddleware.startListening({
         notifyComponent(undefined);
 
         listenerApi.dispatch(conversionReset());
+        listenerApi.dispatch(resetAiSummary());
     },
 });
 

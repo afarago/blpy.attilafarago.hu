@@ -17,7 +17,8 @@ export const handleFileUpload = async (event: HandlerEvent) => {
                     const buffers: Buffer[] = [];
                     file.on('data', (data) => buffers.push(data));
                     file.on('end', () => {
-                        fileBuffer = Buffer.concat(buffers);
+                        const buffer = Buffer.concat(buffers);
+                        fileBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
                     });
                 });
 

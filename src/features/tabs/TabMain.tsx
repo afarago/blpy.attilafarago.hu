@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
+    Anthropic,
     BookHalf,
     CodeSlash,
     Diagram2,
@@ -8,6 +9,7 @@ import {
     Icon,
 } from 'react-bootstrap-icons';
 
+import { useAppDispatch } from '@/app/hooks';
 import {
     selectConversion,
     selectRbfDecompileData,
@@ -18,12 +20,13 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';
 import { useSelector } from 'react-redux';
+import { fetchAiSummary, selectAiSummary } from '../aiSummary/aiSummarySlice';
 import { selectFileContent } from '../fileContent/fileContentSlice';
 import TabContents from './TabContents';
 import TabHeaders from './TabHeaders';
+import { TabKey } from './TabMainTabKeys';
 import { selectTabs } from './tabsSlice';
 import TabTopControls from './TabTopControls';
-import { TabKey } from './TabMainTabKeys';
 
 export interface ITabElem {
     key: string;
@@ -37,11 +40,14 @@ export interface ITabElem {
 }
 
 const TabMain: React.FC = () => {
+    const dispatch = useAppDispatch();
+
     const { disabledFiles } = useSelector(selectFileContent);
     const { conversionResult } = useSelector(selectConversion);
     const svgContentData = useSelector(selectSvgContentData);
     const wedo2preview = useSelector(selectWeDo2PreviewData);
     const rbfDecompileData = useSelector(selectRbfDecompileData);
+    const aiSummary = useSelector(selectAiSummary);
     const { additionalCommentsChecked } = useSelector(selectTabs);
 
     const [selectedTabkey, setSelectedTabkey] = useState<string>('');
@@ -113,14 +119,41 @@ const TabMain: React.FC = () => {
                 condition: !!svgContentData || !!wedo2preview,
                 code: svgContentData,
             },
+            {
+                key: TabKey.AISUMMARY,
+                title: 'AI Summary (ctrl+5)',
+                icon: Anthropic,
+                name: 'AI Summary',
+                condition:
+                    conversionResult?.plaincode !== undefined ||
+                    conversionResult?.pycode !== undefined,
+                code: aiSummary.code,
+            },
         ];
 
         setTabElems(tabElemValues);
-    }, [conversionResult, rbfDecompileData, svgContentData, disabledFiles]);
+    }, [conversionResult, rbfDecompileData, svgContentData, disabledFiles, aiSummary]);
 
     const handleSelectTab = useCallback((k: string | null) => {
         if (k) setSelectedTabkey(k as TabKey);
     }, []);
+
+    useEffect(() => {
+        if (
+            selectedTabkey === TabKey.AISUMMARY &&
+            !aiSummary?.shortSummary &&
+            (conversionResult?.plaincode || conversionResult?.pycode)
+        ) {
+            dispatch(
+                fetchAiSummary({
+                    pseudocode: conversionResult?.plaincode,
+                    pycode: Array.isArray(conversionResult?.pycode)
+                        ? (conversionResult?.pycode as string[]).join('\n')
+                        : conversionResult?.pycode,
+                }),
+            );
+        }
+    }, [selectedTabkey, conversionResult, dispatch]);
 
     return (
         <div className="tab-main container-lg pt-2">
