@@ -1,0 +1,19 @@
+{
+  "extends": "../../../tsconfig.json",  // Inherit from root config
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "../../../",
+    "module": "ESNext", // Use ESNext for modern JavaScript features
+    "moduleResolution": "Bundler", // Recommended for bundlers like esbuild
+    "esModuleInterop": true, // Recommended for better interoperability with CommonJS modules
+    "forceConsistentCasingInFileNames": true, // Good practice for consistent file naming
+    "strict": true // Enable all strict type-checking options
+  },
+  "include": [
+    "./**/*.ts",
+    "../shared/**/*.ts",
+    "../convert/**/*.ts",
+    "../../../src/**/*.ts",
+    "netlify/**/*.ts"
+  ]
+}

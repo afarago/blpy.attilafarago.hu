@@ -1,5 +1,4 @@
 import { HandlerEvent } from '@netlify/functions';
-import axios from 'axios';
 import Busboy from 'busboy';
 
 export const handleFileUpload = async (event: HandlerEvent) => {
@@ -32,14 +31,4 @@ export const handleFileUpload = async (event: HandlerEvent) => {
             }
         },
     );
-};
-
-export const fetchSampleFileFromUrl = async (url: string) => {
-    const response = await axios.get(url, {
-        responseType: 'arraybuffer',
-    });
-
-    const fileName = url.split('/').pop() || '';
-    const fileBuffer = response.data;
-    return { fileName, fileBuffer };
 };
