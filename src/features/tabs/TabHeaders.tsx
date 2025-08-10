@@ -77,13 +77,15 @@ const TabHeaders: React.FC<TabHeadersProps> = ({
                                     eventKey={elem.key}
                                     key={elem.key}
                                     title={`${elem.title}`}
-                                    className="icon-link icon-link-hover"
                                     active={selectedTabkey === elem.key}
                                 >
-                                    {elem.icon && (
-                                        <elem.icon className="d-none d-md-inline" />
-                                    )}
-                                    {elem.name}
+                                    <span className="d-none d-md-inline icon-link icon-link-hover">
+                                        {elem.icon && <elem.icon />}
+                                        {elem.name}
+                                    </span>
+                                    <span className="d-inline d-md-none">
+                                        {elem.shortname}
+                                    </span>
                                 </Nav.Link>
 
                                 {/* Multi-file dropdown tab */}

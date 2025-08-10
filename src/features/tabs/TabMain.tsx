@@ -33,6 +33,7 @@ export interface ITabElem {
     title: string;
     icon?: Icon;
     name: string;
+    shortname: string;
     condition: boolean;
     code?: string;
     children?: ITabElem[];
@@ -63,6 +64,7 @@ const TabMain: React.FC = () => {
                 title: 'pseudocode (ctrl+1)',
                 icon: CodeSlash,
                 name: 'Pseudocode',
+                shortname: 'Pseudo',
                 condition: conversionResult?.plaincode !== undefined,
                 code: !additionalCommentsChecked
                     ? conversionResult?.plaincode
@@ -77,6 +79,7 @@ const TabMain: React.FC = () => {
                 title: 'pycode (ctrl+2)',
                 icon: FiletypePy,
                 name: 'Python',
+                shortname: 'Python',
                 code: Array.isArray(conversionResult?.name)
                     ? undefined
                     : (conversionResult?.pycode as string),
@@ -86,6 +89,7 @@ const TabMain: React.FC = () => {
                           (elem, index) =>
                               ({
                                   name: elem,
+                                  shortname: elem,
                                   title: elem,
                                   key: elem,
                                   code: (conversionResult?.pycode as string[])[index],
@@ -100,6 +104,7 @@ const TabMain: React.FC = () => {
                 title: 'decompiled',
                 icon: BookHalf,
                 name: 'Decompiled RBF',
+                shortname: 'Decompiled',
                 condition: rbfDecompileData !== undefined,
                 code: rbfDecompileData,
             },
@@ -108,6 +113,7 @@ const TabMain: React.FC = () => {
                 title: 'call graph (ctrl+3)',
                 icon: Diagram2,
                 name: 'Call Graph',
+                shortname: 'Graph',
                 condition: conversionResult?.dependencygraph !== undefined,
                 // code: svgDependencyGraph,
             },
@@ -116,6 +122,7 @@ const TabMain: React.FC = () => {
                 title: 'preview (ctrl+4)',
                 icon: FileEarmarkImage,
                 name: 'Preview',
+                shortname: 'Preview',
                 condition: !!svgContentData || !!wedo2preview,
                 code: svgContentData,
             },
@@ -124,6 +131,7 @@ const TabMain: React.FC = () => {
                 title: 'AI Summary (ctrl+5)',
                 icon: Anthropic,
                 name: 'AI Summary',
+                shortname: 'AI',
                 condition:
                     conversionResult?.plaincode !== undefined ||
                     conversionResult?.pycode !== undefined,
