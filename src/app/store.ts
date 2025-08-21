@@ -1,10 +1,13 @@
-import { configureStore } from '@reduxjs/toolkit';
+import aiSummaryReducer from '@/features/aiSummary/aiSummarySlice';
 import conversionReducer from '@/features/conversion/conversionSlice';
-import fileContentListenerMiddleware from '@/features/fileContent/fileContentListeners';
 import fileContentReducer from '@/features/fileContent/fileContentSlice';
+import { default as fileContentSaga } from '@/features/fileContent/sagas';
 import githubReducer from '@/features/github/githubSlice';
 import tabsReducer from '@/features/tabs/tabsSlice';
-import aiSummaryReducer from '@/features/aiSummary/aiSummarySlice';
+import { configureStore } from '@reduxjs/toolkit';
+import createSagaMiddleware from 'redux-saga';
+
+const sagaMiddleware = createSagaMiddleware();
 
 const store = configureStore({
     reducer: {
@@ -28,8 +31,10 @@ const store = configureStore({
                     'conversion.payload.content.topblocks',
                 ],
             },
-        }).prepend(fileContentListenerMiddleware.middleware),
+        }).prepend(sagaMiddleware),
 });
+
+sagaMiddleware.run(fileContentSaga);
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type AppStore = typeof store;
