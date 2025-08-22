@@ -339,6 +339,15 @@
             margin-right: 0.5em;
         }
 
+        & > button {
+            padding: 1px 6px 1px 6px;
+            vertical-align: baseline;
+            --bs-btn-active-color: black;
+            --bs-btn-hover-color: black;
+            --bs-btn-color: black;
+            --bs-btn-disabled-color: gray;
+        }
+
         .form-switch {
             display: inline-block;
         }

@@ -56,6 +56,7 @@ export default defineConfig(({ command }) => {
             viteCompression(),
             //isProd && // only include in production
             VitePWA({
+                register: isProd, // only register service worker in production
                 registerType: 'autoUpdate',
                 injectRegister: 'auto',
                 // injectManifest: {
