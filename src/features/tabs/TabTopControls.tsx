@@ -1,29 +1,33 @@
 import {
-    selectConversion,
-    selectSvgContentData,
-    selectWeDo2PreviewData,
+  selectConversion,
+  selectSvgContentData,
+  selectWeDo2PreviewData,
 } from '@/features/conversion/conversionSlice';
 import {
-    additionalCommentsCheckedSet,
-    copyingSet,
-    fullScreenSet,
-    fullScreenToggle,
-    selectTabs,
+  additionalCommentsCheckedSet,
+  copyingSet,
+  fullScreenSet,
+  fullScreenToggle,
+  selectTabs,
 } from '@/features/tabs/tabsSlice';
 import React, { useCallback, useMemo } from 'react';
 import {
-    CheckLg,
-    Copy,
-    Download,
-    Fullscreen,
-    FullscreenExit,
+  CheckLg,
+  Copy,
+  Download,
+  Fullscreen,
+  FullscreenExit,
 } from 'react-bootstrap-icons';
 import type { ITabElem } from './TabMain';
 import { TabKey } from './TabMainTabKeys';
 
 import { useAppDispatch } from '@/app/hooks';
 import { selectFileContent } from '@/features/fileContent/fileContentSlice';
-import domtoimage from 'dom-to-image';
+import {
+  copyTextToClipboard,
+  downloadDomAsImage,
+  getBaseName
+} from '@/utils/utils';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -86,11 +90,6 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
                 if (!tabelem) return;
 
                 switch (selectedTabkey) {
-                    case TabKey.EV3BDECOMPILED:
-                        textcontent = tabelem.code;
-                        navigator.clipboard.writeText(textcontent ?? '');
-                        break;
-
                     case TabKey.PREVIEW:
                     case TabKey.CALLGRAPH:
                         {
@@ -104,70 +103,24 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
                             let ext =
                                 selectedTabkey === TabKey.PREVIEW ? 'preview' : 'graph';
 
-                            domtoimage
-                                .toBlob(ref.current, {})
-                                .then((blob: Blob) => {
-                                    const dataUrl = URL.createObjectURL(blob); // Create a temporary URL for the image data
-
-                                    // Proceed with download using the temporary URL
-                                    let filebase = getBaseName(
-                                        fileContent.files[0].name,
-                                    );
-                                    if (fileContent.files.length > 1) {
-                                        filebase = `${filebase}_plus_${fileContent.files.length}_files`;
-                                    }
-                                    const link = document.createElement('a');
-                                    link.href = dataUrl;
-                                    link.download = `${filebase}_${ext}.png`;
-                                    link.click();
-
-                                    // Important: Release the object URL when it's no longer needed to avoid memory leaks
-                                    URL.revokeObjectURL(dataUrl); // Release the temporary URL after the download
-                                })
-                                .catch((error) => {
-                                    console.error('Error capturing image:', error);
-                                });
-
-                            // domtoimage
-                            //     .toPng(ref.current, {})
-                            //     .then((dataUrl: string) => {
-                            //         const link = document.createElement('a');
-                            //         link.href = dataUrl;
-                            //         link.download = `${getBaseName(filename)}_${ext}.png`;
-                            //         link.click();
-                            //         URL.revokeObjectURL(dataUrl);
-                            //     })
-                            //     .catch((error) => {
-                            //         console.error('Error capturing image:', error);
-                            //     });
-
-                            // // also put it to the clipboard
-                            // // this would be subject to animations and might not work
-                            // domtoimage.toBlob(ref.current, {}).then((data: Blob) => {
-                            //     // copy image to clipboard
-                            //     const data2: any = [
-                            //         new ClipboardItem({
-                            //             'image/png': data,
-                            //         }),
-                            //     ];
-                            //     navigator.clipboard.write(data2);
-                            // });
+                            const filebase =
+                                fileContent.files.length === 1
+                                    ? getBaseName(fileContent.files[0].name)
+                                    : `${getBaseName(fileContent.files[0].name)}_plus_${
+                                          fileContent.files.length
+                                      }_files`;
+                            const filename = `${filebase}_${ext}.png`;
+                            downloadDomAsImage(ref.current, filename);
                         }
                         break;
 
-                    default: {
-                        if (
-                            selectedTabkey === TabKey.PYCODE ||
-                            selectedTabkey === TabKey.PLAINCODE ||
-                            selectedTabkey === TabKey.AISUMMARY
-                        ) {
-                            if (tabelem) {
-                                textcontent = tabelem.code;
-                                navigator.clipboard.writeText(textcontent ?? '');
-                            }
-                        }
+                    default:
+                        // case TabKey.EV3BDECOMPILED:
+                        // case TabKey.PYCODE:
+                        // case TabKey.PLAINCODE:
+                        // case TabKey.AISUMMARY:
+                        copyTextToClipboard(tabelem.code);
                         break;
-                    }
                 }
             } catch (e) {
                 console.error('::ERROR::', e);
@@ -187,12 +140,6 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
             tabElems,
         ],
     );
-
-    const getBaseName = (filename: string): string => {
-        const lastDotIndex = filename.lastIndexOf('.');
-        const baseName = filename.substring(0, lastDotIndex);
-        return baseName;
-    };
 
     const getCopyIcon = useMemo(() => {
         if (copying) return <CheckLg />;
