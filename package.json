@@ -30,6 +30,7 @@
         "@hpcc-js/wasm-graphviz": "^1.10.0",
         "@netlify/functions": "^4.2.1",
         "@popperjs/core": "^2.11.8",
+        "@pybricks/mpy-cross-v6": "^2.0.0",
         "@reduxjs/toolkit": "^2.8.2",
         "@resvg/resvg-js": "^2.6.2",
         "@svgr/core": "^8.1.0",
@@ -60,6 +61,7 @@
         "ts-graphviz": "^3.0.0",
         "typed-redux-saga": "^1.5.0",
         "usehooks-ts": "^3.1.1",
+        "web-bluetooth": "^0.1.2",
         "web-vitals": "^5.0.3",
         "workbox-build": "^7.3.0",
         "workbox-window": "^7.3.0"
@@ -84,6 +86,7 @@
         "@types/react-syntax-highlighter": "^15.5.13",
         "@types/serviceworker": "^0.0.149",
         "@types/swagger-ui-react": "^5.18.0",
+        "@types/web-bluetooth": "^0.0.21",
         "@vitejs/plugin-react-swc": "^4.0.0",
         "babel-jest": "^30.0.5",
         "eslint": "^9.32.0",

@@ -1,4 +1,17 @@
 import {
+    selectConversion,
+    selectSvgContentData,
+    selectWeDo2PreviewData,
+} from '@/features/conversion/conversionSlice';
+import {
+    additionalCommentsCheckedSet,
+    copyingSet,
+    fullScreenSet,
+    fullScreenToggle,
+    selectTabs,
+} from '@/features/tabs/tabsSlice';
+import React, { useCallback, useMemo } from 'react';
+import {
     CheckLg,
     Copy,
     Download,
@@ -7,26 +20,15 @@ import {
 } from 'react-bootstrap-icons';
 import type { ITabElem } from './TabMain';
 import { TabKey } from './TabMainTabKeys';
-import React, { useCallback, useMemo } from 'react';
-import {
-    additionalCommentsCheckedSet,
-    copyingSet,
-    fullScreenSet,
-    fullScreenToggle,
-    selectTabs,
-} from '@/features/tabs/tabsSlice';
-import {
-    selectConversion,
-    selectSvgContentData,
-    selectWeDo2PreviewData,
-} from '@/features/conversion/conversionSlice';
 
-import Form from 'react-bootstrap/Form';
-import domtoimage from 'dom-to-image';
-import { selectFileContent } from '@/features/fileContent/fileContentSlice';
 import { useAppDispatch } from '@/app/hooks';
+import { selectFileContent } from '@/features/fileContent/fileContentSlice';
+import domtoimage from 'dom-to-image';
+import { Button } from 'react-bootstrap';
+import Form from 'react-bootstrap/Form';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useSelector } from 'react-redux';
+import PyblControls from './PyblControls';
 
 interface TabTopControlsProps {
     selectedTabkey: string;
@@ -242,7 +244,8 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
                         onChange={handleSetIsAdditionalCommentsChecked}
                     />
                 )}
-            <button
+            {TabKey.PYCODE === selectedTabkey && <PyblControls />}
+            <Button
                 className={`mini-button bg-white copy-button-${selectedTabkey} ${
                     copying ? 'success' : ''
                 }`}
@@ -250,8 +253,8 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
                 title="Copy code (ctrl+c)"
             >
                 {getCopyIcon}
-            </button>
-            <button
+            </Button>
+            <Button
                 className="mini-button bg-white"
                 onClick={(evt) => {
                     evt.preventDefault();
@@ -260,7 +263,7 @@ const TabTopControls: React.FC<TabTopControlsProps> = ({
                 title="Full screen (ctrl+f)"
             >
                 {fullScreen ? <FullscreenExit /> : <Fullscreen />}
-            </button>
+            </Button>
         </div>
     );
 

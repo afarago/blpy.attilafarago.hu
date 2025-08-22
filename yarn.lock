@@ -2758,6 +2758,11 @@
     tar-fs "^3.1.0"
     yargs "^17.7.2"
 
+"@pybricks/mpy-cross-v6@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@pybricks/mpy-cross-v6/-/mpy-cross-v6-2.0.0.tgz#e3a8445a7877d7b8945d83dd4e7d0696057d577d"
+  integrity sha512-DJqQgpAyoUR/myQCJFl27WxXfQavVx3nYLMOpEAuxXRcYyDebHLx4fsUOhLV+vK1LfEqeBpzAjMMSh2U4Q+dtA==
+
 "@react-aria/ssr@^3.5.0":
   version "3.9.10"
   resolved "https://registry.yarnpkg.com/@react-aria/ssr/-/ssr-3.9.10.tgz#7fdc09e811944ce0df1d7e713de1449abd7435e6"
@@ -4169,6 +4174,11 @@
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/@types/warning/-/warning-3.0.3.tgz#d1884c8cc4a426d1ac117ca2611bf333834c6798"
   integrity sha512-D1XC7WK8K+zZEveUPY+cf4+kgauk8N4eHr/XIHXGlGYkHLud6hK9lYfZk1ry1TNh798cZUCgb6MqGEG8DkJt6Q==
+
+"@types/web-bluetooth@^0.0.21":
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/@types/web-bluetooth/-/web-bluetooth-0.0.21.tgz#525433c784aed9b457aaa0ee3d92aeb71f346b63"
+  integrity sha512-oIQLCGWtcFZy2JW77j9k8nHzAOpqMHLQejDA48XXMWH6tjCQHz5RCFz1bzsmROyL6PUm+LLnUiI4BCn221inxA==
 
 "@types/yargs-parser@*":
   version "21.0.3"
@@ -14080,6 +14090,11 @@ wcwidth@^1.0.1:
   integrity sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==
   dependencies:
     defaults "^1.0.3"
+
+web-bluetooth@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/web-bluetooth/-/web-bluetooth-0.1.2.tgz#e1e81ab64534c6b26054da88c4c05ff3842864e4"
+  integrity sha512-EtSLjsfSWUqIWwqEHAtc21yJ0usgN/uFRo5TthPiORpdwWvM05nP98LZn+3NLzZFOJ+Q364hMuRwxaSNutCb9Q==
 
 web-streams-polyfill@^3.0.3:
   version "3.3.3"

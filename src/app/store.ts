@@ -1,11 +1,12 @@
 import aiSummaryReducer from '@/features/aiSummary/aiSummarySlice';
 import conversionReducer from '@/features/conversion/conversionSlice';
 import fileContentReducer from '@/features/fileContent/fileContentSlice';
-import { default as fileContentSaga } from '@/features/fileContent/sagas';
 import githubReducer from '@/features/github/githubSlice';
+import { pyblReducer } from '@/features/pyblight';
 import tabsReducer from '@/features/tabs/tabsSlice';
 import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
+import rootSaga from './sagas';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -16,6 +17,7 @@ const store = configureStore({
         tabs: tabsReducer,
         github: githubReducer,
         aiSummary: aiSummaryReducer,
+        pyblight: pyblReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
@@ -24,17 +26,25 @@ const store = configureStore({
                     'fileContent/fileContentSet',
                     'fileContent/fetchRepoContents/fulfilled',
                     'conversion/conversionSet',
+                    'ble/didConnectDevice',
+                    'compile/didCompiledMpy',
+                    'ble/didReadStatusReport',
                 ], //!! later //TODO: recheck
                 ignoredPaths: [
                     'fileContent.files',
                     'conversion.payload.content.topLevelStacks',
                     'conversion.payload.content.topblocks',
+                    'pyblight.compile.mpyBlob',
+                    'pyblight.ble.device',
+                    'pyblight.ble.connectedDevice',
+                    'pyblight.ble.server',
+                    'pyblight.ble.pybricksControlChar',
                 ],
             },
         }).prepend(sagaMiddleware),
 });
 
-sagaMiddleware.run(fileContentSaga);
+sagaMiddleware.run(rootSaga);
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type AppStore = typeof store;
