@@ -19,12 +19,11 @@ import TabLoading from './TabLoading';
 import { selectTabs } from './tabsSlice';
 // import SyntaxHighlighter from 'react-syntax-highlighter';
 import { useAppDispatch } from '@/app/hooks';
+import GroqSVG from '@/assets/img/groq.svg?react';
 import { useSelector } from 'react-redux';
 import { vs } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { selectAiSummary } from '../aiSummary/aiSummarySlice';
-
-const CallGraph = React.lazy(() => import('@/features/graph/CallGraph'));
-const GroqSVG = React.lazy(() => import('@/assets/img/groq.svg?react'));
+import CallGraph from '../graph/CallGraph';
 
 SyntaxHighlighter.registerLanguage('python', python);
 SyntaxHighlighter.registerLanguage('less', less);
@@ -169,11 +168,7 @@ const TabContents: React.FC<TabContentsProps> = ({
                                 {code}
                             </SyntaxHighlighter>
                         )}
-                    {genkey === TabKey.CALLGRAPH && (
-                        <Suspense fallback={<TabLoading />}>
-                            <CallGraph ref={graphRef} />
-                        </Suspense>
-                    )}
+                    {genkey === TabKey.CALLGRAPH && <CallGraph ref={graphRef} />}
                     {genkey === TabKey.PREVIEW &&
                         (svgContentData ? (
                             <div

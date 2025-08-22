@@ -24,7 +24,7 @@ import { TabKey } from './TabMainTabKeys';
 import { useAppDispatch } from '@/app/hooks';
 import { selectFileContent } from '@/features/fileContent/fileContentSlice';
 import domtoimage from 'dom-to-image';
-import { Button } from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useSelector } from 'react-redux';

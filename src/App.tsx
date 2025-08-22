@@ -7,8 +7,11 @@ import ReactGA from 'react-ga4';
 const AuthCallbackPage = lazy(() => import('./pages/AuthCallback'));
 const SwaggerPage = lazy(() => import('./pages/SwaggerPage'));
 
-const GA_TRACKING_ID = 'G-WRDV9368S9';
-ReactGA.initialize(GA_TRACKING_ID);
+const isDevEnvironment = process.env.NODE_ENV === 'development';
+if (!isDevEnvironment) {
+    const GA_TRACKING_ID = 'G-WRDV9368S9';
+    ReactGA.initialize(GA_TRACKING_ID);
+}
 // ReactGA.initialize(GA_TRACKING_ID, { gaOptions: { debug_mode: true, debug: true } });
 
 const App: React.FC = () => {

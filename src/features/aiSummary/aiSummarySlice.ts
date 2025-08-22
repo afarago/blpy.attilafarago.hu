@@ -36,12 +36,7 @@ export const fetchAiSummary = createAsyncThunk<
         const code = response.data as string;
         return code;
     } catch (err: any) {
-        return rejectWithValue(
-            err.response?.data?.error ||
-                JSON.stringify(err.response?.data) ||
-                err.message ||
-                'Network error',
-        );
+        return rejectWithValue('Error fetching AI summary');
     }
 });
 
