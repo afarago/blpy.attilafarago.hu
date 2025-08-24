@@ -12,6 +12,8 @@ interface TabsState {
     copying: boolean;
     toastContent?: ToastContent;
     additionalCommentsChecked: boolean;
+    selectedTab?: string;
+    selectedSubTab?: string;
 }
 
 const initialState: TabsState = {
@@ -40,6 +42,12 @@ const tabsSlice = createSlice({
         additionalCommentsCheckedSet: (state, action: PayloadAction<boolean>) => {
             state.additionalCommentsChecked = action.payload;
         },
+        selectedTabSet: (state, action: PayloadAction<string | undefined>) => {
+            state.selectedTab = action.payload;
+        },
+        selectedSubTabSet: (state, action: PayloadAction<string | undefined>) => {
+            state.selectedSubTab = action.payload;
+        }
     },
 });
 
@@ -50,6 +58,8 @@ export const {
     copyingSet,
     toastContentSet,
     additionalCommentsCheckedSet,
+    selectedTabSet,
+    selectedSubTabSet,
 } = tabsSlice.actions;
 
 // Selectors (for accessing state in components)

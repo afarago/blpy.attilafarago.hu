@@ -1,13 +1,14 @@
+import React, { useEffect } from 'react';
 import type { ITabElem } from './TabMain';
 import { TabKey } from './TabMainTabKeys';
-import React, { useEffect } from 'react';
 
+import { useAppDispatch } from '@/app/hooks';
 import BrandLogo from '@/features/header/BrandLogo';
 import Nav from 'react-bootstrap/Nav';
 import ReactGA from 'react-ga4';
-import { selectTabs } from './tabsSlice';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useSelector } from 'react-redux';
+import { selectedSubTabSet, selectedTabSet, selectTabs } from './tabsSlice';
 
 interface TabHeadersProps {
     selectedTabkey: string;
@@ -24,6 +25,7 @@ const TabHeaders: React.FC<TabHeadersProps> = ({
     setSelectedSubTabkey,
     tabElems,
 }) => {
+    const dispatch = useAppDispatch();
     const { fullScreen } = useSelector(selectTabs);
 
     useHotkeys('control+1', () => setSelectedTabkey(TabKey.PLAINCODE));
@@ -63,6 +65,14 @@ const TabHeaders: React.FC<TabHeadersProps> = ({
             }
         }
     }, [tabElems, selectedTabkey, selectedSubTabkey]);
+
+    useEffect(() => {
+        dispatch(selectedTabSet(selectedTabkey));
+    }, [selectedTabkey]);
+
+    useEffect(() => {
+        dispatch(selectedSubTabSet(selectedSubTabkey));
+    }, [selectedSubTabkey]);
 
     return (
         <Nav variant="tabs" className="px-0">
