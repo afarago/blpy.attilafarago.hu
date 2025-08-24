@@ -1,3 +1,5 @@
+import './polyfills/bleWritePolyfill';
+
 import { combineReducers } from '@reduxjs/toolkit';
 import { compileAndUploadAndRun } from './sagas/compileAndUploadSaga';
 import ble, { bleSlice } from './slices/ble';

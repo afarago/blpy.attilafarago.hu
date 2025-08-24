@@ -17,7 +17,7 @@ function* handleStartUserProgram(
     try {
         const startCommand = createStartUserProgramCommand(slot);
         const startCommandBuffer = new Uint8Array(startCommand);
-        yield* call(() => pybricksControlChar?.writeValue(startCommandBuffer));
+        yield* call(() => pybricksControlChar?.writeValueWithResponse(startCommandBuffer));
     } catch {
         // NOOP
     }
@@ -31,7 +31,7 @@ function* handleStopUserProgram(
     try {
         const stopCommand = createStopUserProgramCommand();
         const stopCommandBuffer = new Uint8Array(stopCommand);
-        yield* call(() => pybricksControlChar?.writeValue(stopCommandBuffer));
+        yield* call(() => pybricksControlChar?.writeValueWithResponse(stopCommandBuffer));
     } catch {
         // NOOP
     }

@@ -160,7 +160,9 @@ function* handleDisconnectBle() {
     }
     try {
         if (pybricksControlChar) {
-            yield* call(() => pybricksControlChar.writeValue(new Uint8Array([0x00])));
+            yield* call(() =>
+                pybricksControlChar.writeValueWithResponse(new Uint8Array([0x00])),
+            );
             //pybricksControlChar.removeEventListener(
             yield* call(() => pybricksControlChar.stopNotifications());
         }

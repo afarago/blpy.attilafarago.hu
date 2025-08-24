@@ -11,6 +11,7 @@ import { getBleState, getHubState } from '../pyblight/selectors';
 import { BleStatus } from '../pyblight/slices/ble';
 import { CompileInput } from '../pyblight/slices/compile';
 import { HubStatus } from '../pyblight/slices/hub';
+import { isBluetoothAvailable } from '../pyblight/utils/bluetoothAvailable';
 import { selectTabs } from './tabsSlice';
 
 const PyblControls: React.FC = () => {
@@ -72,35 +73,37 @@ const PyblControls: React.FC = () => {
     );
 
     return (
-        <>
-            <Button
-                className="mini-button bg-white"
-                title="connect"
-                onClick={handlePyblConnect}
-            >
-                {/* rgb(255, 213, 0) */}
-                {isBleConnected ? <XCircle /> : <HubSmall width="16" height="20" />}
-            </Button>
-            {input?.length && (
+        isBluetoothAvailable() && (
+            <>
                 <Button
                     className="mini-button bg-white"
-                    title="compile and upload"
-                    onClick={handlePyblCompileAndUpload}
+                    title="connect"
+                    onClick={handlePyblConnect}
+                >
+                    {/* rgb(255, 213, 0) */}
+                    {isBleConnected ? <XCircle /> : <HubSmall width="16" height="20" />}
+                </Button>
+                {input?.length && (
+                    <Button
+                        className="mini-button bg-white"
+                        title="compile and upload"
+                        onClick={handlePyblCompileAndUpload}
+                        disabled={!isBleConnected}
+                    >
+                        <Upload />
+                    </Button>
+                )}
+                <Button
+                    className="mini-button bg-white"
+                    title="start or stop the user program"
+                    onClick={handlePyblStartStopUserProgram}
+                    data-start-param={isUserProgramRunning ? 'false' : 'true'}
                     disabled={!isBleConnected}
                 >
-                    <Upload />
+                    {isUserProgramRunning ? <Stop /> : <Play />}
                 </Button>
-            )}
-            <Button
-                className="mini-button bg-white"
-                title="start or stop the user program"
-                onClick={handlePyblStartStopUserProgram}
-                data-start-param={isUserProgramRunning ? 'false' : 'true'}
-                disabled={!isBleConnected}
-            >
-                {isUserProgramRunning ? <Stop /> : <Play />}
-            </Button>
-        </>
+            </>
+        )
     );
 };
 
