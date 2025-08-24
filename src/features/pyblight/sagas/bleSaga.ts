@@ -1,7 +1,17 @@
-import { eventChannel, type EventChannel } from 'redux-saga';
-import { call, fork, put, select, take, takeEvery } from 'typed-redux-saga';
+import { buffers, eventChannel, type Task } from 'redux-saga';
+import {
+    call,
+    cancel,
+    fork,
+    put,
+    race,
+    select,
+    take,
+    takeEvery,
+} from 'typed-redux-saga';
+import { delay } from 'redux-saga/effects';
 import { getBleState } from '../selectors';
-import { bleSlice } from '../slices/ble';
+import { bleSlice, disconnectBle } from '../slices/ble';
 import {
     decodePnpId,
     deviceInformationServiceUUID,
@@ -15,8 +25,9 @@ import {
 } from './util/hardware';
 import { EventType, getEventType, parseStatusReport } from './util/protocol';
 
-function* handleConnectBle() {
+function* handleConnectBle(action: ReturnType<typeof bleSlice.actions.connectBle>) {
     const decoder = new TextDecoder();
+    const allowAutoReconnect = !!action.payload;
 
     if (navigator.bluetooth === undefined) {
         yield* put(bleSlice.actions.didFailToConnectBle('WebBluetooth not supported'));
@@ -27,19 +38,60 @@ function* handleConnectBle() {
         return;
     }
 
+    const tasks = new Array<Task>();
+    const defer = new Array<() => void>();
+
     try {
-        const device: BluetoothDevice = yield* call(() =>
-            navigator.bluetooth.requestDevice({
-                filters: [{ services: [pybricksServiceUUID] }],
-                optionalServices: [pybricksServiceUUID, deviceInformationServiceUUID],
-            }),
-        );
+        // Try known devices first if allowed
+        let device: BluetoothDevice | null = null;
+        if (allowAutoReconnect && navigator.bluetooth.getDevices) {
+            const knownDevices: BluetoothDevice[] = yield* call(() =>
+                navigator.bluetooth.getDevices(),
+            );
+            for (const knownDevice of knownDevices) {
+                try {
+                    if (!knownDevice.gatt?.connected) {
+                        // Race connection vs 200ms timeout
+                        const { connected } = yield* race({
+                            connected: call(() => knownDevice.gatt?.connect()),
+                            timeout: delay(200),
+                        });
+                        if (!connected) {
+                            // Timed out, try next device
+                            continue;
+                        }
+                    }
+                    device = knownDevice;
+                    break; // Stop at first successful connection
+                } catch {
+                    // If connection fails, try next device
+                    continue;
+                }
+            }
+        }
+
+        // If no known device connected, prompt user
+        if (!device) {
+            device = yield* call(() =>
+                navigator.bluetooth.requestDevice({
+                    filters: [{ services: [pybricksServiceUUID] }],
+                    optionalServices: [
+                        pybricksServiceUUID,
+                        deviceInformationServiceUUID,
+                    ],
+                }),
+            );
+        }
+
         yield* put(bleSlice.actions.didReadName(device.name || 'Unknown'));
 
-        const onDisconnected = function () {
-            // This will be handled by didDisconnectBle action
-        };
-        device.addEventListener('gattserverdisconnected', onDisconnected);
+        const disconnectChannel = eventChannel<Event>((emit) => {
+            device.addEventListener('gattserverdisconnected', emit);
+            return (): void =>
+                device.removeEventListener('gattserverdisconnected', emit);
+        }, buffers.sliding(1));
+
+        defer.push(() => disconnectChannel.close());
 
         const gatt = device.gatt;
         if (!gatt) {
@@ -47,14 +99,12 @@ function* handleConnectBle() {
             return;
         }
         const server = yield* call(() => gatt.connect());
+        // on failure: disconnectChannel.close();
         const deviceInfoService = yield* call(() =>
             server.getPrimaryService(deviceInformationServiceUUID),
         );
         const pybricksService = yield* call(() =>
             server.getPrimaryService(pybricksServiceUUID),
-        );
-        const pybricksControlChar = yield* call(() =>
-            pybricksService.getCharacteristic(pybricksControlEventCharacteristicUUID),
         );
 
         // const uartService = yield* call(() =>
@@ -130,11 +180,16 @@ function* handleConnectBle() {
             // NOOP
         }
 
-        // Watch characteristic changes
-        yield* fork(watchPybricksControlCharacteristic, pybricksControlChar);
+        // Subscribe to Pybricks Control characteristic
+        const pybricksControlChar = yield* subscribeToPybricksControl(
+            pybricksService,
+            defer,
+            tasks,
+        );
 
-        // Start notifications
-        yield* call(() => pybricksControlChar.startNotifications());
+        // TODO: Nordic UART (for testing with nRF Connect)
+        //tasks.push(yield* takeEvery(writeUart, handleWriteUart, uartRxChar));
+
         yield* put(
             bleSlice.actions.didConnectDevice({
                 device,
@@ -143,12 +198,76 @@ function* handleConnectBle() {
             }),
         );
 
+        // Handle disconnect requests
+        const handleDisconnectRequest = function* (): Generator {
+            yield* take(disconnectBle);
+
+            yield* call(handleDisconnectBle);
+        };
+
+        // fork a dedicated task to handle disconnect requests
+        yield* fork(handleDisconnectRequest);
+
+        // wait for disconnection
+        yield* take(disconnectChannel);
+
+        // cleanup
+        yield* put(bleSlice.actions.didDisconnectBle());
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         yield* put(
             bleSlice.actions.didFailToConnectBle(error?.message || 'Unknown error'),
         );
+    } finally {
+        yield* cancel(tasks);
+
+        while (defer.length > 0) {
+            defer.pop()?.();
+        }
     }
+}
+
+function* subscribeToPybricksControl(
+    pybricksService: BluetoothRemoteGATTService,
+    defer: (() => void)[],
+    tasks: Task[],
+) {
+    const pybricksControlChar = yield* call(() =>
+        pybricksService.getCharacteristic(pybricksControlEventCharacteristicUUID),
+    );
+
+    const pybricksControlChannel = eventChannel<DataView>((emit) => {
+        const listener = (): void => {
+            if (!pybricksControlChar.value) {
+                return;
+            }
+            emit(pybricksControlChar.value);
+        };
+
+        pybricksControlChar.addEventListener('characteristicvaluechanged', listener);
+
+        return (): void =>
+            pybricksControlChar.removeEventListener(
+                'characteristicvaluechanged',
+                listener,
+            );
+    });
+
+    const handlePybricksControlValueChanged =
+        createPybricksControlValueChangedHandler();
+    defer.push(() => pybricksControlChannel.close());
+    tasks.push(
+        yield* takeEvery(pybricksControlChannel, handlePybricksControlValueChanged),
+    );
+
+    // tasks.push(
+    //     yield* takeEvery(writeCommand, handleWriteCommand, pybricksControlChar),
+    // );
+
+    // Start notifications
+    yield* call(() => pybricksControlChar.startNotifications());
+    return pybricksControlChar;
 }
 
 function* handleDisconnectBle() {
@@ -173,65 +292,32 @@ function* handleDisconnectBle() {
     }
 }
 
-// Helper to create the channel
-function createCharacteristicChannel(char: BluetoothRemoteGATTCharacteristic) {
-    return eventChannel((emit) => {
-        const handler = (event: Event) => {
-            emit(event);
-        };
-        char.addEventListener('characteristicvaluechanged', handler);
-        return () => {
-            char.removeEventListener('characteristicvaluechanged', handler);
-        };
-    });
-}
-
-function* watchPybricksControlCharacteristic(
-    characteristic: BluetoothRemoteGATTCharacteristic,
-) {
-    // Create a channel to listen for events
-    const decoder = new TextDecoder();
-    const chan: EventChannel<Event> = yield call(
-        createCharacteristicChannel,
-        characteristic,
-    );
+function createPybricksControlValueChangedHandler() {
     let msgStdoutBuffer = '';
-    try {
-        while (true) {
-            const event: Event = yield take(chan);
-            const value = (event.target as BluetoothRemoteGATTCharacteristic).value;
-            if (value) {
-                const dview = new DataView(value.buffer);
-                const responseType = getEventType(dview);
-                const message = new Uint8Array(
-                    value.buffer,
-                    value.byteOffset + 1,
-                    value.byteLength - 1,
-                );
-                switch (responseType) {
-                    // case EventType.WriteAppData:
-                    case EventType.WriteStdout: {
-                        const commandData = decoder.decode(message);
-                        msgStdoutBuffer += commandData;
-                        break;
-                    }
-                    case EventType.StatusReport: {
-                        const status = parseStatusReport(dview);
-                        yield put(bleSlice.actions.didReadStatusReport(status));
-
-                        if (msgStdoutBuffer.length) {
-                            yield put(
-                                bleSlice.actions.didReceiveWriteStdout(msgStdoutBuffer),
-                            );
-                            msgStdoutBuffer = '';
-                        }
-                    }
+    return function* handlePybricksControlValueChanged(data: DataView): Generator {
+        const decoder = new TextDecoder();
+        const responseType = getEventType(data);
+        const message = new Uint8Array(
+            data.buffer,
+            data.byteOffset + 1,
+            data.byteLength - 1,
+        );
+        switch (responseType) {
+            case EventType.WriteStdout: {
+                const commandData = decoder.decode(message);
+                msgStdoutBuffer += commandData;
+                break;
+            }
+            case EventType.StatusReport: {
+                const status = parseStatusReport(data);
+                yield put(bleSlice.actions.didReadStatusReport(status));
+                if (msgStdoutBuffer.length) {
+                    yield put(bleSlice.actions.didReceiveWriteStdout(msgStdoutBuffer));
+                    msgStdoutBuffer = '';
                 }
             }
         }
-    } finally {
-        chan.close();
-    }
+    };
 }
 
 export function* bleSaga() {

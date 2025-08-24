@@ -48,7 +48,9 @@ const PyblControls: React.FC = () => {
 
     const handlePyblConnect = useCallback(() => {
         if (!isBleConnected) {
-            dispatch(pyblActions.connectBle());
+            // Allow auto-reconnect to known devices - skip if shift is held
+            const enableAutoReconnect = !(window.event as MouseEvent)?.shiftKey;
+            dispatch(pyblActions.connectBle(enableAutoReconnect));
         } else {
             dispatch(pyblActions.disconnectBle());
         }

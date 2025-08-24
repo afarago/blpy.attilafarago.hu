@@ -39,7 +39,8 @@ export const bleSlice = createSlice({
     name: 'ble',
     initialState,
     reducers: {
-        connectBle: (state) => {
+        connectBle: (state, _action: PayloadAction<boolean | undefined>) => {
+            // param: whether to allow auto-reconnect to known devices
             state.status = BleStatus.Connecting;
         },
         disconnectBle: (state) => {

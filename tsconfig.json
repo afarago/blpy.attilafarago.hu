@@ -6,15 +6,22 @@
         "skipLibCheck": true,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
-        "strict": true,
         "forceConsistentCasingInFileNames": true,
-        "noFallthroughCasesInSwitch": true,
         "module": "es2020", //todo check
         "moduleResolution": "node",
         "resolveJsonModule": true,
         "isolatedModules": true,
         "noEmit": true,
         "jsx": "react-jsx",
+
+        /* Linting */
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "erasableSyntaxOnly": false,
+        "noFallthroughCasesInSwitch": true,
+        "noUncheckedSideEffectImports": true,
+
         "baseUrl": "./src",
         "paths": {
             "@/*": ["*"],
