@@ -50,16 +50,16 @@ const AppContent: React.FC = () => {
                 autohide
                 className="position-fixed top-0 end-0 mt-2 me-2"
             >
-                <Toast.Header>
-                    <img
-                        src="/favicon/favicon-48x48.png"
-                        className="rounded me-2"
-                        aria-hidden
-                    />
-                    <span className="me-auto">
-                        {toastContent?.header ?? 'Conversion Error'}
-                    </span>
-                </Toast.Header>
+                {toastContent?.title && (
+                    <Toast.Header>
+                        <img
+                            src="/favicon/favicon-48x48.png"
+                            className="rounded me-2"
+                            aria-hidden
+                        />
+                        <span className="me-auto">{toastContent.title}</span>
+                    </Toast.Header>
+                )}
                 <Toast.Body>
                     <>
                         {toastContent?.body.map((line) => (

@@ -59,7 +59,7 @@ function* handleFileContentSet(action: ReturnType<typeof fileContentSet>) {
             toastContentSet(
                 logsUnique?.length
                     ? {
-                          header: 'Conversion Success',
+                          title: 'Conversion Success',
                           body: [
                               'Conversion succeeded, but generated warnings',
                               ...logsUnique.map((line) => '* ' + line),
@@ -84,7 +84,7 @@ function* handleFileContentSet(action: ReturnType<typeof fileContentSet>) {
         console.error('Error converting project to Python:', error);
         yield* put(
             toastContentSet({
-                header: 'Conversion Error',
+                title: 'Conversion Error',
                 body: [
                     error instanceof Error
                         ? error.message

@@ -3,10 +3,10 @@ import conversionReducer from '@/features/conversion/conversionSlice';
 import fileContentReducer from '@/features/fileContent/fileContentSlice';
 import githubReducer from '@/features/github/githubSlice';
 import { pyblReducer } from '@/features/pyblight';
+import rootSaga from '@/features/rootSaga';
 import tabsReducer from '@/features/tabs/tabsSlice';
 import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
-import rootSaga from './sagas';
 
 const sagaMiddleware = createSagaMiddleware();
 

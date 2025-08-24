@@ -185,6 +185,7 @@ export const fetchFileContent = createAsyncThunk(
                         'Oops! Something went wrong while fetching the file. Please try again later.',
                         String(error),
                     ],
+                    title: 'Conversion Error',
                 }),
             );
             dispatch(fileContentReset());
@@ -236,6 +237,7 @@ export const fetchRepoContents = createAsyncThunk(
                         'Oops! Something went wrong while fetching the repository. Please try again later.',
                         String(error),
                     ],
+                    title: 'Conversion Error',
                 }),
             );
             dispatch(fileContentReset());

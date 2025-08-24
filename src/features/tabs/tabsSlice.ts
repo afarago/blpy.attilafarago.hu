@@ -3,7 +3,7 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '@/app/store';
 
 interface ToastContent {
-    header?: string;
+    title?: string;
     body: string[];
 }
 
