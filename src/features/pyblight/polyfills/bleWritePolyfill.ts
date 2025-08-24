@@ -1,6 +1,8 @@
 // Polyfill for writeValueWithResponse and writeValueWithoutResponse
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 if (typeof (window as any).BluetoothRemoteGATTCharacteristic !== 'undefined') {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const proto = (window as any).BluetoothRemoteGATTCharacteristic.prototype as any;
 
     if (!proto.writeValueWithResponse) {
@@ -10,7 +12,9 @@ if (typeof (window as any).BluetoothRemoteGATTCharacteristic !== 'undefined') {
                 return this.writeValue(value);
             }
             return Promise.reject(
-                new Error('writeValueWithResponse and writeValue are not supported on this device')
+                new Error(
+                    'writeValueWithResponse and writeValue are not supported on this device',
+                ),
             );
         };
     }
@@ -22,7 +26,9 @@ if (typeof (window as any).BluetoothRemoteGATTCharacteristic !== 'undefined') {
                 return this.writeValue(value);
             }
             return Promise.reject(
-                new Error('writeValueWithoutResponse and writeValue are not supported on this device')
+                new Error(
+                    'writeValueWithoutResponse and writeValue are not supported on this device',
+                ),
             );
         };
     }
