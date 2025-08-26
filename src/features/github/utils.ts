@@ -1,5 +1,5 @@
-import axios from 'axios';
 import { supportsExtension } from '@/features/conversion/blpyutil';
+import axios from 'axios';
 
 export const GITHUB_API_URL = 'https://api.github.com';
 export const GITHUB_DOMAIN = 'github.com';
@@ -157,7 +157,7 @@ async function fetchGitHubFile(
     path = pathParts.join('/');
 
     const url2 = useBackendProxy
-        ? `/.netlify/functions/github-raw?owner=${owner}&repo=${repo}&path=${item.path}&branch=${ref}`
+        ? `/api/github-raw?owner=${owner}&repo=${repo}&path=${item.path}&branch=${ref}`
         : item.download_url;
     const fileResponse = await axios.get(url2, {
         responseType: 'blob',

@@ -7,7 +7,13 @@ import {
 } from './utils';
 
 import { RootState } from '@/app/store';
+import {
+    isElectronEnvironment,
+    isNetlifyEnvironment,
+    PROD_URL,
+} from '@/utils/api-config';
 import axios from 'axios';
+import { ElectronAPI } from '@/preload';
 
 interface GithubAuthState {
     token: string | null;
@@ -27,7 +33,7 @@ const initialState: GithubAuthState = {
     repositoriesSearch: [],
     user: null,
     loading: false,
-    hasAuthProxy: (import.meta as any).env.VITE_NETLIFY?.toString() === 'true',
+    hasAuthProxy: isNetlifyEnvironment() || isElectronEnvironment(),
 };
 
 try {
@@ -109,73 +115,118 @@ export const authenticateGithub = createAsyncThunk(
     async (_, { dispatch, rejectWithValue }) => {
         try {
             // 1. start the login process
-            const clientId = (import.meta as any).env.VITE_GITHUB_CLIENT_ID; // vite provides env this on compile time
+            const clientId = import.meta.env.VITE_GITHUB_CLIENT_ID; // vite provides env this on compile time
             if (!clientId) {
                 return rejectWithValue('Missing GitHub client ID');
             }
 
-            const redirectUri = `${window.location.origin}/auth-callback`;
+            // 2. open the auth window and wait for the token
+            /*
+              In Electron, we will use the custom protocol handler and listen for the 'oauth-callback' event
+              In browser, we will open a new window and listen for the redirect
+              Both will use the same redirect URI, which is registered in the GitHub OAuth app
+              For Electron, the redirect URI is the productive server that forwards thourgh the AuthWindow calls blpyapp://auth-callback
+              For browser, the redirect URI is: https://<your-domain>/auth-callback
+              We will also use a state parameter to prevent CSRF attacks
+              The state will be a random string, which we will verify when we receive the callback
+              The redirect URI will also include a parameter to indicate if we are in Electron or not
+            */
+            const baseURL = !isElectronEnvironment()
+                ? window.location.origin
+                : PROD_URL;
+            const redirectUri = `${baseURL}/auth-callback${
+                isElectronEnvironment() ? '?electron=true' : ''
+            }`;
             const scope = 'user,repo,read:org,gist';
-            // const scope = 'read:user,read:org,repo';
             // const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
             // crypto is only available in https secure contexts
-            const state =
+            const seed =
                 typeof crypto?.randomUUID === 'function'
                     ? crypto.randomUUID()
                     : Math.random().toString(36).substring(2);
-            const params = new URLSearchParams({
-                client_id: clientId,
+            const statePayload = {
+                seed,
+                scope,
                 redirect_uri: redirectUri,
-                scope: scope,
-                state: state,
-            });
-            const authUrl = `https://github.com/login/oauth/authorize?${params.toString()}`;
-            const authWindow = window.open(authUrl, '_blank', 'width=768,height=768');
+            };
+            const state = encodeURIComponent(btoa(JSON.stringify(statePayload)));
 
-            // 2. open auth window and check for the authorization code
-            const code = await new Promise<string>((resolve, reject) => {
+            // 3. open the auth window and wait for the token
+            const token = await new Promise<string>((resolve, reject) => {
+                let unsubscribeElecronCallback: (() => void) | undefined;
+                const isElectron = isElectronEnvironment();
+
+                // Always open the window before starting the interval
+                const params = new URLSearchParams({
+                    client_id: clientId,
+                    redirect_uri: redirectUri,
+                    scope: scope,
+                    state: state,
+                });
+                const authUrl = `https://github.com/login/oauth/authorize?${params.toString()}`;
+                const authWindow = window.open(
+                    authUrl,
+                    '_blank',
+                    'width=768,height=768',
+                );
+
+                // Always check for window closed
                 const checkWindowClosed = setInterval(() => {
-                    try {
-                        const params = new URLSearchParams(authWindow?.location.search);
-                        const code = params.get('code');
-                        const state2 = params.get('state');
-                        if (code) {
-                            if (state !== state2) {
-                                reject(new Error('CSRF validation failed'));
+                    if (!authWindow) return;
+
+                    if (authWindow.closed) {
+                        clearInterval(checkWindowClosed);
+                        if (isElectron) unsubscribeElecronCallback?.();
+                        reject(new Error('Window closed without authentication'));
+                    }
+                    // In browser, also check for token in URL
+                    if (!isElectron) {
+                        try {
+                            const params = new URLSearchParams(
+                                authWindow.location.search,
+                            );
+                            const state2 = params.get('state');
+                            const token = params.get('access_token');
+                            if (token) {
+                                clearInterval(checkWindowClosed);
+                                if (state !== state2) {
+                                    reject(new Error('CSRF validation failed'));
+                                } else {
+                                    authWindow.close();
+                                    resolve(token);
+                                }
                             }
-                            clearInterval(checkWindowClosed);
-                            authWindow?.close();
-                            resolve(code);
-                        } else if (authWindow?.closed) {
-                            clearInterval(checkWindowClosed);
-                            reject(new Error('Window closed without authentication'));
-                        }
-                    } catch (error) {
-                        if (authWindow?.closed) {
-                            clearInterval(checkWindowClosed);
-                            reject(new Error('Window closed without authentication'));
+                        } catch (error) {
+                            // Ignore cross-origin errors until window is closed
+                            console.error('Error checking auth window URL:', error);
                         }
                     }
                 }, 1000);
+
+                // In Electron, listen for the IPC event
+                if (isElectron) {
+                    unsubscribeElecronCallback =
+                        window.electronAPI.onAuthCodeUrlReceived((url: any) => {
+                            const params = new URLSearchParams(new URL(url).search);
+                            const token = params.get('token');
+                            const state2 = params.get('state');
+                            if (token) {
+                                if (state !== state2) {
+                                    clearInterval(checkWindowClosed);
+                                    unsubscribeElecronCallback?.();
+                                    reject(new Error('CSRF validation failed'));
+                                    return;
+                                }
+                                clearInterval(checkWindowClosed);
+                                unsubscribeElecronCallback?.();
+                                authWindow?.close();
+                                resolve(token);
+                            }
+                        });
+                }
             });
 
-            // 3. exchange the authorization code for an access token
-            const response = await axios.post(
-                '/.netlify/functions/github-token',
-                {
-                    code: code,
-                    scope: scope,
-                    redirect_uri: redirectUri,
-                },
-                {
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                },
-            );
-
-            // 4. save the token
-            const token = response.data.accessToken as string;
-
-            // 5. get the user data
+            // 4. get the user data
             const userResponse = await axios.get(`${GITHUB_API_URL}/user`, {
                 headers: {
                     Authorization: `Bearer ${token}`,

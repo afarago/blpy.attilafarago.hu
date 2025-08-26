@@ -378,12 +378,12 @@ export default defineConfig(({ command }) => {
         css: {
             preprocessorOptions: {
                 scss: {
-                    // silenceDeprecations: [
-                    //   "mixed-decls",
-                    //   "color-functions",
-                    //   "global-builtin",
-                    //   "import",
-                    // ],
+                    silenceDeprecations: [
+                        'mixed-decls',
+                        'color-functions',
+                        'global-builtin',
+                        'import',
+                    ],
                     quietDeps: true,
                 },
             },

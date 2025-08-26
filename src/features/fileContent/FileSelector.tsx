@@ -335,45 +335,45 @@ export default FileSelector;
 
 const EXAMPLES = [
     {
-        files: ['/samples/demo_cityshaper_cranemission.llsp3'],
+        files: ['./samples/demo_cityshaper_cranemission.llsp3'],
         label: 'SPIKE',
         icon: 'spike',
     },
     {
-        files: ['/samples/demo_iconblocks.llsp3'],
+        files: ['./samples/demo_iconblocks.llsp3'],
         label: 'SPIKE icon blocks',
         icon: 'spike',
     },
     {
-        files: ['/samples/demo_cityshaper_cranemission.lms'],
+        files: ['./samples/demo_cityshaper_cranemission.lms'],
         label: 'RobotInventor',
         icon: 'robotinventor',
     },
     {
-        files: ['/samples/demo_cityshaper_cranemission.lmsp'],
+        files: ['./samples/demo_cityshaper_cranemission.lmsp'],
         label: 'EV3Classroom',
         icon: 'ev3classroom',
     },
     {
-        files: ['/samples/demo_cityshaper_cranemission.ev3'],
+        files: ['./samples/demo_cityshaper_cranemission.ev3'],
         label: 'EV3Lab',
         icon: 'ev3g',
     },
     {
-        files: ['/samples/demo_cityshaper_cranemission.rbf'],
+        files: ['./samples/demo_cityshaper_cranemission.rbf'],
         label: 'EV3Lab binary',
         icon: 'ev3b',
     },
     {
         files: [
-            '/samples/demo_cityshaper_cranemission_wedo2.proj',
-            '/samples/demo_cityshaper_cranemission_wedo2_lobbypreview.jpg',
+            './samples/demo_cityshaper_cranemission_wedo2.proj',
+            './samples/demo_cityshaper_cranemission_wedo2_lobbypreview.jpg',
         ],
         label: 'WeDo2',
         icon: 'wedo2',
     },
     {
-        files: ['/samples/demo_cityshaper_cranemission.py'],
+        files: ['./samples/demo_cityshaper_cranemission.py'],
         label: 'Pybricks Python',
         icon: 'pybricks',
     },

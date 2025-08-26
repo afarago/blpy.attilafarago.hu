@@ -5,7 +5,9 @@ import Home from './pages/Home';
 import ReactGA from 'react-ga4';
 
 const AuthCallbackPage = lazy(() => import('./pages/AuthCallback'));
-const SwaggerPage = lazy(() => import('./pages/SwaggerPage'));
+// const SwaggerPage = lazy(() => import('./pages/SwaggerPage'));
+// TODO: SwaggerPage removed temporarily, add it back if needed
+// TODO: re-add swagger-ui-react, @types/swagger-ui-react later
 
 const isDevEnvironment = process.env.NODE_ENV === 'development';
 if (!isDevEnvironment) {
@@ -19,7 +21,7 @@ const App: React.FC = () => {
         <Router>
             <Routes>
                 <Route path="/auth-callback" element={<AuthCallbackPage />} />
-                <Route path="/api" element={<SwaggerPage />} />
+                {/* <Route path="/api" element={<SwaggerPage />} /> */}
                 <Route index path="/*" element={<Home />} />
             </Routes>
         </Router>

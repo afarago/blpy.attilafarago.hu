@@ -1,4 +1,5 @@
 import { RootState } from '@/app/store';
+import { isElectronEnvironment, postData } from '@/utils/api-config';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
@@ -22,21 +23,17 @@ export const fetchAiSummary = createAsyncThunk<
     { rejectValue: string }
 >('aiSummary/fetchAiSummary', async ({ pseudocode, pycode }, { rejectWithValue }) => {
     try {
-        const response = await axios.post(
-            '/api/summarize-code',
-            // { pseudocode, pycode },
-            pseudocode ? { pseudocode } : { pycode },
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                },
-            },
-        );
-        const code = response.data as string;
-        return code;
+        const headers = {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+        };
+        const body = pseudocode ? { pseudocode } : { pycode };
+        // const data = await axios.post('/api/summarize-code', body, { headers });
+        //const data = await axios.post('/api/summarize-code', body, { headers });
+        const data = await postData('/api/summarize-code', body, { headers });
+        return data;
     } catch (err: any) {
-        return rejectWithValue('Error fetching AI summary');
+        return rejectWithValue('Error fetching AI summary') as any;
     }
 });
 
