@@ -13,6 +13,13 @@
         "isDefault": true
       },
       "label": "tsc: watch - tsconfig.json"
+    },
+    {
+      "label": "tsc: build",
+      "type": "shell",
+      "command": "tsc", // Or your TypeScript build command (e.g., "npm run build")
+      "problemMatcher": "$tsc", // For error reporting
+      "group": "build"
     }
   ]
 }

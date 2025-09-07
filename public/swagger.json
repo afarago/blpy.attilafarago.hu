@@ -1,0 +1,445 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "BlocklyPy Functions API",
+        "version": "1.0.0",
+        "description": "API documentation for the Netlify Functions used by the BlocklyPy application."
+    },
+    "servers": [
+        {
+            "url": "https://blpy.attilafarago.hu/api",
+            "description": "base URL"
+        }
+    ],
+    "paths": {
+        "/convert/plain": {
+            "get": {
+                "summary": "Converts a sample file to plain text.",
+                "description": "Fetches a built-in sample file and converts its content to plain text code.",
+                "parameters": [
+                    {
+                        "name": "file",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "demo_cityshaper_cranemission.lms",
+                                "demo_cityshaper_cranemission.llsp",
+                                "demo_cityshaper_cranemission.llsp3",
+                                "demo_cityshaper_cranemission.lmsp",
+                                "demo_cityshaper_cranemission.ev3",
+                                "demo_cityshaper_cranemission.rbf",
+                                "demo_cityshaper_cranemission_wedo2.proj"
+                            ]
+                        },
+                        "description": "The name of the sample file to convert."
+                    },
+                    {
+                        "name": "comments",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "description": "Include additional comments in the output."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful conversion."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                }
+            },
+            "post": {
+                "summary": "Uploads and converts a file to plain text.",
+                "description": "Uploads a file and converts its content to plain text code.",
+                "parameters": [
+                    {
+                        "name": "comments",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "description": "Include additional comments in the output."
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "The file to upload for conversion."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful conversion."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                }
+            }
+        },
+        "/convert/python": {
+            "get": {
+                "summary": "Converts a sample file to Python code.",
+                "description": "Fetches a built-in sample file and converts its content to Python code.",
+                "parameters": [
+                    {
+                        "name": "file",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "demo_cityshaper_cranemission.lms",
+                                "demo_cityshaper_cranemission.llsp",
+                                "demo_cityshaper_cranemission.llsp3",
+                                "demo_cityshaper_cranemission.lmsp",
+                                "demo_cityshaper_cranemission.ev3",
+                                "demo_cityshaper_cranemission.rbf",
+                                "demo_cityshaper_cranemission_wedo2.proj"
+                            ]
+                        },
+                        "description": "The name of the sample file to convert."
+                    },
+                    {
+                        "name": "comments",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "description": "Include additional comments in the output."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful conversion."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                }
+            },
+            "post": {
+                "summary": "Uploads and converts a file to Python code.",
+                "description": "Uploads a file and converts its content to Python code.",
+                "parameters": [
+                    {
+                        "name": "comments",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "description": "Include additional comments in the output."
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "The file to upload for conversion."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful conversion."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                }
+            }
+        },
+        "/convert/graph": {
+            "get": {
+                "summary": "Converts a sample file to a dependency graph.",
+                "description": "Fetches a built-in sample file and converts its content to a dependency graph.",
+                "parameters": [
+                    {
+                        "name": "file",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "demo_cityshaper_cranemission.lms",
+                                "demo_cityshaper_cranemission.llsp",
+                                "demo_cityshaper_cranemission.llsp3",
+                                "demo_cityshaper_cranemission.lmsp",
+                                "demo_cityshaper_cranemission.ev3",
+                                "demo_cityshaper_cranemission.rbf",
+                                "demo_cityshaper_cranemission_wedo2.proj"
+                            ]
+                        },
+                        "description": "The name of the sample file to convert."
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "svg",
+                                "png",
+                                "dot",
+                                "txt"
+                            ],
+                            "default": "svg"
+                        },
+                        "description": "Output format for the graph. Disclaimer: The 'png' format has rendering probkems on this endpoint."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful conversion."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                }
+            },
+            "post": {
+                "summary": "Uploads and converts a file to a dependency graph.",
+                "description": "Uploads a file and converts its content to a dependency graph.",
+                "parameters": [
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "svg",
+                                "png",
+                                "dot",
+                                "txt"
+                            ],
+                            "default": "svg"
+                        },
+                        "description": "Output format for the graph. Disclaimer: The 'png' format has rendering probkems on this endpoint."
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "The file to upload for conversion."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful conversion."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                }
+            }
+        },
+        "/convert/preview": {
+            "get": {
+                "summary": "Converts a sample file to a graphical preview.",
+                "description": "Fetches a built-in sample file and converts its content to a graphical preview.",
+                "parameters": [
+                    {
+                        "name": "file",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "demo_cityshaper_cranemission.lms",
+                                "demo_cityshaper_cranemission.llsp",
+                                "demo_cityshaper_cranemission.llsp3",
+                                "demo_cityshaper_cranemission.lmsp",
+                                "demo_cityshaper_cranemission.ev3",
+                                "demo_cityshaper_cranemission.rbf",
+                                "demo_cityshaper_cranemission_wedo2.proj"
+                            ]
+                        },
+                        "description": "The name of the sample file to convert."
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "svg",
+                                "png"
+                            ],
+                            "default": "svg"
+                        },
+                        "description": "Output format for the preview. Disclaimer: The 'png' format has rendering probkems on this endpoint."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful conversion."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                }
+            },
+            "post": {
+                "summary": "Uploads and converts a file to a graphical preview.",
+                "description": "Uploads a file and converts its content to a graphical preview.",
+                "parameters": [
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "svg",
+                                "png"
+                            ],
+                            "default": "svg"
+                        },
+                        "description": "Output format for the preview. Disclaimer: The 'png' format has rendering probkems on this endpoint."
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "The file to upload for conversion."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful conversion."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                }
+            }
+        },
+        "/convert/raw": {
+            "get": {
+                "summary": "Converts a sample file to its raw source.",
+                "description": "Fetches a built-in sample file and returns its raw source content.",
+                "parameters": [
+                    {
+                        "name": "file",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "demo_cityshaper_cranemission.lms",
+                                "demo_cityshaper_cranemission.llsp",
+                                "demo_cityshaper_cranemission.llsp3",
+                                "demo_cityshaper_cranemission.lmsp",
+                                "demo_cityshaper_cranemission.ev3",
+                                "demo_cityshaper_cranemission.rbf",
+                                "demo_cityshaper_cranemission_wedo2.proj"
+                            ]
+                        },
+                        "description": "The name of the sample file to convert."
+                    },
+                    {
+                        "name": "level",
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "description": "Specifies the ev3 binary (rbf) source level."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful conversion."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                }
+            },
+            "post": {
+                "summary": "Uploads and returns a file's raw source.",
+                "description": "Uploads a file and returns its raw source content.",
+                "parameters": [
+                    {
+                        "name": "level",
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "description": "Specifies the ev3 binary (rbf) source level."
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "The file to upload for conversion."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful conversion."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                }
+            }
+        }
+    }
+}

@@ -5,17 +5,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "node",
+            "type": "chrome",
             "request": "launch",
-            "skipFiles": [
-                "<node_internals>/**",
-                "${workspaceFolder}/node_modules/**",
-            ],
-            "name": "tsx console",
-            "program": "${workspaceFolder}/src/console.ts",
-            "runtimeExecutable": "tsx",
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "openOnSessionStart",
+            "name": "Launch chrome against localhost",
+            "url": "http://localhost:5173/",
+            "webRoot": "${workspaceFolder}/src"
         }
     ]
 }

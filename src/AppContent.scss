@@ -1,0 +1,574 @@
+@use '~bootstrap/scss/bootstrap' as *;
+@use 'animate.css';
+
+.AppContent {
+    $drop-highlight-color: cornflowerblue;
+    $success-color: rgba(144, 238, 144, 1);
+    $success-outline: rgba(144, 238, 144, 0.5);
+    $headerfooter-background-color: whitesmoke;
+    $icon-color: cornflowerblue;
+    $border-color: dodgerblue;
+    $icon-size: 3.5em;
+    $icon-size-big: 10em;
+    $mini-icon-size: 20px;
+
+    footer {
+        width: 100%;
+        background-color: $headerfooter-background-color;
+
+        .small {
+            font-size: 0.7em;
+        }
+    }
+
+    header {
+        // position: sticky;
+        // top: 0;
+        // z-index: 1000;
+        transition: height 0.3s ease, padding 0.3s ease, font-size 0.3s ease;
+        filter: drop-shadow(2px 4px 6px #ddd);
+
+        nav {
+            background-color: $headerfooter-background-color;
+        }
+
+        &.collapsed {
+            font-size: 0.5rem;
+
+            .navbar {
+                --bs-navbar-padding-y: 0.2rem;
+            }
+        }
+    }
+
+    .toast {
+        z-index: 9999;
+        --bs-toast-bg: rgb(var(--bs-body-bg-rgb));
+        filter: drop-shadow(6px 6px 8px lightgray);
+        .toast-body div:not(:first-child) {
+            font-size: 80%;
+        }
+        .toast-header {
+            font-weight: bold;
+            img {
+                height: 1.5em;
+                width: 1.5em;
+            }
+        }
+    }
+
+    &,
+    & > div,
+    .mycontent,
+    .main-content,
+    .tab-welcome,
+    .tab-welcome > *,
+    .tab-content,
+    .tab-main,
+    .tab-main .col,
+    .tab-main .col .row.tabcontent,
+    .spinner-container,
+    form {
+        flex-direction: column !important;
+        flex: 1 1 auto !important;
+        display: flex !important;
+        max-height: 100%;
+    }
+
+    .tab-pane {
+        overflow: auto;
+        height: 100%;
+    }
+
+    .mycontent,
+    form,
+    .row.tabcontent {
+        overflow-y: hidden;
+    }
+
+    .file-selector {
+        .file-selector-icons {
+            white-space: nowrap;
+            padding-right: 0.2em;
+            align-items: center;
+            height: 100%;
+
+            img,
+            svg {
+                height: 1.8em;
+                width: 1.8em;
+                margin-left: 0.2em;
+            }
+        }
+
+        .mini-button {
+            max-height: 2.4em;
+            margin-left: 0.2em;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            .bi {
+                width: 1em;
+                height: 1em;
+            }
+            span {
+                margin-left: 0.2em;
+            }
+        }
+    }
+
+    .mycontent {
+        * {
+            -webkit-user-drag: none;
+            -moz-user-drag: none;
+            -ms-user-drag: none;
+            // user-drag: none;
+        }
+    }
+
+    .navbar-brand {
+        white-space: normal;
+        word-break: break-all;
+        font-size: 200%;
+        padding-bottom: 0;
+        cursor: pointer;
+
+        .hidden {
+            visibility: hidden;
+            font-size: 1px;
+        }
+    }
+
+    .brandlogo {
+        svg {
+            position: relative;
+            top: -0.1em;
+        }
+    }
+
+    .tab-main,
+    .file-selector {
+        filter: drop-shadow(2px 3px 10px #eee);
+    }
+
+    .tab-main {
+        min-height: 30vh;
+
+        .row.tabheader {
+            z-index: 1;
+            position: relative;
+
+            .icon-link-hover {
+                --bs-icon-link-transform: translate3d(0, -0.125rem, 0);
+            }
+        }
+
+        .row:nth-child(2) {
+            top: -1px;
+        }
+
+        .nav-item {
+            .bi {
+                margin-right: 0.25em;
+            }
+
+            white-space: nowrap;
+        }
+
+        .multi-file-header {
+            & > button {
+                --bs-btn-border-radius: 0;
+                border-inline: 1px solid var(--bs-btn-border-color);
+                font-size: small;
+                border-bottom: none;
+            }
+            & > button.active {
+                --bs-btn-active-bg: rgb(241, 239, 239);
+                border-top: rgb(16, 121, 200) 2px solid;
+                border-inline: 1px solid lightgray;
+            }
+        }
+    }
+
+    .tab-content {
+        background-color: white;
+    }
+
+    .tab-pane {
+        min-height: 32vh;
+        position: relative;
+
+        opacity: 0;
+        animation: fadeIn 0.5s ease-in-out forwards;
+    }
+
+    .tab-welcome {
+        align-items: center;
+        cursor: pointer;
+
+        img.icon {
+            height: $icon-size;
+            width: $icon-size;
+            margin: 0.2em;
+        }
+
+        .tranform-caret-icon {
+            color: $icon-color;
+            font-size: calc($icon-size * 0.5);
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        button:has(.drop-cloud-icon) {
+            background: none;
+            border: none;
+        }
+
+        .drop-cloud-icon {
+            font-size: $icon-size-big;
+            color: $icon-color;
+            line-height: 1em;
+            cursor: pointer;
+            filter: drop-shadow(2px 3px 10px #ccc);
+        }
+    }
+
+    .main-content {
+        padding: 0.2em; // for the effective drop effect
+        &.drop-active {
+            filter: opacity(0.5);
+            background-image: repeating-linear-gradient(
+                    -60deg,
+                    $drop-highlight-color,
+                    $drop-highlight-color 9.3px,
+                    transparent 30px,
+                    transparent 39.3px,
+                    $drop-highlight-color 60px
+                ),
+                repeating-linear-gradient(
+                    30deg,
+                    $drop-highlight-color,
+                    $drop-highlight-color 9.3px,
+                    transparent 30px,
+                    transparent 39.3px,
+                    $drop-highlight-color 60px
+                ),
+                repeating-linear-gradient(
+                    120deg,
+                    $drop-highlight-color,
+                    $drop-highlight-color 9.3px,
+                    transparent 30px,
+                    transparent 39.3px,
+                    $drop-highlight-color 60px
+                ),
+                repeating-linear-gradient(
+                    210deg,
+                    $drop-highlight-color,
+                    $drop-highlight-color 9.3px,
+                    transparent 30px,
+                    transparent 39.3px,
+                    $drop-highlight-color 60px
+                );
+            background-color: rgba($drop-highlight-color, 0.1);
+            background-size: 3px calc(100% + 120px), calc(100% + 120px) 3px,
+                3px calc(100% + 120px), calc(100% + 120px) 3px;
+            background-position: 0 0, 0 0, 100% 0, 0 100%;
+            background-repeat: no-repeat;
+            animation: dropActive-borderAnimation 0.8s infinite linear;
+            border-radius: 8px;
+        }
+    }
+
+    @keyframes dropActive-borderAnimation {
+        from {
+            background-position: 0 0, -120px 0, 100% -120px, 0 100%;
+        }
+
+        to {
+            background-position: 0 -120px, 0 0, 100% 0, -120px 100%;
+        }
+    }
+
+    @keyframes copysuccess-animation {
+        from {
+            outline: 0px solid $success-outline;
+        }
+
+        30% {
+            outline: 6px solid $success-color;
+        }
+
+        90% {
+            outline: 6px solid $success-color;
+        }
+
+        to {
+            outline: 0px solid $success-outline;
+        }
+    }
+
+    .mini-button {
+        cursor: pointer;
+        border-radius: 5px;
+        border: 1px lightgray solid;
+        // margin: 0.5em;
+        z-index: 999;
+
+        &.success {
+            animation: copysuccess-animation 0.5s 1 ease-in;
+            animation-delay: 0s;
+            animation-fill-mode: forwards;
+            -webkit-animation-fill-mode: forwards;
+            outline: 2px solid lightgreen;
+            background-color: hsl(120, 73%, 80%);
+        }
+    }
+
+    .code-top-container {
+        // backdrop-filter: blur(3px);
+        filter: drop-shadow(2px 3px 10px lightgrey);
+        position: absolute;
+        top: 0.5em;
+        right: 0.5em;
+        white-space: nowrap;
+        z-index: 1;
+
+        & > button,
+        & > div {
+            margin-right: 0.5em;
+        }
+
+        & > button {
+            padding: 1px 6px 1px 6px;
+            vertical-align: baseline;
+            --bs-btn-active-color: black;
+            --bs-btn-hover-color: black;
+            --bs-btn-color: black;
+            --bs-btn-disabled-color: gray;
+        }
+
+        .form-switch {
+            display: inline-block;
+        }
+    }
+
+    .svg-minimap {
+        width: 30%;
+        position: absolute;
+        right: 0;
+        top: 0;
+        opacity: 0.2;
+        z-index: 998;
+
+        &:hover {
+            opacity: 1;
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+
+        img,
+        svg {
+            width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            right: 1em;
+            position: absolute;
+        }
+    }
+
+    .content-preview {
+        overflow: hidden;
+    }
+
+    .tab-pane.active {
+        display: flex;
+        & > * {
+            padding: 1.25rem !important;
+        }
+        pre {
+            display: flex;
+            flex-grow: 1;
+            line-height: 1em;
+            background-color: green;
+            margin-bottom: 0;
+            code {
+                font-size: 0.8em !important;
+                flex-grow: 1;
+            }
+        }
+    }
+
+    .example-content-button {
+        background-color: #bed2f4 !important;
+        color: black !important;
+        text-decoration: none;
+        font-weight: normal;
+        display: inline-flex;
+        align-items: center;
+
+        img {
+            height: $mini-icon-size;
+            width: $mini-icon-size;
+            // opacity: 0.6;
+            border-radius: 10px;
+        }
+        span {
+            margin-right: 0.5em;
+        }
+
+        &:hover {
+            // left: 2px;
+            // bottom: 1px;
+            // position: relative;
+            background-color: #4a82eb !important;
+            color: white !important;
+
+            // outline: 2px solid #6495ed;
+            img {
+                // opacity: 1;
+                outline: 2px solid #bed2f4;
+            }
+        }
+    }
+
+    .content-callgraph.tab-pane.active {
+        display: grid;
+    }
+
+    .content-callgraph > div,
+    .content-preview,
+    .content-preview > div {
+        // @at-root .tab-pane:has(&) {
+        //     display: grid;
+        // }
+        width: 100%;
+        height: 100%;
+        max-height: 100%;
+        margin: auto;
+
+        & > img,
+        & > svg {
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+            object-fit: contain;
+
+            .graph {
+                .node {
+                    cursor: pointer;
+                }
+
+                .node:hover > polygon,
+                .node:hover > path {
+                    stroke: blue;
+                    stroke-width: 3px;
+                    animation: fadeIn 0.5s ease-in-out forwards;
+                }
+
+                .node > polygon,
+                .node > path {
+                    fill: white;
+                }
+
+                .node.selected > polygon,
+                .node.selected > path {
+                    fill: lightblue;
+                    animation: fadeIn 0.5s ease-in-out forwards;
+                }
+            }
+        }
+    }
+
+    .spinner-container {
+        width: calc(100% - 0.2em);
+        height: 100%;
+        background-color: rgba(#fcfcfc, 0.7);
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        z-index: 1000; /* Ensure it's above other content */
+        backdrop-filter: blur(2px);
+    }
+
+    &.fullscreen {
+        & > :not(.mycontent) {
+            display: none !important;
+        }
+
+        .mycontent > :not(form) {
+            display: none !important;
+        }
+
+        .main-content > :not(.tab-main) {
+            display: none !important;
+        }
+
+        .tab-main {
+            position: absolute;
+            top: 0;
+            left: 0;
+            // width: 100%;
+            height: 100%;
+            max-width: 100%;
+        }
+
+        .tabheader .brandlogo {
+            position: absolute;
+            right: 0;
+            font-size: 1.3em;
+            padding-right: 0.5em;
+            z-index: -1;
+        }
+
+        .mycontent {
+            max-width: 100%;
+            margin: 0px !important;
+            // width: 100%;
+        }
+    }
+
+    // .swagger-ui {
+    //     position: fixed;
+    //     width: 50%;
+    //     right: 0;
+    //     background: white;
+    //     border: 1px solid black;
+    //     width: auto;
+    //     height: auto;
+    //     overflow: scroll;
+    // }
+}
+
+.GithubDialog {
+    .autocomplete-dropdown {
+        position: 'absolute';
+        top: '100%';
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        max-height: '200px';
+        overflow-y: 'auto';
+        .dropdown-item {
+            font-size: small;
+            line-height: 1em;
+            img {
+                height: 2em;
+                width: 2em;
+                vertical-align: baseline;
+                border-radius: 100%;
+            }
+            svg {
+                vertical-align: baseline;
+            }
+        }
+    }
+
+    .profile-avatar {
+        height: 3em;
+        width: 3em;
+        vertical-align: baseline;
+        // border-radius: 100%;
+    }
+}

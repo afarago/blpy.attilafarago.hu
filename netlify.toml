@@ -1,0 +1,23 @@
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  external_node_modules = ["sharp", "@resvg/resvg-js"]
+
+[build]
+  command = "VITE_COMMIT_REF=$COMMIT_REF yarn build"
+  publish = "dist"
+  [build.environment]
+    FONTCONFIG_PATH = "./netlify/functions/fonts"
+    FC_LANG = "en_US.UTF-8"
+
+[dev]
+  framework = "vite"
+  command = "yarn dev"
+  port = 5174
+  [dev.env]
+    URL = "http://localhost:5174"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200

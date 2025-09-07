@@ -1,0 +1,12 @@
+{
+    "folders": [
+        {
+            "path": ".."
+        }
+    ],
+    "settings": {
+        "github-actions.workflows.pinned.workflows": [".github/workflows/webpack.yml"],
+        "npm.packageManager": "yarn",
+        "liveServer.settings.multiRootWorkspaceName": "blpy.attilafarago.hu"
+    }
+}

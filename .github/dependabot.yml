@@ -1,0 +1,22 @@
+version: 2
+updates:
+    - package-ecosystem: 'npm'
+      directory: '/'
+      schedule:
+          interval: 'monthly'
+      labels:
+          - 'npm dependencies'
+          - 'triage-board'
+      open-pull-requests-limit: 10
+      target-branch: 'master'
+      ignore:
+          - dependency-name: 'typescript'
+            # For typescript, ignore all Dependabot updates for version 5.x
+            versions: ['5.x']
+      groups:
+          patch-updates:
+            update-types:
+              - "patch"
+          minor-updates:
+            update-types:
+              - "minor"
