@@ -1,9 +1,10 @@
-import { Handler, HandlerEvent } from '@netlify/functions';
+import { Handler } from '@netlify/functions';
 import OpenAI from 'openai';
 
 // https://console.groq.com/docs/rate-limits
 
 const apiKey = process.env.GROQ_API_KEY;
+const model = process.env.GROQ_MODEL || 'openai/gpt-oss-20b';
 const openai = new OpenAI({
     apiKey,
     baseURL: 'https://api.groq.com/openai/v1',
@@ -34,7 +35,7 @@ const handler: Handler = async (event) => {
         }
 
         const response = await openai.chat.completions.create({
-            model: 'gemma2-9b-it',
+            model,
             messages: [
                 { role: 'system', content: SYSTEM_PROMPT },
                 { role: 'user', content: data },
