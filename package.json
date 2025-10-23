@@ -42,7 +42,7 @@
         "bootstrap-icons": "^1.13.1",
         "busboy": "^1.6.0",
         "dom-to-image": "^2.6.0",
-        "openai": "^5.12.2",
+        "openai": "^6.0.0",
         "react": "^19.2.0",
         "react-bootstrap": "^2.10.10",
         "react-bootstrap-icons": "^1.11.6",
@@ -101,7 +101,7 @@
         "ts-jest": "^29.4.0",
         "ts-node": "^10.9.2",
         "typescript": "^5.7.3",
-        "vite": "^7.1.5",
+        "vite": "^7.1.11",
         "vite-plugin-compression": "^0.5.1",
         "vite-plugin-pwa": "^1.1.0",
         "vite-plugin-svgr": "^4.5.0"
