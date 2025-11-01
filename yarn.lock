@@ -2033,14 +2033,6 @@
   resolved "https://registry.yarnpkg.com/@netlify/binary-info/-/binary-info-1.0.0.tgz#cd0d86fb783fb03e52067f0cd284865e57be86c8"
   integrity sha512-4wMPu9iN3/HL97QblBsBay3E1etIciR84izI3U+4iALY+JHCrI+a2jO0qbAZ/nxKoegypYEaiiqWXylm+/zfrw==
 
-"@netlify/blobs@10.0.8":
-  version "10.0.8"
-  resolved "https://registry.yarnpkg.com/@netlify/blobs/-/blobs-10.0.8.tgz#bae926cbb437b7c3d5147a10a787efac3c549f00"
-  integrity sha512-zvMCtMfek7f+ky8jB3mR5zQE4ai94/SisOvQZJ+7kOfKn7poY027WnG4ngcogCQmOMQLSScvzGheojN5HjenCQ==
-  dependencies:
-    "@netlify/dev-utils" "4.1.1"
-    "@netlify/runtime-utils" "2.1.0"
-
 "@netlify/blobs@10.1.0":
   version "10.1.0"
   resolved "https://registry.yarnpkg.com/@netlify/blobs/-/blobs-10.1.0.tgz#709a15576e58742df9b1b14c874189933e01cbe8"
@@ -2174,27 +2166,6 @@
     yargs "^17.6.0"
     zod "^4.0.5"
 
-"@netlify/dev-utils@4.1.1":
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/@netlify/dev-utils/-/dev-utils-4.1.1.tgz#6a7c6fe9a4a72dc6d727721c91f5611e54943f99"
-  integrity sha512-Y3kVGxynxi/Lz42bi20A+PQ0vh25zVjbGnQWZQUTwLzQozEIeokCgUWskPvlhs6btheLZyzUjqGuhUCymOoD1g==
-  dependencies:
-    "@whatwg-node/server" "^0.10.0"
-    ansis "^4.1.0"
-    chokidar "^4.0.1"
-    decache "^4.6.2"
-    dot-prop "9.0.0"
-    empathic "^2.0.0"
-    env-paths "^3.0.0"
-    image-size "^2.0.2"
-    js-image-generator "^1.0.4"
-    lodash.debounce "^4.0.8"
-    parse-gitignore "^2.0.0"
-    semver "^7.7.2"
-    tmp-promise "^3.0.3"
-    uuid "^11.1.0"
-    write-file-atomic "^5.0.1"
-
 "@netlify/dev-utils@4.3.0":
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/@netlify/dev-utils/-/dev-utils-4.3.0.tgz#c5a88bf43e12fe7d0c5bbbcb7dead14fbf33361d"
@@ -2263,23 +2234,12 @@
     cpy "^11.0.0"
     path-exists "^5.0.0"
 
-"@netlify/functions@^4.2.1":
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/@netlify/functions/-/functions-4.2.1.tgz#7a8ecb62a3e48f421bb2e75932f5a964f8edc4e5"
-  integrity sha512-FhwXULPeD9qbUdWxtD9AUjV5GEjB93fqLhl0N4KZAf00i1Ec0t3WmCJ4j5bCbnETxXEkTOYhhUBHZi2BAFQSgw==
+"@netlify/functions@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@netlify/functions/-/functions-5.0.1.tgz#93a503db7ceb0550126e06d2a6bfa36e1c3653ca"
+  integrity sha512-olCwsnp0GDpjSYPfWrtUIvOsZcrRta6lxwZWfl3XxucXOw5AcGDKSqKGRElzyyZoRA8OXVh5B5NHj5Jd4PRx+A==
   dependencies:
-    "@netlify/blobs" "10.0.8"
-    "@netlify/dev-utils" "4.1.1"
-    "@netlify/types" "2.0.2"
-    "@netlify/zip-it-and-ship-it" "^14.1.0"
-    cron-parser "^4.9.0"
-    decache "^4.6.2"
-    extract-zip "^2.0.1"
-    is-stream "^4.0.1"
-    jwt-decode "^4.0.0"
-    lambda-local "^2.2.0"
-    read-package-up "^11.0.0"
-    source-map-support "^0.5.21"
+    "@netlify/types" "2.1.0"
 
 "@netlify/git-utils@^6.0.2":
   version "6.0.2"
@@ -2426,11 +2386,6 @@
   dependencies:
     execa "^8.0.0"
 
-"@netlify/runtime-utils@2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@netlify/runtime-utils/-/runtime-utils-2.1.0.tgz#0a828ab5e26c139fd72eee0f0d25d66d9d718bc1"
-  integrity sha512-z1h+wjB7IVYUsFZsuIYyNxiw5WWuylseY+eXaUDHBxNeLTlqziy+lz03QkR67CUR4Y790xGIhaHV00aOR2KAtw==
-
 "@netlify/runtime-utils@2.2.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@netlify/runtime-utils/-/runtime-utils-2.2.0.tgz#28f235025707ea0e2e908c85c6f4de24accb5353"
@@ -2441,17 +2396,12 @@
   resolved "https://registry.yarnpkg.com/@netlify/serverless-functions-api/-/serverless-functions-api-2.7.1.tgz#5b5d93917e15a4678f694cd43097d92d3e3a0bfb"
   integrity sha512-NQcLB8BHbIsgSBPk9A/OBR5mGpc6dOAg1iRsYHWK0IoKsvwQ9a7bZc2+E40nE41Mnk24UjfK09vDLxP85O/zwA==
 
-"@netlify/types@2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@netlify/types/-/types-2.0.2.tgz#c7fe12871acbce3b3df29aa4cb0679786d5f2954"
-  integrity sha512-6899BAqehToSAd3hoevqGaIkG0M9epPMLTi6byynNVIzqv2x+b9OtRXqK67G/gCX7XkrtLQ9Xm3QNJmaFNrSXA==
-
 "@netlify/types@2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@netlify/types/-/types-2.1.0.tgz#7f2ffc4f56d53481535d919f70f1057ff20af074"
   integrity sha512-ktUb5d58pt1lQGXO5E9S0F1ljM0g+CoQuGTVII0IxBc0apmPq5RI0o3OWLY7U3ZERRiYTg5UfjiMihBEzuZsuw==
 
-"@netlify/zip-it-and-ship-it@14.1.11", "@netlify/zip-it-and-ship-it@^14.1.0":
+"@netlify/zip-it-and-ship-it@14.1.11":
   version "14.1.11"
   resolved "https://registry.yarnpkg.com/@netlify/zip-it-and-ship-it/-/zip-it-and-ship-it-14.1.11.tgz#77034fbec96d5bf551658b9e1cb21c061e2cbb62"
   integrity sha512-5Ed9XH1JVPL7pAdq9zpC2WHjqHhHkaghuV3r2bvTTpx9JrTdzZxPeNnjZRjJMkjQAi8xSped5hNFJuD0QYmOuw==
@@ -6216,7 +6166,7 @@ create-require@^1.1.0:
   resolved "https://registry.yarnpkg.com/create-require/-/create-require-1.1.1.tgz#c1d7e8f1e5f6cfc9ff65f9cd352d37348756c333"
   integrity sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==
 
-cron-parser@4.9.0, cron-parser@^4.1.0, cron-parser@^4.9.0:
+cron-parser@4.9.0, cron-parser@^4.1.0:
   version "4.9.0"
   resolved "https://registry.yarnpkg.com/cron-parser/-/cron-parser-4.9.0.tgz#0340694af3e46a0894978c6f52a6dbb5c0f11ad5"
   integrity sha512-p0SaNjrHOnQeR8/VnfGbmg9te2kfyYSQ7Sc/j/6DtPL3JQvKxmjO9TSjNFpujqV3vEYYBvNNvXSxzyksBWAx1Q==
@@ -9716,7 +9666,7 @@ jws@^3.2.2:
     jwa "^1.4.1"
     safe-buffer "^5.0.1"
 
-jwt-decode@4.0.0, jwt-decode@^4.0.0:
+jwt-decode@4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/jwt-decode/-/jwt-decode-4.0.0.tgz#2270352425fd413785b2faf11f6e755c5151bd4b"
   integrity sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA==
@@ -9750,7 +9700,7 @@ ky@^1.2.0:
   resolved "https://registry.yarnpkg.com/ky/-/ky-1.8.2.tgz#161cba76e4a86b43829565b9a9c8d21d03e602db"
   integrity sha512-XybQJ3d4Ea1kI27DoelE5ZCT3bSJlibYTtQuMsyzKox3TMyayw1asgQdl54WroAm+fIA3ZCr8zXW2RpR7qWVpA==
 
-lambda-local@2.2.0, lambda-local@^2.2.0:
+lambda-local@2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/lambda-local/-/lambda-local-2.2.0.tgz#733d183a4c3f2b16c6499b9ea72cec2f13278eef"
   integrity sha512-bPcgpIXbHnVGfI/omZIlgucDqlf4LrsunwoKue5JdZeGybt8L6KyJz2Zu19ffuZwIwLj2NAI2ZyaqNT6/cetcg==
@@ -13015,7 +12965,7 @@ source-map-support@0.5.13:
     buffer-from "^1.0.0"
     source-map "^0.6.0"
 
-source-map-support@0.5.21, source-map-support@^0.5.21, source-map-support@~0.5.20:
+source-map-support@0.5.21, source-map-support@~0.5.20:
   version "0.5.21"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.21.tgz#04fe7c7f9e1ed2d662233c28cb2b35b9f63f6e4f"
   integrity sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==
