@@ -52,7 +52,7 @@
         "react-markdown": "^10.1.0",
         "react-redux": "^9.2.0",
         "react-router-dom": "^7.9.4",
-        "react-syntax-highlighter": "^15.6.1",
+        "react-syntax-highlighter": "^16.1.0",
         "redux-saga": "^1.4.2",
         "sharp": "^0.34.4",
         "svg-pan-zoom": "^3.6.2",
